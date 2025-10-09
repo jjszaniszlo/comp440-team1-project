@@ -37,4 +37,5 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 2) You are good to go
 3) Run ~npm run dev~ to run the front end.
 
-** Part 1: User Authentication
+** Part 1: User Authentication 
+**

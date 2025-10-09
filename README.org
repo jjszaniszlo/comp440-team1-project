@@ -1,0 +1,10 @@
+#+title: Group Project Databases
+
+* Group Project Databases
+
+** Tech Requirements
+
+- python >= 3.17
+- uv >= 0.8.22
+
+** Part 1: User Authentication

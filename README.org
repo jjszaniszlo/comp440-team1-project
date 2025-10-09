@@ -1,24 +1,23 @@
 * Group Project Databases
 
-** Tech Requirements
-
-- python >= 3.17
-- uv >= 0.8.22
-
-*** Backend Setup
-1. Install python however you would like to, ensure that it is accessible in PATH.
-2. Install [[https://docs.astral.sh/uv/getting-started/installation/][uv]]
-4. Clone the repo
 #+begin_src bash
 git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 #+end_src
-5. Go to REPO_NAME/backend and type `uv sync`
+
+** Backend Setup
+
+- ~python >= 3.17~
+- ~uv >= 0.8.22~
+
+2) Install python however you would like to, ensure that it is accessible in PATH.
+3) Install [[https://docs.astral.sh/uv/getting-started/installation/][uv]]
+4) Go to ~comp440-team1-project/backend~ and type ~uv sync~
 #+begin_src bash
 cd REPO_NAME/backend
 uv sync
 #+end_src
-6. Activate python venv
-Linux
+5) Activate python venv
+Linux/Mac
 #+begin_src bash
 source .venv/bin/activate
 #+end_src
@@ -28,10 +27,14 @@ Window
 ## You may need to run this:
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 #+end_src
-*** Frontend Setup
 
-- node >= 22.0.0
-- npm >= 10.0.0
+** Frontend Setup
 
+- ~node >= 22.0.0~
+- ~npm >= 10.0.0~
+
+1) Navigate to ~comp440-team1-project/frontend~ and type ~npm install~
+2) You are good to go
+3) Run ~npm run dev~ to run the front end.
 
 ** Part 1: User Authentication

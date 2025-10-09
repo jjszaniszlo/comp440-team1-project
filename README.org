@@ -1,5 +1,3 @@
-#+title: Group Project Databases
-
 * Group Project Databases
 
 ** Tech Requirements
@@ -30,6 +28,10 @@ Window
 ## You may need to run this:
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 #+end_src
-
 *** Frontend Setup
+
+- node >= 22.0.0
+- npm >= 10.0.0
+
+
 ** Part 1: User Authentication

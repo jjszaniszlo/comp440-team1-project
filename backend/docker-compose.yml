@@ -1,0 +1,30 @@
+services:
+  db:
+    container_name: db
+    hostname: db
+    image: mysql
+    env_file:
+      - .env
+    ports:
+      - 3306:3306
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - admin
+
+
+  adminer:
+    container_name: adminer
+    image: adminer
+    ports:
+      - 8080:8080
+    networks:
+      - admin
+
+volumes:
+  db_data: {}
+
+
+networks:
+  admin: {}

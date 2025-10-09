@@ -5,5 +5,12 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
+    "aiomysql>=0.2.0",
+    "cryptography>=46.0.2",
     "fastapi[standard]>=0.118.2",
+    "pwdlib[argon2]>=0.2.1",
+    "pydantic-settings>=2.11.0",
+    "python-jose[cryptography]>=3.3.0",
+    "slowapi>=0.1.9",
+    "sqlalchemy>=2.0.44",
 ]

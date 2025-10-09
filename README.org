@@ -8,15 +8,16 @@ git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 
 - ~python >= 3.17~
 - ~uv >= 0.8.22~
+- ~docker~
 
-2) Install python however you would like to, ensure that it is accessible in PATH.
-3) Install [[https://docs.astral.sh/uv/getting-started/installation/][uv]]
-4) Go to ~comp440-team1-project/backend~ and type ~uv sync~
+1) Install python however you would like to, ensure that it is accessible in PATH.
+2) Install [[https://docs.astral.sh/uv/getting-started/installation/][uv]]
+3) Go to ~comp440-team1-project/backend~ and type ~uv sync~
 #+begin_src bash
 cd REPO_NAME/backend
 uv sync
 #+end_src
-5) Activate python venv
+4) [@4] Activate python venv
 Linux/Mac
 #+begin_src bash
 source .venv/bin/activate
@@ -26,6 +27,44 @@ Window
 .venv\Scripts\Activate.ps1
 ## You may need to run this:
 Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
+#+end_src
+5) [@5] Copy .env.example to .env and change parameters
+#+begin_src bash
+cp .env.example .env
+#+end_src
+.env will look like this:
+#+begin_src bash
+MYSQL_ROOT_PASSWORD=
+MYSQL_DATABASE=
+MYSQL_USER=
+MYSQL_PASSWORD=
+
+DB_URL=mysql+aiomysql://${MYSQL_USER}:${MYSQL_PASSWORD}@localhost:3306/${MYSQL_DATABASE}
+
+DEBUG=true
+
+SECRET_KEY=
+ALGORITHM=HS256
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+#+end_src
+Set the mysql credentials to anything you like.  However you should generate the SECRET_KEY for authentication with
+#+begin_src bash
+openssl rand -hex 32
+#+end_src
+6) [@6] Spin up the containers by running the following within the ~backend~ directory.
+#+begin_src bash
+docker compose up -d
+#+end_src
+7) [@7] Then run fastapi dev command within the ~backend~ directory.
+#+begin_src bash
+fastapi dev app/main.py
+#+end_src
+*** Notes
+**** Update/Install dependencies
+Periodically when pulling changes for the project, the dependencies in ~pyproject.toml~ may change, so run the following to update the virtual environment.
+Run this within the ~backend~ directory.
+#+begin_src
+uv sync
 #+end_src
 
 ** Frontend Setup
@@ -38,4 +77,15 @@ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted -Force
 3) Run ~npm run dev~ to run the front end.
 
 ** Part 1: User Authentication 
-**
+
+Endpoints
+
+- ~/api/v1/auth/signup~: pass in the user details in the body, exactly as they are in db but in json format.
+- ~/api/v1/auth/login~: pass in the username and password, in json format and recieve back a JWT bearer token
+- ~/api/v1/auth/me~: Test the token by setting the header of your request to ~Authorization: Bearer TOKEN_HERE~, this will return a user's details
+
+You can do this with the following curl command:
+#+begin_src
+curl -X GET http://localhost:8000/api/v1/auth/me
+    \ -H "Authorization: Bearer TOKEN_HERE"
+#+end_src

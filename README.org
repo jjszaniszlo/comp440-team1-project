@@ -76,16 +76,6 @@ uv sync
 2) You are good to go
 3) Run ~npm run dev~ to run the front end.
 
-** Part 1: User Authentication 
 
-Endpoints
-
-- ~/api/v1/auth/signup~: pass in the user details in the body, exactly as they are in db but in json format.
-- ~/api/v1/auth/login~: pass in the username and password, in json format and recieve back a JWT bearer token
-- ~/api/v1/auth/me~: Test the token by setting the header of your request to ~Authorization: Bearer TOKEN_HERE~, this will return a user's details
-
-You can do this with the following curl command:
-#+begin_src
-curl -X GET http://localhost:8000/api/v1/auth/me
-    \ -H "Authorization: Bearer TOKEN_HERE"
-#+end_src
+* Endpoints
+Please see the [[file:API_ENDPOINTS.org][Endpoints]] documentation.

@@ -1,0 +1,1560 @@
+* Team X API
+:PROPERTIES:
+:CUSTOM_ID: team-x-api
+:END:
+
+#+begin_quote
+Version 0.1.0
+
+#+end_quote
+
+** Path Table
+:PROPERTIES:
+:CUSTOM_ID: path-table
+:END:
+| Method | Path                                                                                        | Description           |
+|--------+---------------------------------------------------------------------------------------------+-----------------------|
+| POST   | [[#postapiv1authsignup][/api/v1/auth/signup]]                                               | Signup                |
+| POST   | [[#postapiv1authlogin][/api/v1/auth/login]]                                                 | Login                 |
+| GET    | [[#getapiv1authme][/api/v1/auth/me]]                                                        | Me                    |
+| GET    | [[#getapiv1authhello][/api/v1/auth/hello]]                                                  | Hello                 |
+| GET    | [[#getapiv1blog][/api/v1/blog/]]                                                            | List Blogs            |
+| POST   | [[#postapiv1blog][/api/v1/blog/]]                                                           | Create Blog           |
+| GET    | [[#getapiv1blogsearch][/api/v1/blog/search]]                                                | Search Blogs          |
+| POST   | [[#postapiv1blogblog_idpublish][/api/v1/blog/{blog_id}/publish]]                            | Publish Blog          |
+| POST   | [[#postapiv1blogblog_iddelist][/api/v1/blog/{blog_id}/delist]]                              | Delist Blog           |
+| PATCH  | [[#patchapiv1blogblog_id][/api/v1/blog/{blog_id}]]                                          | Update Blog           |
+| DELETE | [[#deleteapiv1blogblog_id][/api/v1/blog/{blog_id}]]                                         | Delete Blog           |
+| POST   | [[#postapiv1blogblog_idtags][/api/v1/blog/{blog_id}/tags]]                                  | Add Tags To Blog      |
+| DELETE | [[#deleteapiv1blogblog_idtags][/api/v1/blog/{blog_id}/tags]]                                | Remove Tags From Blog |
+| POST   | [[#postapiv1blogblog_idcomments][/api/v1/blog/{blog_id}/comments]]                          | Create Comment        |
+| GET    | [[#getapiv1blogblog_idcomments][/api/v1/blog/{blog_id}/comments]]                           | List Blog Comments    |
+| GET    | [[#getapiv1blogblog_idcommentscomment_id][/api/v1/blog/{blog_id}/comments/{comment_id}]]    | Get Comment           |
+| PATCH  | [[#patchapiv1blogblog_idcommentscomment_id][/api/v1/blog/{blog_id}/comments/{comment_id}]]  | Update Comment        |
+| DELETE | [[#deleteapiv1blogblog_idcommentscomment_id][/api/v1/blog/{blog_id}/comments/{comment_id}]] | Delete Comment        |
+| POST   | [[#postapiv1followusersusernamefollow][/api/v1/follow/users/{username}/follow]]             | Follow User           |
+| DELETE | [[#deleteapiv1followusersusernamefollow][/api/v1/follow/users/{username}/follow]]           | Unfollow User         |
+| GET    | [[#getapiv1followusersusernamefollowers][/api/v1/follow/users/{username}/followers]]        | Get Followers         |
+| GET    | [[#getapiv1followusersusernamefollowing][/api/v1/follow/users/{username}/following]]        | Get Following         |
+| GET    | [[#getapiv1followusersusernamefollow-stats][/api/v1/follow/users/{username}/follow-stats]]  | Get Follow Stats      |
+| GET    | [[#getapiv1followusersusernameis-following][/api/v1/follow/users/{username}/is-following]]  | Check Is Following    |
+
+** Reference Table
+:PROPERTIES:
+:CUSTOM_ID: reference-table
+:END:
+| Name                       | Path                                                                                              | Description |
+|----------------------------+---------------------------------------------------------------------------------------------------+-------------|
+| BlogCreateRequest          | [[#componentsschemasblogcreaterequest][#/components/schemas/BlogCreateRequest]]                   |             |
+| BlogDetailResponse         | [[#componentsschemasblogdetailresponse][#/components/schemas/BlogDetailResponse]]                 |             |
+| BlogEditRequest            | [[#componentsschemasblogeditrequest][#/components/schemas/BlogEditRequest]]                       |             |
+| BlogResponse               | [[#componentsschemasblogresponse][#/components/schemas/BlogResponse]]                             |             |
+| BlogSortBy                 | [[#componentsschemasblogsortby][#/components/schemas/BlogSortBy]]                                 |             |
+| BlogSortOrder              | [[#componentsschemasblogsortorder][#/components/schemas/BlogSortOrder]]                           |             |
+| CommentCreateRequest       | [[#componentsschemascommentcreaterequest][#/components/schemas/CommentCreateRequest]]             |             |
+| CommentResponse            | [[#componentsschemascommentresponse][#/components/schemas/CommentResponse]]                       |             |
+| CommentUpdateRequest       | [[#componentsschemascommentupdaterequest][#/components/schemas/CommentUpdateRequest]]             |             |
+| CommentWithRepliesResponse | [[#componentsschemascommentwithrepliesresponse][#/components/schemas/CommentWithRepliesResponse]] |             |
+| FollowResponse             | [[#componentsschemasfollowresponse][#/components/schemas/FollowResponse]]                         |             |
+| FollowerResponse           | [[#componentsschemasfollowerresponse][#/components/schemas/FollowerResponse]]                     |             |
+| FollowingResponse          | [[#componentsschemasfollowingresponse][#/components/schemas/FollowingResponse]]                   |             |
+| HTTPValidationError        | [[#componentsschemashttpvalidationerror][#/components/schemas/HTTPValidationError]]               |             |
+| TagOperationRequest        | [[#componentsschemastagoperationrequest][#/components/schemas/TagOperationRequest]]               |             |
+| Token                      | [[#componentsschemastoken][#/components/schemas/Token]]                                           |             |
+| UserFollowStats            | [[#componentsschemasuserfollowstats][#/components/schemas/UserFollowStats]]                       |             |
+| UserLogin                  | [[#componentsschemasuserlogin][#/components/schemas/UserLogin]]                                   |             |
+| UserResponse               | [[#componentsschemasuserresponse][#/components/schemas/UserResponse]]                             |             |
+| UserSignup                 | [[#componentsschemasusersignup][#/components/schemas/UserSignup]]                                 |             |
+| ValidationError            | [[#componentsschemasvalidationerror][#/components/schemas/ValidationError]]                       |             |
+| HTTPBearer                 | [[#componentssecurityschemeshttpbearer][#/components/securitySchemes/HTTPBearer]]                 |             |
+
+** Path Details
+:PROPERTIES:
+:CUSTOM_ID: path-details
+:END:
+
+--------------
+
+*** [POST]/api/v1/auth/signup
+:PROPERTIES:
+:CUSTOM_ID: postapiv1authsignup
+:END:
+- Summary\\
+  Signup
+
+- Operation id\\
+  signup_api_v1_auth_signup_post
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  username: string
+  password: string
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses
+:END:
+- 201 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  phone: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/auth/login
+:PROPERTIES:
+:CUSTOM_ID: postapiv1authlogin
+:END:
+- Summary\\
+  Login
+
+- Operation id\\
+  login_api_v1_auth_login_post
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-1
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  username: string
+  password: string
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-1
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  access_token: string
+  token_type: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/auth/me
+:PROPERTIES:
+:CUSTOM_ID: getapiv1authme
+:END:
+- Summary\\
+  Me
+
+- Operation id\\
+  me_api_v1_auth_me_get
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-2
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  phone: string
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/auth/hello
+:PROPERTIES:
+:CUSTOM_ID: getapiv1authhello
+:END:
+- Summary\\
+  Hello
+
+- Operation id\\
+  hello_api_v1_auth_hello_get
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-3
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/blog/
+:PROPERTIES:
+:CUSTOM_ID: getapiv1blog
+:END:
+- Summary\\
+  List Blogs
+
+- Operation id\\
+  list_blogs_api_v1_blog__get
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-4
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+}[]
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/blog/
+:PROPERTIES:
+:CUSTOM_ID: postapiv1blog
+:END:
+- Summary\\
+  Create Blog
+
+- Operation id\\
+  create_blog_api_v1_blog__post
+
+- Security\\
+  HTTPBearer
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-2
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  subject: string
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-5
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/blog/search
+:PROPERTIES:
+:CUSTOM_ID: getapiv1blogsearch
+:END:
+- Summary\\
+  Search Blogs
+
+- Operation id\\
+  search_blogs_api_v1_blog_search_get
+
+**** Parameters(Query)
+:PROPERTIES:
+:CUSTOM_ID: parametersquery
+:END:
+#+begin_src typescript
+search?: Partial(string) & Partial(null)
+#+end_src
+
+#+begin_src typescript
+tags?: Partial(string[]) & Partial(null)
+#+end_src
+
+#+begin_src typescript
+tags_match_all?: boolean
+#+end_src
+
+#+begin_src typescript
+authors?: Partial(string[]) & Partial(null)
+#+end_src
+
+#+begin_src typescript
+sort_by?: enum[created_at, updated_at, subject, relevance]
+#+end_src
+
+#+begin_src typescript
+sort_order?: enum[asc, desc]
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-6
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+}[]
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/blog/{blog_id}/publish
+:PROPERTIES:
+:CUSTOM_ID: postapiv1blogblog_idpublish
+:END:
+- Summary\\
+  Publish Blog
+
+- Operation id\\
+  publish_blog_api_v1_blog__blog_id__publish_post
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-7
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/blog/{blog_id}/delist
+:PROPERTIES:
+:CUSTOM_ID: postapiv1blogblog_iddelist
+:END:
+- Summary\\
+  Delist Blog
+
+- Operation id\\
+  delist_blog_api_v1_blog__blog_id__delist_post
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-8
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [PATCH]/api/v1/blog/{blog_id}
+:PROPERTIES:
+:CUSTOM_ID: patchapiv1blogblog_id
+:END:
+- Summary\\
+  Update Blog
+
+- Operation id\\
+  update_blog_api_v1_blog__blog_id__patch
+
+- Security\\
+  HTTPBearer
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-3
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  subject?: Partial(string) & Partial(null)
+  description?: Partial(string) & Partial(null)
+  content?: Partial(string) & Partial(null)
+  tags?: Partial(string[]) & Partial(null)
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-9
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+  description?: Partial(string) & Partial(null)
+  content?: Partial(string) & Partial(null)
+  tags?: string[]
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [DELETE]/api/v1/blog/{blog_id}
+:PROPERTIES:
+:CUSTOM_ID: deleteapiv1blogblog_id
+:END:
+- Summary\\
+  Delete Blog
+
+- Operation id\\
+  delete_blog_api_v1_blog__blog_id__delete
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-10
+:END:
+- 204 Successful Response
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/blog/{blog_id}/tags
+:PROPERTIES:
+:CUSTOM_ID: postapiv1blogblog_idtags
+:END:
+- Summary\\
+  Add Tags To Blog
+
+- Operation id\\
+  add_tags_to_blog_api_v1_blog__blog_id__tags_post
+
+- Security\\
+  HTTPBearer
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-4
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  tags?: string[]
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-11
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+  description?: Partial(string) & Partial(null)
+  content?: Partial(string) & Partial(null)
+  tags?: string[]
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [DELETE]/api/v1/blog/{blog_id}/tags
+:PROPERTIES:
+:CUSTOM_ID: deleteapiv1blogblog_idtags
+:END:
+- Summary\\
+  Remove Tags From Blog
+
+- Operation id\\
+  remove_tags_from_blog_api_v1_blog__blog_id__tags_delete
+
+- Security\\
+  HTTPBearer
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-5
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  tags?: string[]
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-12
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+  description?: Partial(string) & Partial(null)
+  content?: Partial(string) & Partial(null)
+  tags?: string[]
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/blog/{blog_id}/comments
+:PROPERTIES:
+:CUSTOM_ID: postapiv1blogblog_idcomments
+:END:
+- Summary\\
+  Create Comment
+
+- Operation id\\
+  create_comment_api_v1_blog__blog_id__comments_post
+
+- Security\\
+  HTTPBearer
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-6
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  content: string
+  parent_comment_id?: Partial(integer) & Partial(null)
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-13
+:END:
+- 201 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  content: string
+  blog_id: integer
+  author_username: string
+  parent_comment_id?: Partial(integer) & Partial(null)
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/blog/{blog_id}/comments
+:PROPERTIES:
+:CUSTOM_ID: getapiv1blogblog_idcomments
+:END:
+- Summary\\
+  List Blog Comments
+
+- Operation id\\
+  list_blog_comments_api_v1_blog__blog_id__comments_get
+
+**** Parameters(Query)
+:PROPERTIES:
+:CUSTOM_ID: parametersquery-1
+:END:
+#+begin_src typescript
+// Include nested replies
+include_replies?: boolean //default: true
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-14
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+undefined?: Partial(#/components/schemas/CommentWithRepliesResponse) & Partial(#/components/schemas/CommentResponse)[]
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/blog/{blog_id}/comments/{comment_id}
+:PROPERTIES:
+:CUSTOM_ID: getapiv1blogblog_idcommentscomment_id
+:END:
+- Summary\\
+  Get Comment
+
+- Operation id\\
+  get_comment_api_v1_blog__blog_id__comments__comment_id__get
+
+**** Parameters(Query)
+:PROPERTIES:
+:CUSTOM_ID: parametersquery-2
+:END:
+#+begin_src typescript
+// Include nested replies
+include_replies?: boolean
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-15
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  "anyOf": [
+    {
+      "$ref": "#/components/schemas/CommentWithRepliesResponse"
+    },
+    {
+      "$ref": "#/components/schemas/CommentResponse"
+    }
+  ],
+  "title": "Response Get Comment Api V1 Blog  Blog Id  Comments  Comment Id  Get"
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [PATCH]/api/v1/blog/{blog_id}/comments/{comment_id}
+:PROPERTIES:
+:CUSTOM_ID: patchapiv1blogblog_idcommentscomment_id
+:END:
+- Summary\\
+  Update Comment
+
+- Operation id\\
+  update_comment_api_v1_blog__blog_id__comments__comment_id__patch
+
+- Security\\
+  HTTPBearer
+
+**** RequestBody
+:PROPERTIES:
+:CUSTOM_ID: requestbody-7
+:END:
+- application/json
+
+#+begin_src typescript
+{
+  content: string
+}
+#+end_src
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-16
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  id: integer
+  content: string
+  blog_id: integer
+  author_username: string
+  parent_comment_id?: Partial(integer) & Partial(null)
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [DELETE]/api/v1/blog/{blog_id}/comments/{comment_id}
+:PROPERTIES:
+:CUSTOM_ID: deleteapiv1blogblog_idcommentscomment_id
+:END:
+- Summary\\
+  Delete Comment
+
+- Operation id\\
+  delete_comment_api_v1_blog__blog_id__comments__comment_id__delete
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-17
+:END:
+- 204 Successful Response
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [POST]/api/v1/follow/users/{username}/follow
+:PROPERTIES:
+:CUSTOM_ID: postapiv1followusersusernamefollow
+:END:
+- Summary\\
+  Follow User
+
+- Operation id\\
+  follow_user_api_v1_follow_users__username__follow_post
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-18
+:END:
+- 201 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  follower_username: string
+  following_username: string
+  created_at: string
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [DELETE]/api/v1/follow/users/{username}/follow
+:PROPERTIES:
+:CUSTOM_ID: deleteapiv1followusersusernamefollow
+:END:
+- Summary\\
+  Unfollow User
+
+- Operation id\\
+  unfollow_user_api_v1_follow_users__username__follow_delete
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-19
+:END:
+- 204 Successful Response
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/follow/users/{username}/followers
+:PROPERTIES:
+:CUSTOM_ID: getapiv1followusersusernamefollowers
+:END:
+- Summary\\
+  Get Followers
+
+- Operation id\\
+  get_followers_api_v1_follow_users__username__followers_get
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-20
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  username: string
+  first_name: string
+  last_name: string
+  email: string
+  followed_at: string
+}[]
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/follow/users/{username}/following
+:PROPERTIES:
+:CUSTOM_ID: getapiv1followusersusernamefollowing
+:END:
+- Summary\\
+  Get Following
+
+- Operation id\\
+  get_following_api_v1_follow_users__username__following_get
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-21
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  username: string
+  first_name: string
+  last_name: string
+  email: string
+  followed_at: string
+}[]
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/follow/users/{username}/follow-stats
+:PROPERTIES:
+:CUSTOM_ID: getapiv1followusersusernamefollow-stats
+:END:
+- Summary\\
+  Get Follow Stats
+
+- Operation id\\
+  get_follow_stats_api_v1_follow_users__username__follow_stats_get
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-22
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  username: string
+  follower_count: integer
+  following_count: integer
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+--------------
+
+*** [GET]/api/v1/follow/users/{username}/is-following
+:PROPERTIES:
+:CUSTOM_ID: getapiv1followusersusernameis-following
+:END:
+- Summary\\
+  Check Is Following
+
+- Operation id\\
+  check_is_following_api_v1_follow_users__username__is_following_get
+
+- Security\\
+  HTTPBearer
+
+**** Responses
+:PROPERTIES:
+:CUSTOM_ID: responses-23
+:END:
+- 200 Successful Response
+
+=application/json=
+
+#+begin_src typescript
+{
+  "type": "boolean",
+  "title": "Response Check Is Following Api V1 Follow Users  Username  Is Following Get"
+}
+#+end_src
+
+- 422 Validation Error
+
+=application/json=
+
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+** References
+:PROPERTIES:
+:CUSTOM_ID: references
+:END:
+*** #/components/schemas/BlogCreateRequest
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasblogcreaterequest
+:END:
+#+begin_src typescript
+{
+  subject: string
+}
+#+end_src
+
+*** #/components/schemas/BlogDetailResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasblogdetailresponse
+:END:
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+  description?: Partial(string) & Partial(null)
+  content?: Partial(string) & Partial(null)
+  tags?: string[]
+}
+#+end_src
+
+*** #/components/schemas/BlogEditRequest
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasblogeditrequest
+:END:
+#+begin_src typescript
+{
+  subject?: Partial(string) & Partial(null)
+  description?: Partial(string) & Partial(null)
+  content?: Partial(string) & Partial(null)
+  tags?: Partial(string[]) & Partial(null)
+}
+#+end_src
+
+*** #/components/schemas/BlogResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasblogresponse
+:END:
+#+begin_src typescript
+{
+  id: integer
+  subject: string
+  author_username: string
+  status: string
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+*** #/components/schemas/BlogSortBy
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasblogsortby
+:END:
+#+begin_src typescript
+{
+  "type": "string",
+  "enum": [
+    "created_at",
+    "updated_at",
+    "subject",
+    "relevance"
+  ],
+  "title": "BlogSortBy"
+}
+#+end_src
+
+*** #/components/schemas/BlogSortOrder
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasblogsortorder
+:END:
+#+begin_src typescript
+{
+  "type": "string",
+  "enum": [
+    "asc",
+    "desc"
+  ],
+  "title": "BlogSortOrder"
+}
+#+end_src
+
+*** #/components/schemas/CommentCreateRequest
+:PROPERTIES:
+:CUSTOM_ID: componentsschemascommentcreaterequest
+:END:
+#+begin_src typescript
+{
+  content: string
+  parent_comment_id?: Partial(integer) & Partial(null)
+}
+#+end_src
+
+*** #/components/schemas/CommentResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemascommentresponse
+:END:
+#+begin_src typescript
+{
+  id: integer
+  content: string
+  blog_id: integer
+  author_username: string
+  parent_comment_id?: Partial(integer) & Partial(null)
+  created_at: string
+  updated_at: string
+}
+#+end_src
+
+*** #/components/schemas/CommentUpdateRequest
+:PROPERTIES:
+:CUSTOM_ID: componentsschemascommentupdaterequest
+:END:
+#+begin_src typescript
+{
+  content: string
+}
+#+end_src
+
+*** #/components/schemas/CommentWithRepliesResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemascommentwithrepliesresponse
+:END:
+#+begin_src typescript
+{
+  id: integer
+  content: string
+  blog_id: integer
+  author_username: string
+  parent_comment_id?: Partial(integer) & Partial(null)
+  created_at: string
+  updated_at: string
+  replies: {
+    id: integer
+    content: string
+    blog_id: integer
+    author_username: string
+    parent_comment_id?: Partial(integer) & Partial(null)
+    created_at: string
+    updated_at: string
+    replies:#/components/schemas/CommentWithRepliesResponse[]
+  }[]
+}
+#+end_src
+
+*** #/components/schemas/FollowResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasfollowresponse
+:END:
+#+begin_src typescript
+{
+  follower_username: string
+  following_username: string
+  created_at: string
+}
+#+end_src
+
+*** #/components/schemas/FollowerResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasfollowerresponse
+:END:
+#+begin_src typescript
+{
+  username: string
+  first_name: string
+  last_name: string
+  email: string
+  followed_at: string
+}
+#+end_src
+
+*** #/components/schemas/FollowingResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasfollowingresponse
+:END:
+#+begin_src typescript
+{
+  username: string
+  first_name: string
+  last_name: string
+  email: string
+  followed_at: string
+}
+#+end_src
+
+*** #/components/schemas/HTTPValidationError
+:PROPERTIES:
+:CUSTOM_ID: componentsschemashttpvalidationerror
+:END:
+#+begin_src typescript
+{
+  detail: {
+    loc?: Partial(string) & Partial(integer)[]
+    msg: string
+    type: string
+  }[]
+}
+#+end_src
+
+*** #/components/schemas/TagOperationRequest
+:PROPERTIES:
+:CUSTOM_ID: componentsschemastagoperationrequest
+:END:
+#+begin_src typescript
+{
+  tags?: string[]
+}
+#+end_src
+
+*** #/components/schemas/Token
+:PROPERTIES:
+:CUSTOM_ID: componentsschemastoken
+:END:
+#+begin_src typescript
+{
+  access_token: string
+  token_type: string
+}
+#+end_src
+
+*** #/components/schemas/UserFollowStats
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasuserfollowstats
+:END:
+#+begin_src typescript
+{
+  username: string
+  follower_count: integer
+  following_count: integer
+}
+#+end_src
+
+*** #/components/schemas/UserLogin
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasuserlogin
+:END:
+#+begin_src typescript
+{
+  username: string
+  password: string
+}
+#+end_src
+
+*** #/components/schemas/UserResponse
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasuserresponse
+:END:
+#+begin_src typescript
+{
+  username: string
+  email: string
+  first_name: string
+  last_name: string
+  phone: string
+}
+#+end_src
+
+*** #/components/schemas/UserSignup
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasusersignup
+:END:
+#+begin_src typescript
+{
+  username: string
+  password: string
+  first_name: string
+  last_name: string
+  email: string
+  phone: string
+}
+#+end_src
+
+*** #/components/schemas/ValidationError
+:PROPERTIES:
+:CUSTOM_ID: componentsschemasvalidationerror
+:END:
+#+begin_src typescript
+{
+  loc?: Partial(string) & Partial(integer)[]
+  msg: string
+  type: string
+}
+#+end_src
+
+*** #/components/securitySchemes/HTTPBearer
+:PROPERTIES:
+:CUSTOM_ID: componentssecurityschemeshttpbearer
+:END:
+#+begin_src typescript
+{
+  "type": "http",
+  "scheme": "bearer"
+}
+#+end_src

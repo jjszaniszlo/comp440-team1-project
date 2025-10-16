@@ -116,6 +116,104 @@ export function Signup() {
           <ThemeModeToggle />
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <FieldSet>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel>Username</FieldLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter your username"
+                    value={signUpInfo.username}
+                    onChange={e => setSignUpInfo({...signUpInfo, username: e.target.value})}
+                  />
+                  {usernameError && (
+                    <p className="text-sm text-red-500 mt-1">{usernameError}</p>
+                  )}
+                </Field>
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password"
+                    value={signUpInfo.password}
+                    onChange={e => setSignUpInfo({...signUpInfo, password: e.target.value})}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Confirm Password</FieldLabel>
+                  <Input
+                    type="password"
+                    placeholder="Confirm your password"
+                    value={signUpInfo.confirmPassword}
+                    onChange={e => setSignUpInfo({...signUpInfo, confirmPassword: e.target.value})}
+                  />
+                  {passwordError && (
+                    <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+                  )}
+                </Field>
+                                <Field>
+                  <FieldLabel>First Name</FieldLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter your first name"
+                    value={signUpInfo.first_name}
+                    onChange={e => setSignUpInfo({...signUpInfo, first_name: e.target.value})}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Last Name</FieldLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter your last name"
+                    value={signUpInfo.last_name}
+                    onChange={e => setSignUpInfo({...signUpInfo, last_name: e.target.value})}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel>Email</FieldLabel>
+                  <Input
+                    type="email"
+                    placeholder="Enter your email"
+                    value={signUpInfo.email}
+                    onChange={e => setSignUpInfo({...signUpInfo, email: e.target.value})}
+                  />
+                  {emailError && (
+                    <p className="text-sm text-red-500 mt-1">{emailError}</p>
+                  )}
+                </Field>
+                <Field>
+                  <FieldLabel>Phone</FieldLabel>
+                  <Input
+                    type="tel"
+                    placeholder="Enter your phone number"
+                    value={signUpInfo.phone}
+                    onChange={e => setSignUpInfo({...signUpInfo, phone: e.target.value})}
+                  />
+                </Field>
+                {phoneError && (
+                  <p className="text-sm text-red-500 mt-1">{phoneError}</p>
+                )}
+              </FieldGroup>
+            </FieldSet>
+            <Button 
+              type="submit" 
+              disabled={!isSignUpInfoValid}
+              className="w-full"
+            >
+              Sign Up
+            </Button>
+            <div className="text-sm text-center text-gray-600">
+              Already have an account?{' '}
+              <button 
+                type="button"
+                onClick={() => navigate('/login')}
+                className="text-primary hover:underline font-medium"
+              >
+                Log in
+              </button>
+            </div>
+          </form>
         </CardContent>
       </Card>
     </div>

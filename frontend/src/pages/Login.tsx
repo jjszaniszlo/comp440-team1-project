@@ -56,9 +56,9 @@ export function Login() {
   return (
     <div className="justify-center items-center min-h-screen p-20">
       <Card className="max-w-lg mx-auto">
-        <CardHeader>
-          Login
-          <ThemeModeToggle />
+        <CardHeader className="flex items-center justify-between">
+          <h2 className="">Login</h2>
+            <ThemeModeToggle />
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">

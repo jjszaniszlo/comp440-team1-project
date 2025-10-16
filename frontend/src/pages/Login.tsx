@@ -5,13 +5,15 @@ import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+
 
 export function Login() {
   // use this to navigate to the sign up page. Redirects everywhere else automatically,
   // like after signing in for example.
   const navigate = useNavigate();
-  const { mutate: login } = useUserLogin();
-
+  const { mutate: login, isPending } = useUserLogin();
+  
   // use the setLoginInfo function to update the form state
   // in each component's onChange handler
   // e.g. onChange={e => setLoginInfo({...loginInfo, username: e.target.value})}
@@ -56,8 +58,58 @@ export function Login() {
       <Card className="max-w-lg mx-auto">
         <CardHeader>
           Login
+          <ThemeModeToggle />
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+            <FieldSet>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel>Username</FieldLabel>
+                  <Input
+                    type="text"
+                    placeholder="Enter your username"
+                    value={loginInfo.username}
+                    onChange={e => setLoginInfo({...loginInfo, username: e.target.value})}
+                    disabled={isPending}
+                  />
+                  {usernameError && (
+                    <p className="text-sm text-red-500 mt-1">{usernameError}</p>
+                  )}
+                </Field>
+
+                <Field>
+                  <FieldLabel>Password</FieldLabel>
+                  <Input
+                    type="password"
+                    placeholder="Enter your password"
+                    value={loginInfo.password}
+                    onChange={e => setLoginInfo({...loginInfo, password: e.target.value})}
+                    disabled={isPending}
+                  />
+                </Field>
+              </FieldGroup>
+            </FieldSet>
+
+            <Button 
+              type="submit" 
+              disabled={!canSubmit || isPending}
+              className="w-full"
+            >
+              {isPending ? 'Logging in...' : 'Login'}
+            </Button>
+
+            <div className="text-sm text-center text-gray-600">
+              Don't have an account?{' '}
+              <button 
+                type="button"
+                onClick={() => navigate('/signup')}
+                className="text-primary hover:underline font-medium"
+              >
+                Sign up
+              </button>
+            </div>
+          </form>
         </CardContent>
       </Card>
     </div>

@@ -131,45 +131,49 @@ export function Signup() {
                     <p className="text-sm text-red-500 mt-1">{usernameError}</p>
                   )}
                 </Field>
-                <Field>
-                  <FieldLabel>Password</FieldLabel>
-                  <Input
-                    type="password"
-                    placeholder="Enter your password"
-                    value={signUpInfo.password}
-                    onChange={e => setSignUpInfo({...signUpInfo, password: e.target.value})}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel>Confirm Password</FieldLabel>
-                  <Input
-                    type="password"
-                    placeholder="Confirm your password"
-                    value={signUpInfo.confirmPassword}
-                    onChange={e => setSignUpInfo({...signUpInfo, confirmPassword: e.target.value})}
-                  />
-                  {passwordError && (
-                    <p className="text-sm text-red-500 mt-1">{passwordError}</p>
-                  )}
-                </Field>
-                                <Field>
-                  <FieldLabel>First Name</FieldLabel>
-                  <Input
-                    type="text"
-                    placeholder="Enter your first name"
-                    value={signUpInfo.first_name}
-                    onChange={e => setSignUpInfo({...signUpInfo, first_name: e.target.value})}
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel>Last Name</FieldLabel>
-                  <Input
-                    type="text"
-                    placeholder="Enter your last name"
-                    value={signUpInfo.last_name}
-                    onChange={e => setSignUpInfo({...signUpInfo, last_name: e.target.value})}
-                  />
-                </Field>
+                <div className="grid grid-cols-2 gap-4">
+                  <Field>
+                    <FieldLabel>Password</FieldLabel>
+                    <Input
+                      type="password"
+                      placeholder="Enter your password"
+                      value={signUpInfo.password}
+                      onChange={e => setSignUpInfo({...signUpInfo, password: e.target.value})}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel>Confirm Password</FieldLabel>
+                    <Input
+                      type="password"
+                      placeholder="Confirm your password"
+                      value={signUpInfo.confirmPassword}
+                      onChange={e => setSignUpInfo({...signUpInfo, confirmPassword: e.target.value})}
+                    />
+                  </Field>
+                </div>
+                {passwordError && (
+                  <p className="text-sm text-red-500 mt-1">{passwordError}</p>
+                )}
+                <div className="grid grid-cols-2 gap-4">
+                  <Field>
+                    <FieldLabel>First Name</FieldLabel>
+                    <Input
+                      type="text"
+                      placeholder="Enter your first name"
+                      value={signUpInfo.first_name}
+                      onChange={e => setSignUpInfo({...signUpInfo, first_name: e.target.value})}
+                    />
+                  </Field>
+                  <Field>
+                    <FieldLabel>Last Name</FieldLabel>
+                    <Input
+                      type="text"
+                      placeholder="Enter your last name"
+                      value={signUpInfo.last_name}
+                      onChange={e => setSignUpInfo({...signUpInfo, last_name: e.target.value})}
+                      />
+                  </Field>
+                </div>
                 <Field>
                   <FieldLabel>Email</FieldLabel>
                   <Input

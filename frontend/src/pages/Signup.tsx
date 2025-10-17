@@ -120,10 +120,10 @@ export function Signup() {
             <FieldSet>
               <FieldGroup>
                 <Field>
-                  <FieldLabel>Username</FieldLabel>
+                  <FieldLabel>*Username</FieldLabel>
                   <Input
                     type="text"
-                    placeholder="Enter your username"
+                    placeholder="JohnDoe"
                     value={signUpInfo.username}
                     onChange={e => setSignUpInfo({...signUpInfo, username: e.target.value})}
                   />
@@ -133,19 +133,19 @@ export function Signup() {
                 </Field>
                 <div className="grid grid-cols-2 gap-4">
                   <Field>
-                    <FieldLabel>Password</FieldLabel>
+                    <FieldLabel>*Password</FieldLabel>
                     <Input
                       type="password"
-                      placeholder="Enter your password"
+                      placeholder="John123456"
                       value={signUpInfo.password}
                       onChange={e => setSignUpInfo({...signUpInfo, password: e.target.value})}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel>Confirm Password</FieldLabel>
+                    <FieldLabel>*Confirm Password</FieldLabel>
                     <Input
                       type="password"
-                      placeholder="Confirm your password"
+                      placeholder="John123456"
                       value={signUpInfo.confirmPassword}
                       onChange={e => setSignUpInfo({...signUpInfo, confirmPassword: e.target.value})}
                     />
@@ -156,29 +156,29 @@ export function Signup() {
                 )}
                 <div className="grid grid-cols-2 gap-4">
                   <Field>
-                    <FieldLabel>First Name</FieldLabel>
+                    <FieldLabel>*First Name</FieldLabel>
                     <Input
                       type="text"
-                      placeholder="Enter your first name"
+                      placeholder="John"
                       value={signUpInfo.first_name}
                       onChange={e => setSignUpInfo({...signUpInfo, first_name: e.target.value})}
                     />
                   </Field>
                   <Field>
-                    <FieldLabel>Last Name</FieldLabel>
+                    <FieldLabel>*Last Name</FieldLabel>
                     <Input
                       type="text"
-                      placeholder="Enter your last name"
+                      placeholder="Doe"
                       value={signUpInfo.last_name}
                       onChange={e => setSignUpInfo({...signUpInfo, last_name: e.target.value})}
                       />
                   </Field>
                 </div>
                 <Field>
-                  <FieldLabel>Email</FieldLabel>
+                  <FieldLabel>*Email</FieldLabel>
                   <Input
                     type="email"
-                    placeholder="Enter your email"
+                    placeholder="johndoe@example.com"
                     value={signUpInfo.email}
                     onChange={e => setSignUpInfo({...signUpInfo, email: e.target.value})}
                   />
@@ -187,10 +187,10 @@ export function Signup() {
                   )}
                 </Field>
                 <Field>
-                  <FieldLabel>Phone</FieldLabel>
+                  <FieldLabel>*Phone Number</FieldLabel>
                   <Input
                     type="tel"
-                    placeholder="Enter your phone number"
+                    placeholder="+1 234 5678"
                     value={signUpInfo.phone}
                     onChange={e => setSignUpInfo({...signUpInfo, phone: e.target.value})}
                   />

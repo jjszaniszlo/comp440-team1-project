@@ -125,7 +125,7 @@ export function Signup() {
                     type="text"
                     placeholder="JohnDoe"
                     value={signUpInfo.username}
-                    onChange={e => setSignUpInfo({...signUpInfo, username: e.target.value})}
+                    onChange={e => setSignUpInfo({ ...signUpInfo, username: e.target.value })}
                   />
                   {usernameError && (
                     <p className="text-sm text-red-500 mt-1">{usernameError}</p>
@@ -136,18 +136,18 @@ export function Signup() {
                     <FieldLabel>*Password</FieldLabel>
                     <Input
                       type="password"
-                      placeholder="John123456"
+                      placeholder="**********"
                       value={signUpInfo.password}
-                      onChange={e => setSignUpInfo({...signUpInfo, password: e.target.value})}
+                      onChange={e => setSignUpInfo({ ...signUpInfo, password: e.target.value })}
                     />
                   </Field>
                   <Field>
                     <FieldLabel>*Confirm Password</FieldLabel>
                     <Input
                       type="password"
-                      placeholder="John123456"
+                      placeholder="*********"
                       value={signUpInfo.confirmPassword}
-                      onChange={e => setSignUpInfo({...signUpInfo, confirmPassword: e.target.value})}
+                      onChange={e => setSignUpInfo({ ...signUpInfo, confirmPassword: e.target.value })}
                     />
                   </Field>
                 </div>
@@ -161,7 +161,7 @@ export function Signup() {
                       type="text"
                       placeholder="John"
                       value={signUpInfo.first_name}
-                      onChange={e => setSignUpInfo({...signUpInfo, first_name: e.target.value})}
+                      onChange={e => setSignUpInfo({ ...signUpInfo, first_name: e.target.value })}
                     />
                   </Field>
                   <Field>
@@ -170,8 +170,8 @@ export function Signup() {
                       type="text"
                       placeholder="Doe"
                       value={signUpInfo.last_name}
-                      onChange={e => setSignUpInfo({...signUpInfo, last_name: e.target.value})}
-                      />
+                      onChange={e => setSignUpInfo({ ...signUpInfo, last_name: e.target.value })}
+                    />
                   </Field>
                 </div>
                 <Field>
@@ -180,7 +180,7 @@ export function Signup() {
                     type="email"
                     placeholder="johndoe@example.com"
                     value={signUpInfo.email}
-                    onChange={e => setSignUpInfo({...signUpInfo, email: e.target.value})}
+                    onChange={e => setSignUpInfo({ ...signUpInfo, email: e.target.value })}
                   />
                   {emailError && (
                     <p className="text-sm text-red-500 mt-1">{emailError}</p>
@@ -192,7 +192,7 @@ export function Signup() {
                     type="tel"
                     placeholder="+1 234 5678"
                     value={signUpInfo.phone}
-                    onChange={e => setSignUpInfo({...signUpInfo, phone: e.target.value})}
+                    onChange={e => setSignUpInfo({ ...signUpInfo, phone: e.target.value })}
                   />
                 </Field>
                 {phoneError && (
@@ -200,8 +200,8 @@ export function Signup() {
                 )}
               </FieldGroup>
             </FieldSet>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={!isSignUpInfoValid}
               className="w-full"
             >
@@ -209,7 +209,7 @@ export function Signup() {
             </Button>
             <div className="text-sm text-center text-gray-600">
               Already have an account?{' '}
-              <button 
+              <button
                 type="button"
                 onClick={() => navigate('/login')}
                 className="text-primary hover:underline font-medium"

@@ -31,7 +31,7 @@ async def service_signup(db: AsyncSession, user: UserSignup) -> User:
         )
         db.add(new_user)
         db.add(user_limits)
-
+        
         await db.commit()
         await db.refresh(new_user)
         await db.refresh(user_limits)

@@ -21,6 +21,7 @@ class Comment(BaseModel):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     content: Mapped[str] = mapped_column(Text)
+    sentiment: Mapped[bool] = mapped_column()
     blog_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("blog.id", ondelete="CASCADE")

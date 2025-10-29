@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS `blog_tag` (
 CREATE TABLE IF NOT EXISTS `comment` (
     id INT AUTO_INCREMENT PRIMARY KEY,
     content TEXT NOT NULL,
+    sentiment BOOLEAN NOT NULL,
     blog_id INT NOT NULL,
     author_username VARCHAR(50) NOT NULL,
     parent_comment_id INT NULL,

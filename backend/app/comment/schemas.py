@@ -3,14 +3,18 @@ from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict
 
+from app.comment.models import Sentiment
+
 
 class CommentCreateRequest(BaseModel):
     content: str
+    sentiment: Sentiment
     parent_comment_id: Optional[int] = None
 
 
 class CommentUpdateRequest(BaseModel):
     content: str
+    sentiment: Sentiment
 
 
 class CommentResponse(BaseModel):
@@ -18,6 +22,7 @@ class CommentResponse(BaseModel):
 
     id: int
     content: str
+    sentiment: Sentiment
     blog_id: int
     author_username: str
     parent_comment_id: Optional[int] = None

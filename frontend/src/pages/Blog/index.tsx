@@ -1,6 +1,7 @@
 import type { SearchQuery } from "@/lib/types";
 import { useState } from "react";
 import { BadgeSearchInput } from "./components/BadgeSearchInput";
+import CreateBlog from "./CreateBlog";
 
 export function BlogHomePage() {
   const [searchQuery, setSearchQuery] = useState<SearchQuery>({

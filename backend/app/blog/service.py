@@ -1,8 +1,13 @@
 from datetime import date
-from typing import List, Optional
+from typing import List
 from app.auth.models import User
 from app.blog.models import Blog, Tag, blog_tag_table
-from app.blog.schemas import BlogCreateRequest, BlogEditRequest, BlogResponse, BlogDetailResponse
+from app.blog.schemas import (
+    BlogCreateRequest,
+    BlogEditRequest,
+    BlogResponse,
+    BlogDetailResponse,
+)
 from app.blog.exceptions import handle_database_error, BlogNotFoundException
 
 from sqlalchemy import Select, select, delete, func, text
@@ -60,7 +65,9 @@ async def list_blogs_service(
         handle_database_error(e, "list blogs")
 
 
-def blog_apply_sorting(query: Select, sort: BlogSortBy, sort_order: BlogSortOrder) -> Select:
+def blog_apply_sorting(
+    query: Select, sort: BlogSortBy, sort_order: BlogSortOrder
+) -> Select:
     sort_column = {
         BlogSortBy.CREATED_AT: Blog.created_at,
         BlogSortBy.UPDATED_AT: Blog.updated_at,
@@ -93,25 +100,20 @@ async def search_blogs_service(
             query = (
                 select(Blog, relevance_expr)
                 .where(Blog.status == BlogStatus.PUBLISHED.value)
-                .where(text("MATCH(subject, description, content) AGAINST(:search_term IN NATURAL LANGUAGE MODE) > 0").bindparams(search_term=search))
+                .where(
+                    text(
+                        "MATCH(subject, description, content) AGAINST(:search_term IN NATURAL LANGUAGE MODE) > 0"
+                    ).bindparams(search_term=search)
+                )
             )
         else:
-            query = (
-                select(Blog)
-                .where(Blog.status == BlogStatus.PUBLISHED)
-            )
+            query = select(Blog).where(Blog.status == BlogStatus.PUBLISHED)
 
         if tag_names:
-            query = (
-                query
-                .join(Blog.tags)
-                .where(Tag.name.in_(tag_names))
-            )
+            query = query.join(Blog.tags).where(Tag.name.in_(tag_names))
             if tag_match_all:
-                query = (
-                    query
-                    .group_by(Blog.id)
-                    .having(func.count(Tag.id) == len(tag_names))
+                query = query.group_by(Blog.id).having(
+                    func.count(Tag.id) == len(tag_names)
                 )
             else:
                 query = query.distinct()
@@ -120,7 +122,7 @@ async def search_blogs_service(
             query = query.where(Blog.author_username.in_(authors))
 
         if search:
-            sort = f"relevance desc"
+            sort = "relevance desc"
             sort2 = f"{sort_by.value} {sort_order.value}"
             query = query.order_by(text(sort), text(sort2))
         else:
@@ -140,14 +142,10 @@ async def search_blogs_service(
 
 
 async def publish_or_delist_blog_service(
-    blog_id: int,
-    db: AsyncSession,
-    publish: bool
+    blog_id: int, db: AsyncSession, publish: bool
 ) -> BlogResponse:
     try:
-        result = await db.scalars(
-            select(Blog).where(Blog.id == blog_id)
-        )
+        result = await db.scalars(select(Blog).where(Blog.id == blog_id))
         blog = result.one()
         if publish:
             blog.status = BlogStatus.PUBLISHED
@@ -166,9 +164,7 @@ async def publish_or_delist_blog_service(
 
 
 async def get_or_create_tag(tag_name: str, db: AsyncSession) -> Tag:
-    result = await db.scalars(
-        select(Tag).where(Tag.name == tag_name)
-    )
+    result = await db.scalars(select(Tag).where(Tag.name == tag_name))
     tag = result.first()
 
     if not tag:
@@ -190,9 +186,7 @@ async def cleanup_orphaned_tags(db: AsyncSession) -> None:
     orphaned_tag_ids = result.all()
 
     if orphaned_tag_ids:
-        await db.execute(
-            delete(Tag).where(Tag.id.in_(orphaned_tag_ids))
-        )
+        await db.execute(delete(Tag).where(Tag.id.in_(orphaned_tag_ids)))
 
 
 async def update_blog_service(
@@ -202,9 +196,7 @@ async def update_blog_service(
 ) -> BlogDetailResponse:
     try:
         result = await db.scalars(
-            select(Blog)
-            .where(Blog.id == blog_id)
-            .options(selectinload(Blog.tags))
+            select(Blog).where(Blog.id == blog_id).options(selectinload(Blog.tags))
         )
         blog = result.one()
 
@@ -258,9 +250,7 @@ async def add_tags_to_blog_service(
 ) -> BlogDetailResponse:
     try:
         result = await db.scalars(
-            select(Blog)
-            .where(Blog.id == blog_id)
-            .options(selectinload(Blog.tags))
+            select(Blog).where(Blog.id == blog_id).options(selectinload(Blog.tags))
         )
         blog = result.one()
 
@@ -291,9 +281,7 @@ async def remove_tags_from_blog_service(
 ) -> BlogDetailResponse:
     try:
         result = await db.scalars(
-            select(Blog)
-            .where(Blog.id == blog_id)
-            .options(selectinload(Blog.tags))
+            select(Blog).where(Blog.id == blog_id).options(selectinload(Blog.tags))
         )
         blog = result.one()
 

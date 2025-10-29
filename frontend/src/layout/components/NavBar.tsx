@@ -9,6 +9,7 @@ import {
 import { useApi } from "@/lib/api";
 import { useUserMe } from "@/hooks/queries/user";
 import { useNavigate } from "react-router";
+import { ThemeModeToggle } from "@/components/theme-mode-toggle";
 
 export function NavBar() {
   const api = useApi();
@@ -18,7 +19,7 @@ export function NavBar() {
 
   const handleLogout = () => {
     api.auth.logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -37,6 +38,7 @@ export function NavBar() {
         </NavigationMenu>
 
         <div className="flex items-center gap-3">
+          <ThemeModeToggle />
           {!isAuthenticated ? (
             <>
               <Button variant="ghost" asChild>
@@ -50,7 +52,7 @@ export function NavBar() {
             <>
               {/* Placeholder for avatar/username - you can replace this later */}
               <span className="text-sm font-medium">
-                {user?.username || 'User'}
+                {user?.username || "User"}
               </span>
               <Button variant="ghost" onClick={handleLogout}>
                 Log Out
@@ -60,5 +62,5 @@ export function NavBar() {
         </div>
       </div>
     </div>
-  )
+  );
 }

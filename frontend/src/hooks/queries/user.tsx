@@ -3,11 +3,11 @@ import type { UserResponse } from "@/lib/types";
 import { useQuery } from "@tanstack/react-query";
 
 export function useUserMe() {
-    const api = useApi();
+  const api = useApi();
 
-    return useQuery({
-        queryKey: ['user-me'],
-        queryFn: () => api.get<UserResponse>('/auth/me'),
-        enabled: api.auth.isAuthenticated(),
-    });
+  return useQuery({
+    queryKey: ["user-me"],
+    queryFn: () => api.get<UserResponse>("/auth/me/"),
+    enabled: api.auth.isAuthenticated(),
+  });
 }

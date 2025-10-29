@@ -1,5 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "@mdxeditor/editor/style.css";
+
+@plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -116,5 +119,464 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Typography/Prose styles for markdown content */
+.prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-kbd: var(--foreground);
+  --tw-prose-kbd-shadows: var(--ring);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--foreground);
+  --tw-prose-pre-bg: var(--muted);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+
+  /* Invert colors for dark mode */
+  --tw-prose-invert-body: var(--foreground);
+  --tw-prose-invert-headings: var(--foreground);
+  --tw-prose-invert-lead: var(--muted-foreground);
+  --tw-prose-invert-links: var(--primary);
+  --tw-prose-invert-bold: var(--foreground);
+  --tw-prose-invert-counters: var(--muted-foreground);
+  --tw-prose-invert-bullets: var(--muted-foreground);
+  --tw-prose-invert-hr: var(--border);
+  --tw-prose-invert-quotes: var(--foreground);
+  --tw-prose-invert-quote-borders: var(--border);
+  --tw-prose-invert-captions: var(--muted-foreground);
+  --tw-prose-invert-kbd: var(--foreground);
+  --tw-prose-invert-kbd-shadows: var(--ring);
+  --tw-prose-invert-code: var(--foreground);
+  --tw-prose-invert-pre-code: var(--foreground);
+  --tw-prose-invert-pre-bg: var(--muted);
+  --tw-prose-invert-th-borders: var(--border);
+  --tw-prose-invert-td-borders: var(--border);
+
+  /* Custom spacing and typography improvements */
+  max-width: none;
+  color: var(--tw-prose-body);
+
+  /* Headings */
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--tw-prose-headings);
+    font-weight: 600;
+    line-height: 1.25;
+  }
+
+  h1 {
+    font-size: 2.25rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+  }
+
+  h2 {
+    font-size: 1.875rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h5 {
+    font-size: 1.125rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  h6 {
+    font-size: 1rem;
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  /* Paragraphs and text */
+  p {
+    margin: 1.5rem 0;
+    line-height: 1.75;
+  }
+
+  /* Links */
+  a {
+    color: var(--tw-prose-links);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+
+    &:hover {
+      color: oklch(from var(--primary) calc(l + 0.1) c h);
+    }
+  }
+
+  /* Lists */
+  ul, ol {
+    margin: 1.5rem 0;
+    margin-left: 1.5rem;
+  }
+
+  ul {
+    list-style-type: disc;
+  }
+
+  ol {
+    list-style-type: decimal;
+  }
+
+  li {
+    margin: 0.5rem 0;
+  }
+
+  /* Blockquotes */
+  blockquote {
+    border-left: 4px solid var(--border);
+    padding-left: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin: 1.5rem 0;
+    font-style: italic;
+    color: var(--muted-foreground);
+  }
+
+  /* Code blocks */
+  pre {
+    border-radius: 0.5rem;
+    padding: 1rem;
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    background-color: var(--tw-prose-pre-bg);
+
+    code {
+      font-size: 0.875rem;
+      background: none;
+      padding: 0;
+      color: var(--tw-prose-pre-code);
+    }
+  }
+
+  /* Inline code */
+  code {
+    padding: 0.125rem 0.375rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    background-color: var(--muted);
+    color: var(--tw-prose-code);
+  }
+
+  /* Tables */
+  table {
+    width: 100%;
+    margin: 2rem 0;
+    overflow: hidden;
+    border-radius: 0.5rem;
+  }
+
+  th {
+    background-color: var(--muted);
+    padding: 0.5rem 1rem;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--tw-prose-th-borders);
+  }
+
+  td {
+    padding: 0.5rem 1rem;
+    border-bottom: 1px solid var(--tw-prose-td-borders);
+  }
+
+  /* Horizontal rules */
+  hr {
+    margin: 3rem 0;
+    border-color: var(--tw-prose-hr);
+  }
+
+  /* Images */
+  img {
+    border-radius: 0.5rem;
+    margin: 2rem 0;
+  }
+
+  /* Strong text */
+  strong {
+    color: var(--tw-prose-bold);
+    font-weight: 600;
+  }
+
+  /* Keyboard */
+  kbd {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.125rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    background-color: var(--muted);
+    color: var(--tw-prose-kbd);
+    box-shadow: 0 1px 2px 0 var(--tw-prose-kbd-shadows);
+  }
+}
+
+/* Dark mode prose - automatically uses the invert variables defined above */
+
+/* Prism theme switching for code blocks in preview */
+:root:not(.dark) pre[class*="language-"] {
+  background-color: #f6f8fa !important;
+}
+
+.dark pre[class*="language-"] {
+  background-color: #0d1117 !important;
+}
+
+.mdxeditor {
+  /* Radix Gray Scale - for UI chrome and neutral elements */
+  --gray1: var(--background);           /* App background */
+  --gray2: var(--muted);                /* Subtle background */
+  --gray3: oklch(from var(--muted) calc(l - 0.02) c h);     /* UI element background */
+  --gray4: oklch(from var(--border) calc(l - 0.02) c h);    /* Hovered UI element background */
+  --gray5: var(--border);               /* Active/Selected UI element background */
+  --gray6: oklch(from var(--border) calc(l - 0.05) c h);    /* Subtle borders and separators */
+  --gray7: oklch(from var(--border) calc(l - 0.08) c h);    /* UI element border and focus rings */
+  --gray8: var(--ring);                  /* Hovered UI element border */
+  --gray9: var(--muted-foreground);     /* Solid backgrounds */
+  --gray10: oklch(from var(--muted-foreground) calc(l - 0.05) c h);  /* Hovered solid backgrounds */
+  --gray11: var(--muted-foreground);    /* Low-contrast text */
+  --gray12: var(--foreground);          /* High-contrast text */
+
+  /* Radix Accent Scale - for interactive elements (using primary color) */
+  --accent1: oklch(from var(--primary) l c h / 0.02);        /* Subtle accent background */
+  --accent2: oklch(from var(--primary) l c h / 0.04);        /* Accent tinted background */
+  --accent3: oklch(from var(--primary) l c h / 0.08);        /* Hovered accent background */
+  --accent4: oklch(from var(--primary) l c h / 0.12);        /* Active accent background */
+  --accent5: oklch(from var(--primary) l c h / 0.16);        /* Selected accent background */
+  --accent6: oklch(from var(--primary) l c h / 0.20);        /* Subtle accent borders */
+  --accent7: oklch(from var(--primary) l c h / 0.28);        /* Accent borders */
+  --accent8: oklch(from var(--primary) l c h / 0.40);        /* Hovered accent borders */
+  --accent9: var(--primary);                                 /* Solid accent color */
+  --accent10: oklch(from var(--primary) calc(l + 0.05) c h); /* Hovered solid accent */
+  --accent11: var(--primary);                                /* Accent text */
+  --accent12: var(--primary-foreground);                     /* Accent contrast text */
+
+  /* Map to Radix-style semantic tokens for MDXEditor */
+  --accentBase: var(--accent1);
+  --accentBgSubtle: var(--accent2);
+  --accentBg: var(--accent3);
+  --accentBgHover: var(--accent4);
+  --accentBgActive: var(--accent5);
+  --accentLine: var(--accent6);
+  --accentBorder: var(--accent7);
+  --accentBorderHover: var(--accent8);
+  --accentSolid: var(--accent9);
+  --accentSolidHover: var(--accent10);
+  --accentText: var(--accent11);
+  --accentTextContrast: var(--accent12);
+
+  /* Base/Gray scale mappings */
+  --baseBase: var(--gray1);
+  --baseBgSubtle: var(--gray2);
+  --baseBg: var(--gray3);
+  --baseBgHover: var(--gray4);
+  --baseBgActive: var(--gray5);
+  --baseLine: var(--gray6);
+  --baseBorder: var(--gray7);
+  --baseBorderHover: var(--gray8);
+  --baseSolid: var(--gray9);
+  --baseSolidHover: var(--gray10);
+  --baseText: var(--gray11);
+  --baseTextContrast: var(--gray12);
+
+  /* Additional semantic tokens */
+  --focus-ring: var(--ring);
+  --selection-bg: oklch(from var(--primary) l c h / 0.15);
+  --code-bg: var(--muted);
+  --code-border: var(--border);
+
+  /* Editor-specific variables */
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Apply styles */
+  background-color: var(--background);
+  color: var(--foreground);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+
+  /* Remove focus outline/box-shadow but keep border */
+  &:focus-within {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Override problematic base variables for better dark mode support */
+  --basePageBg: var(--background);
+  color: var(--foreground);
+
+  /* Fix the dropdown background and text colors */
+  --baseBg: var(--card);
+  --baseBgHover: var(--accent);
+  --baseBgActive: var(--accent);
+
+  /* Ensure proper text colors in all UI elements */
+  --baseText: var(--foreground);
+  --baseTextContrast: var(--card-foreground);
+
+  /* Remove focus outline on contenteditable */
+  [contenteditable]:focus {
+    outline: none !important;
+  }
+}
+
+/* Target the toolbar dropdowns and dialogs with stable public class names */
+.mdxeditor-toolbar {
+  /* Select trigger buttons (Block type, etc.) */
+  [role="combobox"][data-toolbar-item="true"] {
+    background-color: var(--card);
+    color: var(--foreground);
+    border: 1px solid var(--border);
+
+    &:hover {
+      background-color: var(--accent);
+      border-color: var(--ring);
+    }
+
+    &[data-state="open"] {
+      background-color: var(--accent);
+      border-color: var(--ring);
+    }
+  }
+
+  /* Dropdown content (Paragraph, Heading 1, etc.) - target Radix UI Select.Content */
+  [data-radix-select-content],
+  .mdxeditor-select-content {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--border);
+  }
+
+  /* Select items in the dropdown */
+  [role="option"],
+  [data-radix-collection-item] {
+    color: var(--foreground) !important;
+
+    &:hover,
+    &[data-highlighted="true"] {
+      background-color: var(--accent) !important;
+      color: var(--accent-foreground);
+    }
+  }
+
+  /* Select viewport that contains the options */
+  [data-radix-select-viewport] {
+    background-color: var(--card) !important;
+  }
+}
+
+/* Global fallback for any Radix Select dropdowns outside toolbar */
+[data-radix-select-content] {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+
+  [role="option"] {
+    color: var(--foreground) !important;
+
+    &[data-highlighted="true"] {
+      background-color: var(--accent) !important;
+      color: var(--accent-foreground) !important;
+    }
+  }
+}
+
+/* More aggressive targeting for the dropdown popup */
+[data-radix-popper-content-wrapper] {
+  /* The dropdown container */
+  > div {
+    background-color: var(--card) !important;
+    color: var(--foreground) !important;
+  }
+
+  /* Any nested divs that might have backgrounds */
+  div[style*="background"] {
+    background-color: var(--card) !important;
+  }
+
+  /* Override any white or light backgrounds set via inline styles */
+  div[style*="rgb(255"],
+  div[style*="#fff"],
+  div[style*="#FFF"],
+  div[style*="white"] {
+    background-color: var(--card) !important;
+  }
+}
+
+/* Target any element with the select content class pattern */
+[class*="SelectContent"],
+[class*="selectContent"] {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+
+  /* Target nested containers */
+  > div {
+    background-color: var(--card) !important;
+  }
+}
+
+/* Force all options to have proper colors */
+[role="option"] {
+  background-color: transparent !important;
+  color: var(--foreground) !important;
+
+  &[data-highlighted="true"],
+  &:hover {
+    background-color: var(--accent) !important;
+    color: var(--accent-foreground) !important;
+  }
+}
+
+/* Dialog overlays and content - placed outside toolbar for wider reach */
+[role="dialog"] {
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+
+  input,
+  textarea {
+    background-color: var(--background) !important;
+    color: var(--foreground) !important;
+    border: 1px solid var(--border) !important;
+  }
+
+  label {
+    color: var(--muted-foreground) !important;
+  }
+
+  /* Dialog buttons */
+  button {
+    &[data-variant="primary"],
+    &:not([data-variant]) {
+      background-color: var(--primary);
+      color: var(--primary-foreground);
+    }
+
+    &[data-variant="secondary"] {
+      background-color: var(--secondary);
+      color: var(--secondary-foreground);
+    }
   }
 }

@@ -1,13 +1,14 @@
-import { Route, Routes } from "react-router"
-import { ThemeProvider } from "./components/theme-provider"
-import { ProtectedRoute } from "./components/ProtectedRoute"
-import { PublicRoute } from "./components/PublicRoute"
-import { Login } from "./pages/Login"
-import { Signup } from "./pages/Signup"
-import { Home } from "./pages/Home"
-import { Toaster } from "@/components/ui/sonner"
-import { BlogHomePage } from "./pages/Blog"
-import { MainLayout } from "./layout/MainLayout"
+import { Route, Routes } from "react-router";
+import { ThemeProvider } from "./components/theme-provider";
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { PublicRoute } from "./components/PublicRoute";
+import { Login } from "./pages/Login";
+import { Signup } from "./pages/Signup";
+import { Home } from "./pages/Home";
+import { Toaster } from "@/components/ui/sonner";
+import { BlogHomePage } from "./pages/Blog";
+import { MainLayout } from "./layout/MainLayout";
+import CreateBlog from "./pages/Blog/CreateBlog";
 
 export function App() {
   return (
@@ -20,6 +21,8 @@ export function App() {
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<BlogHomePage />} />
+          <Route path="/edit/:blogId" element={<CreateBlog />} />
+          <Route path="/view/:blogId" element={null} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
@@ -29,5 +32,5 @@ export function App() {
       </Routes>
       <Toaster position="top-right" />
     </ThemeProvider>
-  )
+  );
 }

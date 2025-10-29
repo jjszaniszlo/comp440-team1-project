@@ -3,7 +3,6 @@ from typing import List
 
 from fastapi import HTTPException, status
 from sqlalchemy import select
-from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -24,10 +23,11 @@ class CommentNotFoundException(HTTPException):
     def __init__(self, comment_id: int):
         super().__init__(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Comment with id {comment_id} not found"
+            detail=f"Comment with id {comment_id} not found",
         )
 
 
+# TODO: DO NOT ALLOW AUTHOR TO COMMENT
 async def create_comment_service(
     blog_id: int,
     comment_data: CommentCreateRequest,
@@ -46,11 +46,12 @@ async def create_comment_service(
             if parent_comment.blog_id != blog_id:
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
-                    detail="Parent comment does not belong to this blog"
+                    detail="Parent comment does not belong to this blog",
                 )
 
         new_comment = Comment(
             content=comment_data.content,
+            sentiment=comment_data.sentiment,
             blog_id=blog_id,
             author_username=user.username,
             parent_comment_id=comment_data.parent_comment_id,
@@ -98,7 +99,10 @@ async def list_blog_comments_service(
                 .options(selectinload(Comment.replies).selectinload(Comment.replies))
             )
             comments = result.all()
-            return [CommentWithRepliesResponse.model_validate(comment) for comment in comments]
+            return [
+                CommentWithRepliesResponse.model_validate(comment)
+                for comment in comments
+            ]
         else:
             result = await db.scalars(
                 select(Comment)
@@ -151,6 +155,7 @@ async def update_comment_service(
             raise CommentNotFoundException(comment_id)
 
         comment.content = comment_data.content
+        comment.sentiment = comment_data.sentiment
         db.add(comment)
         await db.commit()
         await db.refresh(comment)

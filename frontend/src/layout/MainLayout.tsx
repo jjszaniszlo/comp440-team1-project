@@ -6,6 +6,12 @@ export function MainLayout() {
     <>
       <NavBar />
       <Outlet />
+      <div>
+        <footer className="w-full py-4 text-center text-sm text-gray-500">
+          &copy; {new Date().getFullYear()} DB Team Project. All rights
+          reserved.
+        </footer>
+      </div>
     </>
   );
 }

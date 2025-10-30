@@ -1,8 +1,7 @@
-import { Badge } from "@/components/ui/badge";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import type { SearchQuery } from "@/lib/types";
+import type { SearchQuery } from "@/types";
 import { useState, useRef } from "react";
-import { X } from "lucide-react";
+import { FilterBadge } from "@/components/FilterBadge";
 
 type BadgeItem = {
   type: "tag" | "author";
@@ -100,15 +99,12 @@ export function BadgeSearchInput({ onSearchChange, placeholder = "Search by #tag
       {badges.length > 0 && (
         <InputGroupAddon align="inline-start" className="flex-wrap gap-2">
           {badges.map((badge, index) => (
-            <Badge
+            <FilterBadge
               key={`${badge.type}-${badge.value}-${index}`}
-              variant={badge.type === "tag" ? "secondary" : "outline"}
-              className="flex items-center gap-1 cursor-pointer hover:bg-secondary/80 text-xs"
-              onClick={() => removeBadge(index)}
-            >
-              {badge.type === "tag" ? "#" : "@"}{badge.value}
-              <X className="h-3 w-3" />
-            </Badge>
+              value={badge.value}
+              type={badge.type}
+              onRemove={() => removeBadge(index)}
+            />
           ))}
         </InputGroupAddon>
       )}

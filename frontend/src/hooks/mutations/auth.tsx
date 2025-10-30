@@ -1,6 +1,6 @@
 import { useApi } from "@/lib/api";
 import { ApiError } from "@/lib/api";
-import type { UserLogin, UserSignup } from "@/lib/types";
+import type { UserLogin, UserSignup } from "@/types";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 

@@ -1,10 +1,11 @@
 from typing import List, Optional
 from app.auth.dependencies import UserDependency
 from app.blog.dependencies import UserBlogDependency
-from app.blog.schemas import BlogCreateRequest, BlogResponse, BlogDetailResponse, BlogEditRequest, TagOperationRequest
+from app.blog.schemas import BlogResponse, BlogDetailResponse, BlogEditRequest, TagOperationRequest
 from app.blog.service import (
     create_blog_service,
     delete_blog_service,
+    get_blog_service,
     list_blogs_service,
     publish_or_delist_blog_service,
     search_blogs_service,
@@ -28,12 +29,11 @@ router = APIRouter()
 @limiter.limit("10/hour")
 async def create_blog(
     request: Request,
-    blog: BlogCreateRequest,
     user: UserDependency,
     db: DatabaseDependency,
     _: CanCreateBlogDependency,
 ):
-    return await create_blog_service(blog, user, db)
+    return await create_blog_service(user, db)
 
 
 @router.get("/", response_model=List[BlogResponse])
@@ -59,6 +59,16 @@ async def search_blogs(
     sort_order: BlogSortOrder = Query(BlogSortOrder.ASC),
 ):
     return await search_blogs_service(db, search, tags, tags_match_all, authors, sort_by, sort_order)
+
+
+@router.get("/{blog_id}", response_model=BlogDetailResponse)
+@limiter.limit("100/minute")
+async def get_blog(
+    request: Request,
+    blog_id: int,
+    db: DatabaseDependency,
+):
+    return await get_blog_service(blog_id, db)
 
 
 @router.post("/{blog_id}/publish", response_model=BlogResponse)

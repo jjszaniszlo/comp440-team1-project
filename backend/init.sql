@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `user` (
 
 CREATE TABLE IF NOT EXISTS `blog` (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    subject VARCHAR(255) NOT NULL,
+    subject VARCHAR(100),
     description TEXT,
     content TEXT,
     status VARCHAR(20) DEFAULT 'draft',

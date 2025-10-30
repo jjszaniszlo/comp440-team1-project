@@ -3,7 +3,6 @@ from typing import List
 from app.auth.models import User
 from app.blog.models import Blog, Tag, blog_tag_table
 from app.blog.schemas import (
-    BlogCreateRequest,
     BlogEditRequest,
     BlogResponse,
     BlogDetailResponse,
@@ -20,14 +19,12 @@ from app.user.models import UserDailyActivity
 
 
 async def create_blog_service(
-    blog: BlogCreateRequest,
     user: User,
     db: AsyncSession,
 ) -> BlogResponse:
     try:
         new_blog = Blog(
-            subject=blog.subject,
-            author_username=user.username,
+            author=user,
         )
         db.add(new_blog)
         await db.commit()
@@ -63,6 +60,22 @@ async def list_blogs_service(
         return [BlogResponse.model_validate(blog) for blog in blogs]
     except Exception as e:
         handle_database_error(e, "list blogs")
+
+
+async def get_blog_service(
+    blog_id: int,
+    db: AsyncSession,
+) -> BlogDetailResponse:
+    try:
+        result = await db.scalars(
+            select(Blog).where(Blog.id == blog_id).options(selectinload(Blog.tags))
+        )
+        blog = result.one()
+        return BlogDetailResponse.model_validate(blog)
+    except NoResultFound:
+        raise BlogNotFoundException(blog_id)
+    except Exception as e:
+        handle_database_error(e, "get blog")
 
 
 def blog_apply_sorting(

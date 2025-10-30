@@ -46,7 +46,7 @@ class Blog(BaseModel):
         autoincrement=True
     )
 
-    subject: Mapped[str] = mapped_column(String(255))
+    subject: Mapped[Optional[str]] = mapped_column(String(100), nullable=True)
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     content: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     status: Mapped[BlogStatus] = mapped_column(

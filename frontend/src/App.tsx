@@ -6,9 +6,9 @@ import { Login } from "./pages/Login";
 import { Signup } from "./pages/Signup";
 import { Home } from "./pages/Home";
 import { Toaster } from "@/components/ui/sonner";
-import { BlogHomePage } from "./pages/Blog";
+import { BlogHomePage, ViewBlogPage } from "./pages/Blog";
 import { MainLayout } from "./layout/MainLayout";
-import CreateBlog from "./pages/Blog/CreateBlog";
+import EditBlogPage from "./pages/Blog/EditBlogPage";
 
 export function App() {
   return (
@@ -21,12 +21,12 @@ export function App() {
 
         <Route element={<MainLayout />}>
           <Route path="/" element={<BlogHomePage />} />
-          <Route path="/edit/:blogId" element={<CreateBlog />} />
-          <Route path="/view/:blogId" element={null} />
+          <Route path="/blog/:blogId" element={<ViewBlogPage />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path="/user" element={<Home />} />
+            <Route path="/blog/:blogId/edit" element={<EditBlogPage />} />
           </Route>
         </Route>
       </Routes>

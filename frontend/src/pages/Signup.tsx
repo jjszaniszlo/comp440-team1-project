@@ -3,23 +3,26 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useUserSignup } from "@/hooks/mutations/auth";
+import { useUserSignup } from "@/hooks/mutations";
 import { useState, useMemo } from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 
 export function Signup() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { mutate: signup } = useUserSignup();
 
+  const returnTo = searchParams.get("returnTo") || "/";
+
   const [signUpInfo, setSignUpInfo] = useState({
-    username: '',
-    password: '',
-    confirmPassword: '',
-    email: '',
-    phone: '',
-    first_name: '',
-    last_name: '',
-  })
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    phone: "",
+    first_name: "",
+    last_name: "",
+  });
 
   const usernameError = useMemo(() => {
     if (!signUpInfo.username) return null;
@@ -28,24 +31,29 @@ export function Signup() {
       return "Username must start with a letter, be 6-30 characters, and contain only letters, numbers, or underscores";
     }
     return null;
-  }, [signUpInfo.username])
+  }, [signUpInfo.username]);
 
   const passwordError = useMemo(() => {
     if (!signUpInfo.confirmPassword) return null;
-    return signUpInfo.password !== signUpInfo.confirmPassword ? "Passwords do not match" : null;
-  }, [signUpInfo.password, signUpInfo.confirmPassword])
+    return signUpInfo.password !== signUpInfo.confirmPassword
+      ? "Passwords do not match"
+      : null;
+  }, [signUpInfo.password, signUpInfo.confirmPassword]);
 
   const emailError = useMemo(() => {
     if (!signUpInfo.email) return null;
     const emailRegex = /^\S+@\S+\.\S+$/;
     return !emailRegex.test(signUpInfo.email) ? "Invalid email format" : null;
-  }, [signUpInfo.email])
+  }, [signUpInfo.email]);
 
   const phoneError = useMemo(() => {
     if (!signUpInfo.phone) return null;
-    const phoneRegex = /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
-    return !phoneRegex.test(signUpInfo.phone) ? "Invalid phone number format" : null;
-  }, [signUpInfo.phone])
+    const phoneRegex =
+      /^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+    return !phoneRegex.test(signUpInfo.phone)
+      ? "Invalid phone number format"
+      : null;
+  }, [signUpInfo.phone]);
 
   const isSignUpInfoValid = useMemo(() => {
     const requiredFields = [
@@ -58,30 +66,41 @@ export function Signup() {
       signUpInfo.last_name,
     ];
 
-    return requiredFields.every(field => field.trim() !== '') &&
+    return (
+      requiredFields.every((field) => field.trim() !== "") &&
       !usernameError &&
       !passwordError &&
       !emailError &&
-      !phoneError;
-  }, [signUpInfo, usernameError, passwordError, emailError, phoneError])
+      !phoneError
+    );
+  }, [signUpInfo, usernameError, passwordError, emailError, phoneError]);
 
   const handleSignup = () => {
     if (isSignUpInfoValid) {
-      signup({
-        username: signUpInfo.username,
-        password: signUpInfo.password,
-        email: signUpInfo.email,
-        phone: signUpInfo.phone,
-        first_name: signUpInfo.first_name,
-        last_name: signUpInfo.last_name,
-      });
+      signup(
+        {
+          username: signUpInfo.username,
+          password: signUpInfo.password,
+          email: signUpInfo.email,
+          phone: signUpInfo.phone,
+          first_name: signUpInfo.first_name,
+          last_name: signUpInfo.last_name,
+        },
+        {
+          onSuccess: () => {
+            setTimeout(() => {
+              navigate(returnTo, { replace: true });
+            }, 0);
+          },
+        }
+      );
     }
-  }
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     handleSignup();
-  }
+  };
 
   return (
     <div className="justify-center items-center min-h-screen p-20">
@@ -100,7 +119,9 @@ export function Signup() {
                     type="text"
                     placeholder="JohnDoe"
                     value={signUpInfo.username}
-                    onChange={e => setSignUpInfo({ ...signUpInfo, username: e.target.value })}
+                    onChange={(e) =>
+                      setSignUpInfo({ ...signUpInfo, username: e.target.value })
+                    }
                   />
                   {usernameError && (
                     <p className="text-sm text-red-500 mt-1">{usernameError}</p>
@@ -113,7 +134,12 @@ export function Signup() {
                       type="password"
                       placeholder="**********"
                       value={signUpInfo.password}
-                      onChange={e => setSignUpInfo({ ...signUpInfo, password: e.target.value })}
+                      onChange={(e) =>
+                        setSignUpInfo({
+                          ...signUpInfo,
+                          password: e.target.value,
+                        })
+                      }
                     />
                   </Field>
                   <Field>
@@ -122,7 +148,12 @@ export function Signup() {
                       type="password"
                       placeholder="*********"
                       value={signUpInfo.confirmPassword}
-                      onChange={e => setSignUpInfo({ ...signUpInfo, confirmPassword: e.target.value })}
+                      onChange={(e) =>
+                        setSignUpInfo({
+                          ...signUpInfo,
+                          confirmPassword: e.target.value,
+                        })
+                      }
                     />
                   </Field>
                 </div>
@@ -136,7 +167,12 @@ export function Signup() {
                       type="text"
                       placeholder="John"
                       value={signUpInfo.first_name}
-                      onChange={e => setSignUpInfo({ ...signUpInfo, first_name: e.target.value })}
+                      onChange={(e) =>
+                        setSignUpInfo({
+                          ...signUpInfo,
+                          first_name: e.target.value,
+                        })
+                      }
                     />
                   </Field>
                   <Field>
@@ -145,7 +181,12 @@ export function Signup() {
                       type="text"
                       placeholder="Doe"
                       value={signUpInfo.last_name}
-                      onChange={e => setSignUpInfo({ ...signUpInfo, last_name: e.target.value })}
+                      onChange={(e) =>
+                        setSignUpInfo({
+                          ...signUpInfo,
+                          last_name: e.target.value,
+                        })
+                      }
                     />
                   </Field>
                 </div>
@@ -155,7 +196,9 @@ export function Signup() {
                     type="email"
                     placeholder="johndoe@example.com"
                     value={signUpInfo.email}
-                    onChange={e => setSignUpInfo({ ...signUpInfo, email: e.target.value })}
+                    onChange={(e) =>
+                      setSignUpInfo({ ...signUpInfo, email: e.target.value })
+                    }
                   />
                   {emailError && (
                     <p className="text-sm text-red-500 mt-1">{emailError}</p>
@@ -167,7 +210,9 @@ export function Signup() {
                     type="tel"
                     placeholder="+1 234 5678"
                     value={signUpInfo.phone}
-                    onChange={e => setSignUpInfo({ ...signUpInfo, phone: e.target.value })}
+                    onChange={(e) =>
+                      setSignUpInfo({ ...signUpInfo, phone: e.target.value })
+                    }
                   />
                 </Field>
                 {phoneError && (
@@ -183,10 +228,10 @@ export function Signup() {
               Sign Up
             </Button>
             <div className="text-sm text-center text-gray-600">
-              Already have an account?{' '}
+              Already have an account?{" "}
               <button
                 type="button"
-                onClick={() => navigate('/login')}
+                onClick={() => navigate("/login")}
                 className="text-primary hover:underline font-medium"
               >
                 Log in

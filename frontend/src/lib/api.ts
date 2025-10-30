@@ -1,4 +1,4 @@
-import type { TokenResponse, UserLogin, UserResponse, UserSignup } from './types';
+import type { TokenResponse, UserLogin, UserResponse, UserSignup } from '@/types';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
 const TOKEN_KEY = 'auth_token';
@@ -81,6 +81,10 @@ async function apiRequest<T>(
     const data = isJson ? await response.json() : await response.text();
 
     if (!response.ok) {
+      // Handle 401 Unauthorized - token expired or invalid
+      if (response.status === 401 && requiresAuth) {
+        tokenStorage.remove();
+      }
       throw new ApiError(response.status, response.statusText, data);
     }
 

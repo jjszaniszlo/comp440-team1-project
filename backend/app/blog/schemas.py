@@ -1,15 +1,11 @@
 from datetime import datetime
 from typing import Any, List, Optional
 
-from pydantic import BaseModel, ConfigDict, model_validator
-
-
-class BlogCreateRequest(BaseModel):
-    subject: str
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 class BlogEditRequest(BaseModel):
-    subject: Optional[str] = None
+    subject: Optional[str] = Field(None, max_length=100)
     description: Optional[str] = None
     content: Optional[str] = None
     tags: Optional[List[str]] = None
@@ -23,7 +19,6 @@ class BlogResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
-    subject: str
     author_username: str
     status: str
     created_at: datetime
@@ -31,6 +26,7 @@ class BlogResponse(BaseModel):
 
 
 class BlogDetailResponse(BlogResponse):
+    subject: Optional[str] = None
     description: Optional[str] = None
     content: Optional[str] = None
     tags: List[str] = []

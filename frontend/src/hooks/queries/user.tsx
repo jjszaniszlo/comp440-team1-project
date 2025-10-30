@@ -1,5 +1,5 @@
 import { useApi } from "@/lib/api";
-import type { UserResponse } from "@/lib/types";
+import type { UserResponse } from "@/types";
 import { useQuery } from "@tanstack/react-query";
 
 export function useUserMe() {

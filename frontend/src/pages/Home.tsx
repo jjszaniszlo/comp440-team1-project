@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { ThemeModeToggle } from "../components/theme-mode-toggle"
-import { useUserMe } from "../hooks/queries/user"
+import { useUserMe } from "@/hooks/queries"
 import { useApi } from "../lib/api"
 import { useNavigate } from "react-router"
 

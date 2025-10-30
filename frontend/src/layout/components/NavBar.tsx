@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   NavigationMenu,
@@ -6,20 +6,60 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
-import { useApi } from "@/lib/api";
-import { useUserMe } from "@/hooks/queries/user";
+import { useAuth } from "@/hooks/useAuth";
+import { useUserMe } from "@/hooks/queries";
+import { useCreateBlog } from "@/hooks/mutations";
 import { useNavigate } from "react-router";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { CirclePlus } from "lucide-react";
 
 export function NavBar() {
-  const api = useApi();
   const navigate = useNavigate();
-  const isAuthenticated = api.auth.isAuthenticated();
+  const location = useLocation();
+  const { isAuthenticated, logout } = useAuth();
   const { data: user } = useUserMe();
+  const { mutate: createBlog, isPending } = useCreateBlog();
+
+  const handleCreateBlog = () => {
+    createBlog(
+      { subject: "Untitled Blog" },
+      {
+        onSuccess: (blog) => {
+          navigate(`/blog/${blog.id}/edit`);
+        },
+      }
+    );
+  };
+
+  const getLoginLink = () => {
+    const currentPath = location.pathname + location.search;
+    if (currentPath === "/") return "/login";
+    return `/login?returnTo=${encodeURIComponent(currentPath)}`;
+  };
+
+  const getSignupLink = () => {
+    const currentPath = location.pathname + location.search;
+    if (currentPath === "/") return "/signup";
+    return `/signup?returnTo=${encodeURIComponent(currentPath)}`;
+  };
+
+  const protectedRoutes = ["/user", "/blog/"];
 
   const handleLogout = () => {
-    api.auth.logout();
-    navigate("/login");
+    const currentPath = location.pathname;
+
+    const isProtectedRoute = protectedRoutes.some((route) => {
+      if (route === "/blog/") {
+        return currentPath.match(/^\/blog\/\d+\/edit$/);
+      }
+      return currentPath.startsWith(route);
+    });
+
+    if (isProtectedRoute) {
+      logout("/");
+    } else {
+      logout(currentPath + location.search);
+    }
   };
 
   return (
@@ -42,15 +82,22 @@ export function NavBar() {
           {!isAuthenticated ? (
             <>
               <Button variant="ghost" asChild>
-                <Link to="/login">Log In</Link>
+                <Link to={getLoginLink()}>Log In</Link>
               </Button>
               <Button asChild>
-                <Link to="/signup">Sign Up</Link>
+                <Link to={getSignupLink()}>Sign Up</Link>
               </Button>
             </>
           ) : (
             <>
-              {/* Placeholder for avatar/username - you can replace this later */}
+              <Button
+                variant="default"
+                onClick={handleCreateBlog}
+                disabled={isPending}
+              >
+                <CirclePlus className="h-5 w-5 mr-1" />
+                {isPending ? "Creating..." : "Create Blog"}
+              </Button>
               <span className="text-sm font-medium">
                 {user?.username || "User"}
               </span>

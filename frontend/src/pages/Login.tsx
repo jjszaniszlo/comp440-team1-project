@@ -1,21 +1,23 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useUserLogin } from "@/hooks/mutations/auth";
+import { useUserLogin } from "@/hooks/mutations";
 import { useMemo, useState } from "react";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router";
+import { useNavigate, useSearchParams } from "react-router";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
-
 
 export function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { mutate: login, isPending } = useUserLogin();
 
+  const returnTo = searchParams.get("returnTo") || "/";
+
   const [loginInfo, setLoginInfo] = useState({
-    username: '',
-    password: '',
-  })
+    username: "",
+    password: "",
+  });
 
   const usernameError = useMemo(() => {
     if (!loginInfo.username) return null;
@@ -24,18 +26,28 @@ export function Login() {
       return "Username must start with a letter, be 6-30 characters, and contain only letters, numbers, or underscores";
     }
     return null;
-  }, [loginInfo.username])
+  }, [loginInfo.username]);
 
   const canSubmit = useMemo(() => {
-    return loginInfo.username.trim() !== '' && loginInfo.password.trim() !== '' && !usernameError;
+    return (
+      loginInfo.username.trim() !== "" &&
+      loginInfo.password.trim() !== "" &&
+      !usernameError
+    );
   }, [loginInfo, usernameError]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!usernameError && loginInfo.username && loginInfo.password) {
-      login(loginInfo);
+      login(loginInfo, {
+        onSuccess: () => {
+          setTimeout(() => {
+            navigate(returnTo, { replace: true });
+          }, 0);
+        },
+      });
     }
-  }
+  };
 
   return (
     <div className="justify-center items-center min-h-screen p-20">
@@ -54,7 +66,9 @@ export function Login() {
                     type="text"
                     placeholder="Enter your username"
                     value={loginInfo.username}
-                    onChange={e => setLoginInfo({ ...loginInfo, username: e.target.value })}
+                    onChange={(e) =>
+                      setLoginInfo({ ...loginInfo, username: e.target.value })
+                    }
                     disabled={isPending}
                   />
                   {usernameError && (
@@ -68,7 +82,9 @@ export function Login() {
                     type="password"
                     placeholder="Enter your password"
                     value={loginInfo.password}
-                    onChange={e => setLoginInfo({ ...loginInfo, password: e.target.value })}
+                    onChange={(e) =>
+                      setLoginInfo({ ...loginInfo, password: e.target.value })
+                    }
                     disabled={isPending}
                   />
                 </Field>
@@ -80,14 +96,14 @@ export function Login() {
               disabled={!canSubmit || isPending}
               className="w-full"
             >
-              {isPending ? 'Logging in...' : 'Login'}
+              {isPending ? "Logging in..." : "Login"}
             </Button>
 
             <div className="text-sm text-center text-gray-600">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <button
                 type="button"
-                onClick={() => navigate('/signup')}
+                onClick={() => navigate("/signup")}
                 className="text-primary hover:underline font-medium"
               >
                 Sign up

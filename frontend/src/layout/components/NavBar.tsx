@@ -21,14 +21,11 @@ export function NavBar() {
   const { mutate: createBlog, isPending } = useCreateBlog();
 
   const handleCreateBlog = () => {
-    createBlog(
-      { subject: "Untitled Blog" },
-      {
-        onSuccess: (blog) => {
-          navigate(`/blog/${blog.id}/edit`);
-        },
-      }
-    );
+    createBlog(undefined, {
+      onSuccess: (blog) => {
+        navigate(`/blog/${blog.id}/edit`);
+      },
+    });
   };
 
   const getLoginLink = () => {

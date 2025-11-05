@@ -1,6 +1,5 @@
 import { useApi, ApiError } from "@/lib/api";
 import type {
-  BlogCreateRequest,
   BlogEditRequest,
   BlogResponse,
   BlogDetailResponse,
@@ -13,8 +12,8 @@ export function useCreateBlog() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (blog: BlogCreateRequest) =>
-      api.post<BlogResponse>("/blog/", blog),
+    mutationFn: () =>
+      api.post<BlogResponse>("/blog/"),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blog-search"] });
       toast.success("Blog created successfully!");

@@ -1,16 +1,11 @@
 import type { SearchQuery } from "@/types";
-import { useState } from "react";
 import { BadgeSearchInput } from "./components/BadgeSearchInput";
 
 export function BlogHomePage() {
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-    tags: [],
-    authors: [],
-    text: "",
-  });
-
   function handleSearchChange(query: SearchQuery) {
-    setSearchQuery(query);
+    const { tags, authors, text } = query;
+
+    console.log("Search parameters:", { tags, authors, text });
   }
 
   return (

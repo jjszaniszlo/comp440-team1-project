@@ -1,0 +1,96 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Blog Platform Blogs Data (Batch)",
+  "type": "object",
+  "required": ["blogs"],
+  "description": "Schema for a batch of 5 blog posts. Multiple files following this schema can be merged by concatenating their 'blogs' arrays.",
+  "$defs": {
+    "comment": {
+      "type": "object",
+      "required": ["author_username", "content", "sentiment", "replies"],
+      "properties": {
+        "author_username": {
+          "type": "string",
+          "description": "Username of comment author"
+        },
+        "content": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 10000,
+          "description": "Comment text content"
+        },
+        "sentiment": {
+          "type": "string",
+          "enum": ["positive", "negative"],
+          "maxLength": 20,
+          "description": "Sentiment analysis of the comment"
+        },
+        "replies": {
+          "type": "array",
+          "minItems": 0,
+          "maxItems": 3,
+          "description": "Array of nested replies (can go up to 5 levels deep, but most commonly 1-2 levels). Each reply can have its own replies.",
+          "items": {
+            "$ref": "#/$defs/comment"
+          }
+        }
+      }
+    }
+  },
+  "properties": {
+    "blogs": {
+      "type": "array",
+      "minItems": 5,
+      "maxItems": 5,
+      "description": "Array of exactly 5 blog posts with nested comments",
+      "items": {
+        "type": "object",
+        "required": ["author_username", "subject", "description", "content", "tags", "comments"],
+        "properties": {
+          "author_username": {
+            "type": "string",
+            "description": "Username of the blog author (must match a user from the users file)"
+          },
+          "subject": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 100,
+            "description": "Blog post title/subject - MUST BE UNIQUE across ALL blog files"
+          },
+          "description": {
+            "type": "string",
+            "minLength": 50,
+            "maxLength": 5000,
+            "description": "Compelling description/summary of the blog post (50-500 characters recommended)"
+          },
+          "content": {
+            "type": "string",
+            "minLength": 3000,
+            "maxLength": 50000,
+            "description": "Full blog post content in Markdown format (3000-5000 characters required for high-quality, in-depth content)"
+          },
+          "tags": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 10,
+            "description": "Array of tag strings for categorizing the blog",
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 50
+            }
+          },
+          "comments": {
+            "type": "array",
+            "minItems": 5,
+            "maxItems": 10,
+            "description": "Array of root-level comments on the blog post (root comment authors must NOT be the blog author)",
+            "items": {
+              "$ref": "#/$defs/comment"
+            }
+          }
+        }
+      }
+    }
+  }
+}

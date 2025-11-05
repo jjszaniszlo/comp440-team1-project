@@ -1,0 +1,785 @@
+Generate mock data for a blogging platform following the JSON schemas provided. This data will be generated in batches to manage context size and ensure quality.
+
+## Data Generation Structure:
+
+You will generate data in **TWO PHASES**:
+
+### Phase 1: Users File (generate once)
+- **File**: `blog_platform_users.json`
+- **Schema**: `mock-data-schema-users.json`
+- **Content**: All 50 users
+- **Output**: Single JSON file with top-level `"users"` array
+
+### Phase 2: Blog Files (generate 10 times)
+- **Files**: `blog_platform_blogs_01.json` through `blog_platform_blogs_10.json`
+- **Schema**: `mock-data-schema-blogs.json` (same schema for all 10 files)
+- **Content**: Exactly 5 blogs per file (50 total blogs across 10 files)
+- **Output**: Each file has top-level `"blogs"` array with exactly 5 entries
+- **CRITICAL**: Ensure uniqueness of blog subjects, content, and author assignments across ALL 10 files
+
+### Merging Instructions:
+The generated files are designed to be easily merged:
+```python
+# All blogs from 10 files can be merged by concatenating arrays:
+all_blogs = []
+for i in range(1, 11):
+    with open(f'blog_platform_blogs_{i:02d}.json') as f:
+        data = json.load(f)
+        all_blogs.extend(data['blogs'])
+```
+
+## Requirements:
+
+### Users (50 total):
+- Each user must have:
+  - username: 6-30 characters (must start with letter, then alphanumeric or underscore), unique
+    - **CRITICAL**: Usernames must be unique identifiers, NOT based on real names
+    - Use creative handles with numbers and underscores (e.g., "code_ninja_42", "pixel_wizard", "data_sage99", "tech_phantom_5", "cyber_raven_88")
+    - Must include at least one number or underscore
+    - Should feel like internet handles/gamer tags, not real names
+    - Examples: "quantum_leap_7", "shadow_coder", "neon_dev_23", "stellar_mind_99", "echo_scribe_5"
+  - password: Plain text password (8+ characters) - do NOT hash, the service layer will handle that
+  - email: Valid email format (max 100 chars) - **MUST BE COMPLETELY UNIQUE across all 50 users**
+  - phoneNumber: Valid phone format with optional country code (max 25 chars, will be normalized to +CC.NNNNNNNNNN format) - **MUST BE COMPLETELY UNIQUE across all 50 users**
+  - firstName: **ALPHABETIC CHARACTERS ONLY** (max 50 chars, A-Z only, no numbers, spaces, hyphens, apostrophes, or special characters) - **MUST BE COMPLETELY UNIQUE across all 50 users**
+  - lastName: **ALPHABETIC CHARACTERS ONLY** (max 50 chars, A-Z only, no numbers, spaces, hyphens, apostrophes, or special characters) - **MUST BE COMPLETELY UNIQUE across all 50 users**
+- **CRITICAL UNIQUENESS**: Every single email, phoneNumber, firstName, and lastName must be different - NO REPEATING VALUES
+  - Use diverse names from various cultures: Asian, African, European, Latin American, Middle Eastern, etc.
+  - Examples of unique names: "Kenji", "Amara", "Sven", "Nalini", "Ravi", "Chiara", "Mateo", "Leila"
+  - Ensure all 50 email addresses are unique (use different domains, usernames, etc.)
+  - Ensure all 50 phone numbers are unique (vary country codes, area codes, and numbers)
+- Make passwords varied but memorable (e.g., "password123", "SecurePass2024", etc.)
+#### Validation:
+Ensure that each of these can be validated with the following, do not actually use these functions but ensure that they can successfully regex match to this.
+```python
+def validate_email(self, _, email):
+    if not re.match(r"^\S+@\S+\.\S+$", email):
+        raise ValueError(f"Invalid email format: {email}")
+    return email
+
+def validate_phone(self, _, phone):
+    # Phone numbers will be automatically normalized to +CC.NNNNNNNNNN format
+    # The phonenumbers library will parse any valid international format
+    # Examples: "+1-555-123-4567" -> "+1.5551234567"
+    #           "+44 20 1234 5678" -> "+44.2012345678"
+    return phone
+
+def validate_name(self, key, name):
+    if not name.isalpha():
+        raise ValueError(f"{key.replace('_', ' ').title()} must contain only alphabetic characters.")
+    return name
+
+def validate_username(self, _, username):
+    if not re.match(r"^[A-Za-z][A-Za-z0-9_]{5,29}$", username):
+        raise ValueError(f"Invalid username format: {username}")
+    return username
+
+```
+
+### Blogs (50 total across 10 files, 5 blogs per file):
+
+**IMPORTANT FOR BATCH GENERATION:**
+When generating each of the 10 blog files, you must maintain awareness of previously generated blogs to ensure uniqueness. Track:
+- All blog subjects used so far (must be unique across all 10 files)
+- All author_usernames used so far (each user should author exactly 1 blog)
+- General topics covered (avoid repetition across files)
+
+**For each blog file batch (5 blogs):**
+- Each blog must have:
+  - author_username: Must match exactly one username from the users file
+    - **Across all 10 files**: Each of the 50 users should author exactly 1 blog
+    - **Within each file**: Track which users have been assigned to avoid duplicates
+  - subject: 5-100 characters, engaging blog title
+    - **MUST BE COMPLETELY UNIQUE across ALL 10 blog files** (not just within the current file)
+  - description: 50-500 characters, compelling summary of the post - **should be unique**
+  - content: **3000-5000 characters** (approximately 500-850 words) in Markdown format
+    - **MUST BE COMPLETELY UNIQUE with distinct topics/angles across ALL 10 blog files**
+  - tags: 5-10 tags per blog for categorization (each tag 2-50 chars)
+  - comments: 5-10 root comments per blog
+
+- **CRITICAL UNIQUENESS ACROSS ALL FILES**:
+  - Every blog subject must be unique (track across all 10 files)
+  - Every blog content must be unique with distinct topics (track across all 10 files)
+  - Each user authors exactly 1 blog (track author assignments across all 10 files)
+  - No repeated blog titles or topics across any of the 10 files
+  - Each blog should explore a different angle, technology, concept, or idea
+  - Be creative and diverse with topics
+  - With only 50 blogs total, each one should be a showcase piece with substantial content
+
+- Content topics should vary across these categories (specific guidelines below):
+  - Technology (AI, cloud computing, cybersecurity, etc.)
+  - Finance (investing, cryptocurrency, personal finance, etc.)
+  - Social Media (trends, marketing, influencer culture, etc.)
+  - Politics (policy analysis, current events, governance, etc.)
+  - Gaming (reviews, esports, game development, etc.)
+  - Computer Science (algorithms, data structures, software architecture, etc.)
+  - Programming Guides (Python tutorials, React patterns, API design, etc.)
+  - Programming Breakthroughs
+  - New features in programming languages
+  - Anything else that is interesting and relevant.
+
+### Topic-Specific Content Guidelines:
+
+#### Technology Posts (AI, Cloud, Cybersecurity)
+**DO**: Write about specific tools, services, vulnerabilities, or implementations
+- "I tested GPT-4 vs Claude for code generation - here's what I found"
+- "AWS Lambda cold starts are killing our API response times. Here's how we fixed it by moving to ECS"
+- "The recent MOVEit vulnerability exploited SQL injection in file transfer. Here's the technical breakdown"
+
+**DON'T**: Use generic phrases
+- "AI is transforming the industry" ❌
+- "Cloud computing offers many benefits" ❌
+- "Cybersecurity is important" ❌
+
+#### Finance Posts (Investing, Crypto, Personal Finance)
+**DO**: Include numbers, strategies, specific scenarios
+- "I'm down 40% on my crypto portfolio. Here's what I learned about position sizing"
+- "The 4% withdrawal rule doesn't work anymore. Here's why we're using 3.5% instead"
+- "Bitcoin's hashrate hit 450 EH/s - what this means for mining profitability"
+
+**DON'T**: Give vague advice
+- "Investing is important for your future" ❌
+- "Cryptocurrency has potential" ❌
+
+#### Social Media & Marketing Posts
+**DO**: Share actual metrics, campaigns, results
+- "We spent $5000 on TikTok ads. CTR was 2.3% vs 0.8% on Instagram - here's why"
+- "Posting at 2pm vs 7pm changed our engagement by 340%. Here's the data from 90 days"
+- "Instagram's new algorithm penalizes link-in-bio. We switched to Stories and saw 60% more clicks"
+
+**DON'T**: Make generic statements
+- "Social media marketing is essential" ❌
+- "Engagement is key to success" ❌
+
+#### Politics & Policy Posts
+**DO**: Analyze specific policies, events, implications
+- "The new EU AI Act classifies systems by risk level. Here's how it compares to US approach"
+- "Local zoning reform increased housing supply by 12% in Minneapolis. Can it work elsewhere?"
+- "Senate Bill 1234's amendment on line 47 completely reverses the original intent - here's what changed"
+
+**DON'T**: Make vague political statements
+- "Politics affects everyone" ❌
+- "Policy change is needed" ❌
+
+#### Gaming Posts (Reviews, Esports, Development)
+**DO**: Discuss specific games, mechanics, players, tournaments
+- "Baldur's Gate 3's dialogue system uses a persuasion dice roll that actually feels fair - here's the math"
+- "Faker's positioning in Game 3 of Worlds 2023 Finals was masterclass. Watch how he baited the engage at 23:45"
+- "We built procedural dungeon generation in Unity using Wave Function Collapse. Here's the algorithm"
+
+**DON'T**: Generic gaming commentary
+- "Gaming is popular" ❌
+- "Esports is growing" ❌
+
+#### Computer Science & Algorithms Posts
+**DO**: Explain specific algorithms, complexity, implementations
+- "Binary search seems simple until you handle edge cases. Here are 3 bugs I've seen in production"
+- "Why quicksort averages O(n log n) but hits O(n²) with sorted input - and how to prevent it"
+- "B-trees vs LSM-trees: PostgreSQL uses one, Cassandra uses the other. Here's why"
+
+**DON'T**: Vague CS concepts
+- "Algorithms are important" ❌
+- "Data structures improve efficiency" ❌
+
+#### Programming Guides & Tutorials
+**DO**: Show actual code, explain line-by-line, include gotchas
+- "React useEffect runs twice in dev mode. Here's why and how to handle cleanup properly"
+- "FastAPI's Depends() looks like magic. Here's what's actually happening under the hood"
+- "Async/await in JavaScript: why 'return await' matters in try/catch blocks"
+
+**DON'T**: Generic programming advice
+- "Good code is important" ❌
+- "Follow best practices" ❌
+
+#### Programming Language Features
+**DO**: Explain the feature, show examples, discuss tradeoffs
+- "Python 3.12's f-string improvements let you reuse expressions: f'{x=}' prints 'x=42'"
+- "TypeScript 5.0's decorators are now stage 3 compliant. Here's how they differ from the old experimental version"
+- "Rust's ? operator is syntactic sugar for match. Here's what the compiler generates"
+
+**DON'T**: Just announce features exist
+- "New language features are released" ❌
+
+  - Blog post ideas by goal
+  - Promotional blog post ideas
+    - Share the ultimate company pitch
+    - Share your company history, milestones, challenges, and learnings
+    - What is your company mission?
+    - Share your company vision
+    - Spotlight your best customer(s) and what they do
+    - How do your customers use your product?
+    - Share user-generated content
+    - Curate a list of your top customer testimonials
+    - What is the origin behind your company name and logo?
+    - Share a complete guide to use your product or service
+    - Compare your product to a competitor
+    - Share a press release about a new partnership or customer
+    - Announce a new feature or product release
+    - Tease an upcoming feature or product release
+    - Promote an event you are hosting or will be attending
+    - Debunk a common myth in your industry. Counter it with facts.
+    - Case study: How [Customer Name] gets [desired outcome] with [Your Company]
+    - Fundraising Press Release: [Company name], raises [amount] led by [lead investor]
+    - Share a roundup of the most popular blog articles you have written
+    - Run a contest or giveaway
+    - Explain how your customers use your product
+
+  - Educational blog post ideas
+    - Create an Infographic
+    - Write an FAQ
+    - What are common mistakes or misunderstandings? Counter them with facts.
+    - Turn questions you find on forums into a blog post
+    - Listicle: 7 tips for [unique topic]
+    - How to [problem your audience is looking for]
+    - Share industry facts & figures
+    - Walk your audience through a process step by step.
+    - Share a helpful checklist for completing a certain project
+    - What are the best courses, degrees, or universities to get started in your niche?
+    - Advice for people wanting to start out in your industry: do’s and don’ts
+    - What skills should someone have when chasing a career in your industry?
+    - Curate expert advice around a popular theme
+    - What’s the roadmap to success in your industry?
+    - Expert Interview: How to improve [industry topic]?
+    - Write a complete guide to a topic relevant to your industry
+    - Explain how you use social media and content to grow traffic
+    - Survey your audience and share your findings
+    - Share a drill-down of your workflow
+    - Define popular terms and abbreviations in your industry
+    - What is the secret to success in the professional world?
+    - What is the secret to success in life?
+    - Share little-known facts in your industry
+
+  - Building thought leadership
+    - How has your industry evolved over time?
+    - How will your industry continue to evolve? What are your predictions?
+    - How will technology and AI change the future?
+    - Review last year’s predictions
+    - What are your goals this year, quarter, or month?
+    - Review last year’s goals and report on your progress
+    - Talk about controversies in your industry
+    - Challenge a popular opinion
+    - Who do you look up to?
+    - Write an open letter to an organization or individual
+    - Analyze companies and what made them successful
+    - What is your latest win?
+    - What is your most recent struggle?
+    - Write an opinion article on a recent industry trend
+    - Write your opinion on a controversial tweet in your industry
+    - What is the toughest part of being a [job function]?
+    - What excites you about your industry?
+    - Share your company history
+    - What are your company milestones?
+    - What does your week look like?
+    - Share the biggest challenge of your career
+    - What are the ups and downs of running a business?
+    - What are some of the most important learnings?
+    - Recap a recent industry event you attended
+    - Share speech notes from a presentation you gave
+    - What upcoming events are you speaking at?
+    - Share top networking tips
+    - What are must-visit (networking) events in your industry?
+    - Curate industry news by experts
+    - Ask thought leaders to share the biggest mistakes they’ve made
+    - Ask thought leaders to share their biggest wins
+    - What do you find most valuable in a leader?
+    - What is the difference between a boss and a leader according to you?
+    - How to outsource time-consuming tasks
+    - What helps you stay productive and focused?
+    - What inspired you to start your business? How did you get to where you are today?
+    - Write about what you wish you knew before you started your career
+    - What are some rookie mistakes you made at the beginning of your career?
+    - Compile a list of 20 helpful books everyone getting started in your industry should read
+    - What are the best courses, degrees or universities to get started in your niche?
+    - Advice for people wanting to start out in your industry: do’s and don’ts
+    - Compile a list of your favorite tweets from this year
+
+  - Inspirational blog post ideas
+    - What are your hobbies or what do you like to do in your free time?
+    - What are your highlights this year, quarter, or month?
+    - How do you like to spend your days off?
+    - Share your morning routine
+    - Share your after-work routine
+    - Who is someone you look up to?
+    - If you could have lunch with anyone, dead or alive, who would it be and why?
+    - What are your favorite self-development tips or resources?
+    - What charities do you support?
+    - How you stay motivated despite obstacles
+    - How do you overcome bad habits?
+    - What inspires or motivates you?
+    - Share inspirational quotes or motivational speeches
+    - Share a list of your favorite books
+    - What is something no one knows about you?
+    - What does a typical day in your life look like?
+    - How did you find a job you love?
+
+  - Share helpful resources
+    - What are the best apps and tools you use on the go?
+    - Compare popular tools or devices in your industry
+    - Who are must-follow influencers or thought-leaders?
+    - Share a list of the best blogs to follow
+    - Share a list of the best newsletters to subscribe to
+    - List your favorite online communities
+    - Review popular tools in your industry
+    - Share alternatives to expensive tools, devices, or apps
+    - Compile a list of the best podcasts
+    - List the best YouTube channels to follow
+    - Compile a list of 20 helpful books everyone getting started in your industry should read
+    - Share helpful resources or templates that helped you improve your day-to-day work
+    - What is a hack you swear by?
+    - What are the best online courses in your industry?
+    - Or compile every single one of these in the ultimate resource list for your industry 😉
+
+  - Blog ideas for marketing managers
+    - What is your marketing strategy this year, quarter, or month?
+    - What are your goals this year, quarter, or month?
+    - Review last year’s goals and report on your progress
+    - Share insights and results of your latest marketing campaign
+    - What are proven growth tactics you want to try or have tried already? What were the results?
+    - Share a project you are most proud of, its results, and a step-by-step guide on how you completed it
+    - What are your favorite tools to manage multiple writers, content creators, and client feedback?
+    - Share predictions of how (content) marketing will change for the future
+    - Revisit and review previous (content) marketing predictions
+    - What is the toughest part of being a content manager? What are your struggles?
+    - Write about what you wish you knew before you started your career as a content manager
+    - What are important skills to have as a content manager?
+    - Explain what you find valuable in a leader
+    - What are marketing strategies you had high expectations for but failed?
+    - What helps you stay productive and focused?
+    - Compile a list of the most influential marketers according to you.
+
+  - Blog ideas for content creators
+    - Describe your writing process
+    - Share a writing tip
+    - List 8 tools for graphic designers
+    - Share a list of tools and apps that help you improve your content production workflow
+    - Describe the marketing channels you use to distribute your content
+    - Explain how you come up with content ideas
+    - What do you do when you have writer’s block?
+    - How do you stay creative?
+    - Share your portfolio and explain what content you are most proud of
+    - Write a blog post that targets a specific search keyword
+    - What is the toughest part of being a content creator?
+    - Write about what you wish you knew before you started your career as a content creator
+    - What are important skills to have as a content creator?
+    - Who are content creators that inspire you?
+
+  - Blog ideas for the Human Resources industry
+    - Share behind-the-scenes footage of your office or team
+    - Give a glimpse into your office or workspace
+    - Interview a team member
+    - Interview leadership or management
+    - Introduce a recent hire
+    - Introduce an entire team
+    - Explain the meaning of your company values
+    - Share fun photos or videos of a company retreat
+    - What is your company culture like?
+    - Post about a job opening in your company
+    - Explain what skills are important for a specific job function
+    - What are the top skills that are in high demand in the next year, 5, or 10 years?
+    - Explain what you look out for the most when you are hiring someone new
+    - Share important tips to find a job that fits your skills and ambitions
+    - What are valuable questions someone needs to ask themselves before they want to change jobs?
+    - Share the best and worst practices for writing up a resume
+    - What are the best questions for candidates to ask during job interviews?
+    - Review recent hiring trends in your industry
+    - What is most important: skills or degrees?
+    - Share your opinion on recent hiring trends
+    - What is the toughest part of being a hiring manager or recruiter?
+    - Write about what you wish you knew before you started your career as a hiring manager or recruiter
+    - What are important skills to have as a hiring manager or recruiter?
+    - Explain what you find valuable in a leader
+
+  - Blog ideas for the tourism industry
+    - Share your favorite travel blogs, influencers or apps
+    - What are the best travel destinations for [your target audience]
+    - Top 10 travel destinations in [year or season]
+    - How to travel on a budget
+    - Solo traveler tips
+    - Tips and destinations for traveling with kids
+    - Travel mistakes to avoid
+    - Must-visit restaurants for every budget in [destination]
+    - Complete travel guide for [destination] – activities, hotels, restaurants, etc.
+    - User-generated content: [Name]’s travel experience at [destination]
+    - 2023 travel bucket list by [company]’s team
+
+  - Blog ideas for realtors
+    - What are the best practices in looking for a home in today’s market?
+    - What are the best places to live? Now and/or in the future?
+    - How can you save money while moving house?
+    - Post a FAQ about the most popular buyer questions
+    - Share an infographic on an FAQ
+    - What are common misunderstandings and mistakes buyers make?
+    - Share a checklist based on a common misunderstanding or mistake
+    - Share important events in your industry
+    - How has the real estate industry evolved over time?
+    - What are important skills a realtor should have?
+    - Compile a list of the most influential realtors according to you.
+
+### Business & Professional Blog Post Guidelines:
+
+#### Promotional Posts (Company/Product focused)
+**DO**: Share specific metrics, real milestones, actual features
+- "We started in a garage in 2019 with $5k. Today we're at $2M ARR. Here are the 3 pivots that saved us"
+- "Our new dashboard loads in 1.2s vs 4.5s before. We rewrote the data layer using Redis caching - here's how"
+- "Customer case study: How TechCorp reduced their deployment time from 4 hours to 12 minutes using our CI/CD platform"
+
+**DON'T**: Generic company praise
+- "Our company has a great mission" ❌
+- "We offer excellent service" ❌
+
+#### Educational Posts (How-to, Guides, Tips)
+**DO**: Provide step-by-step instructions with actual examples
+- "How to set up GitHub Actions for Next.js: 1) Create .github/workflows/deploy.yml 2) Add these 15 lines..."
+- "7 SQL query optimizations that cut our dashboard load time by 80%: EXPLAIN ANALYZE showed table scans on..."
+- "Common mistake: Using map() when you should use forEach(). Here's when each matters and a benchmark comparison"
+
+**DON'T**: Vague tips
+- "Follow best practices" ❌
+- "Optimize your code" ❌
+
+#### Thought Leadership Posts (Predictions, Opinions, Analysis)
+**DO**: Take specific positions with reasoning
+- "Remote work isn't dying - but async work is. Here's why synchronous culture crept back in 2023-2024"
+- "I was wrong about NoSQL. After 5 years of MongoDB, we migrated to Postgres. Here's why"
+- "Hot take: TypeScript's complexity peaked with 5.0. The next big shift will be toward gradual typing like Python"
+
+**DON'T**: Safe, generic opinions
+- "The industry is changing" ❌
+- "Innovation is important" ❌
+
+#### Inspirational Posts (Personal stories, motivation)
+**DO**: Share real personal experiences with specifics
+- "I bombed my Google interview in 2020. Asked to implement a trie, my mind went blank. Here's how I prepared for my next one"
+- "My morning routine: 6am cold shower, 30min run, then 90min of deep work before Slack. Productivity up 40% since starting this"
+- "I follow @swyx, @kentcdodds, and @dan_abramov because they teach in public. Here's what I learned from each"
+
+**DON'T**: Generic motivation
+- "Stay motivated" ❌
+- "Believe in yourself" ❌
+
+#### Resource Lists (Tools, Books, Courses)
+**DO**: List specific items with why/how you use them
+- "My essential tools: Raycast (replaced Spotlight, 50+ plugins), Warp terminal (AI autocomplete), Linear (best issue tracking UX)"
+- "Top 5 programming books: SICP changed how I think about abstraction, Designing Data-Intensive Applications is required for backend..."
+- "Alternatives to $200/mo DataDog: Grafana (free, self-hosted), uptrace (open source), SigNoz (docker-compose setup in 5min)"
+
+**DON'T**: Generic lists
+- "These tools are helpful" ❌
+- "Read these books" ❌
+
+#### Marketing/Content Creator Posts
+**DO**: Share actual data, processes, tools with numbers
+- "Our content workflow: Notion for ideas → Figma for visuals → Buffer for scheduling. Reduced production time from 4hrs to 90min per post"
+- "I tested 50 headlines on LinkedIn. Questions got 2.1x more clicks than statements. 'How to' got 3x more than 'Why'"
+- "ContentCal vs Later vs Buffer: I used all three for 6 months. Here's a feature comparison table and pricing breakdown"
+
+**DON'T**: Vague strategy talk
+- "Content is king" ❌
+- "Engagement matters" ❌
+
+#### HR/Recruiting Posts
+**DO**: Share specific hiring practices, insights, real examples
+- "We removed 'culture fit' from our interview rubric. Diverse hires up 40%. Here's what we replaced it with"
+- "Our interview process: 30min screen → take-home (2hrs max) → 2hr onsite with lunch. 85% of candidates prefer this to 6-round marathons"
+- "Red flags in resumes vs green flags: Job hopping isn't bad, but check the pattern. Side projects show initiative - here are examples"
+
+**DON'T**: Generic HR advice
+- "Hire good people" ❌
+- "Culture is important" ❌
+
+#### Tourism/Travel Posts
+**DO**: Give specific destinations, costs, itineraries
+- "3-day Tokyo itinerary under $500: Hostels in Asakusa ($30/night), conveyor belt sushi ($8), Shibuya walking tour (free). Day 1: ..."
+- "Solo travel in Iceland: Rented a camper van ($80/day), drove the Ring Road in 7 days, camped at designated spots ($15/night)"
+- "Family travel hack: Airbnb with kitchen in Rome saved us $600 over hotels + eating out. Here's our actual cost breakdown"
+
+**DON'T**: Generic travel advice
+- "Travel broadens horizons" ❌
+- "These destinations are beautiful" ❌
+
+#### Real Estate Posts
+**DO**: Provide market data, specific advice, real numbers
+- "Austin housing market analysis: Median home price dropped 8% YoY to $485k. Inventory up 45%. Best buyer's market since 2019"
+- "Offer strategy in hot markets: We wrote 12 offers before winning. Here's what worked: waiving inspection (with pre-inspection), escalation clause to $15k over..."
+- "Mistake buyers make: Not getting pre-approved vs pre-qualified. Pre-approval locks rate for 90 days and shows sellers you're serious"
+
+**DON'T**: Generic real estate content
+- "Real estate is a good investment" ❌
+- "Location matters" ❌
+
+- Ensure variety in authorship - each of the 50 users should author exactly 1 blog (1:1 ratio)
+
+### Comments Structure (Recursive Nesting):
+- Each blog has 5-10 root-level comments
+- Comments support RECURSIVE NESTING up to 5 levels deep (but most commonly 1-2 levels)
+- Each comment (at any level) must have:
+  - author_username: Valid username from users array
+  - content: 10-250 characters of relevant comment text
+  - sentiment: Either "positive" or "negative" EXCLUSIVELY "positive" or "negative"
+  - replies: Array of 0-3 nested reply objects (each reply can also have its own replies)
+
+- **IMPORTANT NESTING RULES:**
+  - Root comments (level 0): author_username CANNOT be the blog author
+  - Nested replies (levels 1-5): author_username can be ANYONE (including the blog author)
+  - Most comment threads should be 1-2 levels deep (70-80% of comments)
+  - Some threads can go 3-4 levels deep (15-25% of comments)
+  - Very few threads should reach the maximum 5 levels (5-10% of comments)
+
+- **Comment Thread Guidelines:**
+  - Make comments realistic and relevant to the blog content
+  - Vary sentiment naturally (not all positive or all negative, but stil exclsively one or the other.)
+  - Replies should feel like natural conversation threads
+  - Deeper threads should represent ongoing discussions/debates
+  - Each reply should respond meaningfully to its parent comment
+
+### Tags:
+- Use realistic tags that match the blog content
+- Examples: "python", "react", "machine-learning", "investing", "tutorial", "cybersecurity", "gaming", "politics", "finance", "social-media", "web-dev", "data-science", etc.
+- Can reuse tags across blogs where appropriate
+- Each blog should have 5-10 tags
+
+### GOLDEN RULE FOR ALL BLOG POSTS:
+**Every blog must read like it was written by a real person sharing real knowledge or experience.**
+
+Ask yourself before writing each blog:
+- Does this contain specific examples, numbers, or code?
+- Would someone actually learn something concrete from this?
+- Did I avoid template phrases like "is essential" or "offers many benefits"?
+- Does this sound like a human wrote it, or a content generator?
+
+If you find yourself writing "Introduction:", "Key Concepts:", "Benefits:", or "Conclusion:" - STOP. You're writing a template. Delete it and start over with actual content.
+
+### Content Quality:
+
+**CRITICAL - NO TEMPLATES ALLOWED:**
+- **DO NOT use generic template content** where you just swap out the title
+- **DO NOT use placeholders** like "Introduction: [Topic] is essential for modern development"
+- **DO NOT use generic phrases** like "Key Concepts", "Core Principles", "Benefits", "Challenges and Solutions" as section headers
+- **WRITE ACTUAL BLOG POSTS** with real, specific information about the topic
+
+**What GOOD content looks like (3000-5000 characters):**
+
+This example is approximately 3200 characters - the minimum length expected:
+
+```markdown
+## Why FastAPI Outperforms Flask for Modern APIs
+
+I've been building REST APIs with Python for 5 years, and FastAPI has completely changed my workflow. After migrating three production services from Flask to FastAPI, I've seen response times drop by 40% and deployment bugs decrease by half. Here's what makes it special.
+
+### Automatic Data Validation
+
+FastAPI uses Pydantic models for request/response validation. This means type hints aren't just documentation - they're enforced at runtime:
+
+\`\`\`python
+from pydantic import BaseModel
+from typing import Optional
+
+class User(BaseModel):
+    username: str
+    email: str
+    age: int
+    bio: Optional[str] = None
+
+@app.post("/users")
+async def create_user(user: User):
+    # Validation already happened - age is guaranteed to be an int
+    if user.age < 13:
+        raise HTTPException(status_code=400, detail="Must be 13+")
+    return {"message": f"Created user {user.username}"}
+\`\`\`
+
+If someone sends `{"username": "john", "age": "twenty"}`, FastAPI automatically returns a 422 with:
+
+\`\`\`json
+{
+  "detail": [{
+    "loc": ["body", "age"],
+    "msg": "value is not a valid integer",
+    "type": "type_error.integer"
+  }]
+}
+\`\`\`
+
+No more manual validation code. No more `if not isinstance(age, int)` checks scattered everywhere.
+
+### Async Support is First-Class
+
+Unlike Flask, FastAPI is built on Starlette, giving you async/await support out of the box. This matters when you're making external API calls:
+
+\`\`\`python
+import httpx
+
+@app.get("/user-with-posts/{user_id}")
+async def get_user_with_posts(user_id: int):
+    async with httpx.AsyncClient() as client:
+        # These run concurrently
+        user_response, posts_response = await asyncio.gather(
+            client.get(f"https://api.example.com/users/{user_id}"),
+            client.get(f"https://api.example.com/posts?user={user_id}")
+        )
+    return {
+        "user": user_response.json(),
+        "posts": posts_response.json()
+    }
+\`\`\`
+
+With Flask, these calls would block. With FastAPI, your server can handle other requests while waiting for I/O. On our production service, this change alone increased throughput from 100 req/s to 280 req/s.
+
+### Automatic API Documentation
+
+Every endpoint you write automatically appears in interactive docs at `/docs`. Swagger UI is built in. No configuration needed:
+
+- Request/response schemas auto-generated from Pydantic models
+- Try-it-out functionality works immediately
+- OAuth2 flows supported out of the box
+
+Our frontend team loves this because they don't need to ask "what fields does this endpoint accept?" - they just check `/docs`.
+
+### Dependency Injection That Makes Sense
+
+FastAPI's dependency injection is elegant. Want to require authentication?
+
+\`\`\`python
+from fastapi import Depends
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    # decode token, get user from DB
+    return user
+
+@app.get("/me")
+async def read_current_user(user: User = Depends(get_current_user)):
+    return user
+\`\`\`
+
+Dependencies compose. You can depend on other dependencies. Testing becomes trivial because you can override any dependency with a mock.
+
+### Performance Benchmarks
+
+I ran wrk benchmarks against identical endpoints in Flask and FastAPI:
+
+| Framework | Req/s | Latency p50 | Latency p99 |
+|-----------|-------|-------------|-------------|
+| Flask     | 1,240 | 78ms        | 340ms       |
+| FastAPI   | 2,890 | 32ms        | 95ms        |
+
+These numbers are from a real endpoint that queries PostgreSQL and makes one external API call. FastAPI's async nature shines when I/O is involved.
+
+### The Migration Cost
+
+Migrating isn't free. We spent about 2 weeks per service:
+
+- Rewriting route decorators (straightforward)
+- Converting to async/await (most of the work)
+- Updating tests (FastAPI's TestClient is great though)
+- Retraining the team on async patterns
+
+Was it worth it? Absolutely. The performance gains paid for themselves in reduced infrastructure costs within 3 months.
+
+### When Flask Still Makes Sense
+
+FastAPI isn't always the answer. Stick with Flask if:
+
+- Your app is synchronous and always will be
+- You're building a traditional server-rendered web app (FastAPI is API-focused)
+- Your team isn't comfortable with async/await yet
+
+But for modern API development, especially microservices, FastAPI is the clear winner.
+```
+
+**Note**: This example is ~3200 characters. Your blogs should be in the 3000-5000 character range with similar depth and detail.
+
+**What BAD (template) content looks like - AVOID THIS:**
+```markdown
+## FastAPI Development
+
+This is a comprehensive guide on FastAPI Development.
+
+**Key Concepts:**
+- Introduction: FastAPI Development is essential for modern development
+- Core Principles: Understanding fundamentals
+- Benefits: Improved efficiency
+```
+
+**Content Requirements:**
+- Blog content should be well-structured Markdown with:
+  - Headers (##, ###) that are specific to the topic
+  - Multiple paragraphs of actual explanatory text (aim for 4-8 paragraphs per blog)
+  - Lists (bullet or numbered) with specific, relevant points
+  - Code blocks where appropriate (for technical content) with real, runnable examples
+  - Bold and italic text for emphasis
+  - Tables where appropriate, formatted as:
+    ```
+    | foo | bar | baz |
+    | --- | --- | --- |
+    | 1   | 2   | 3   |
+    | 4   | 5   | 6   |
+    ```
+- **Content length: 3000-5000 characters (approximately 500-850 words)**
+  - This is substantial content - NOT a short post
+  - Should include multiple sections with headers
+  - Include 2-3 code examples OR tables OR detailed lists
+  - Each blog is a complete, in-depth piece
+- **Write like a real person** with opinions, experiences, and specific technical details
+- Include actual examples, code snippets, comparisons, data, or anecdotes
+- Ensure subject and description accurately reflect the content
+- **DIVERSITY REQUIREMENT**: Each of the 50 blogs must be distinctly different
+  - Different topics, different angles, different technologies
+  - No two blogs should cover the same subject matter
+  - Examples: "Building REST APIs with FastAPI", "GraphQL vs REST: A Deep Dive", "Microservices Architecture Patterns", "Event-Driven Design in Python" - all distinct topics
+  - Vary between tutorials, opinion pieces, analysis, guides, reviews, case studies, etc.
+  - Each blog should feel like it was written by a different person with unique insights
+  - Since we only have 50 blogs total, make each one count - high quality over quantity
+
+## Output Format:
+
+### For Phase 1 (Users File):
+Generate `blog_platform_users.json`:
+```json
+{
+  "users": [
+    // 50 user objects following mock-data-schema-users.json
+  ]
+}
+```
+
+### For Phase 2 (Blog Files - generate 10 times):
+For each blog batch file (01 through 10), generate following `mock-data-schema-blogs.json`:
+
+**blog_platform_blogs_01.json** (users 1-5):
+```json
+{
+  "blogs": [
+    // Exactly 5 blog objects with author_usernames from users 1-5
+  ]
+}
+```
+
+**blog_platform_blogs_02.json** (users 6-10):
+```json
+{
+  "blogs": [
+    // Exactly 5 blog objects with author_usernames from users 6-10
+  ]
+}
+```
+
+...continue this pattern through **blog_platform_blogs_10.json** (users 46-50)
+
+### Critical Requirements:
+- All usernames in `author_username` fields must exist in the users file
+- Each user (1-50) should author exactly 1 blog across the 10 files
+- All blog subjects must be unique across all 10 files
+- All blog content must be unique with distinct topics across all 10 files
+- Track previously used subjects/authors when generating each subsequent file
+
+### Suggested User-to-File Distribution:
+- File 01: Users with indices 0-4 from users array
+- File 02: Users with indices 5-9 from users array
+- File 03: Users with indices 10-14 from users array
+- File 04: Users with indices 15-19 from users array
+- File 05: Users with indices 20-24 from users array
+- File 06: Users with indices 25-29 from users array
+- File 07: Users with indices 30-34 from users array
+- File 08: Users with indices 35-39 from users array
+- File 09: Users with indices 40-44 from users array
+- File 10: Users with indices 45-49 from users array

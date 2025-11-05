@@ -5,6 +5,7 @@ from sqlalchemy import String
 from sqlalchemy.orm import Mapped, mapped_column, relationship, validates
 
 from app.models import BaseModel
+from app.utils.phone import normalize_phone_number
 
 if TYPE_CHECKING:
     from app.blog.models import Blog
@@ -27,16 +28,18 @@ class User(BaseModel):
     blogs: Mapped[List["Blog"]] = relationship("Blog", back_populates="author")
     comments: Mapped[List["Comment"]] = relationship("Comment", back_populates="author")
     limits: Mapped["UserLimits"] = relationship("UserLimits", back_populates="user")
-    activity_history: Mapped["List[UserDailyActivity]"] = relationship("UserDailyActivity", back_populates="user")
+    activity_history: Mapped["List[UserDailyActivity]"] = relationship(
+        "UserDailyActivity", back_populates="user"
+    )
     followers: Mapped[List["UserFollow"]] = relationship(
         "UserFollow",
         foreign_keys="UserFollow.following_username",
-        back_populates="following"
+        back_populates="following",
     )
     following: Mapped[List["UserFollow"]] = relationship(
         "UserFollow",
         foreign_keys="UserFollow.follower_username",
-        back_populates="follower"
+        back_populates="follower",
     )
 
     @validates("email")
@@ -47,14 +50,18 @@ class User(BaseModel):
 
     @validates("phone")
     def validate_phone(self, _, phone):
-        if not re.match(r"^\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$", phone):
-            raise ValueError(f"Invalid phone number format: {phone}")
-        return phone
+        try:
+            normalized = normalize_phone_number(phone)
+            return normalized
+        except ValueError as e:
+            raise ValueError(f"Invalid phone number: {e}") from e
 
     @validates("first_name", "last_name")
     def validate_name(self, key, name):
         if not name.isalpha():
-            raise ValueError(f"{key.replace('_', ' ').title()} must contain only alphabetic characters.")
+            raise ValueError(
+                f"{key.replace('_', ' ').title()} must contain only alphabetic characters."
+            )
         return name
 
     @validates("username")

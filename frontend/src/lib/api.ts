@@ -30,15 +30,33 @@ export const tokenStorage = {
 export class ApiError extends Error {
   status: number;
   statusText: string;
-  data?: any;
+  data?: unknown;
 
-  constructor(status: number, statusText: string, data?: any) {
+  constructor(status: number, statusText: string, data?: unknown) {
     super(`API Error: ${status} ${statusText}`);
     this.name = 'ApiError';
     this.status = status;
     this.statusText = statusText;
     this.data = data;
   }
+}
+
+export function getErrorMessage(error: unknown, fallback = "An unexpected error occurred"): string {
+  if (error instanceof ApiError) {
+    if (error.data && typeof error.data === 'object' && 'detail' in error.data) {
+      const detail = (error.data as { detail: unknown }).detail;
+      if (typeof detail === 'string') {
+        return detail;
+      }
+    }
+    return error.statusText || fallback;
+  }
+
+  if (error instanceof Error) {
+    return error.message;
+  }
+
+  return fallback;
 }
 
 async function apiRequest<T>(
@@ -75,18 +93,25 @@ async function apiRequest<T>(
   try {
     const response = await fetch(url, config);
 
-    const contentType = response.headers.get('content-type');
-    const isJson = contentType?.includes('application/json');
-
-    const data = isJson ? await response.json() : await response.text();
-
     if (!response.ok) {
-      // Handle 401 Unauthorized - token expired or invalid
+      const contentType = response.headers.get('content-type');
+      const isJson = contentType?.includes('application/json');
+      const data = isJson ? await response.json() : await response.text();
+
       if (response.status === 401 && requiresAuth) {
         tokenStorage.remove();
       }
       throw new ApiError(response.status, response.statusText, data);
     }
+
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    const contentType = response.headers.get('content-type');
+    const isJson = contentType?.includes('application/json');
+
+    const data = isJson ? await response.json() : await response.text();
 
     return data as T;
   } catch (error) {
@@ -101,7 +126,7 @@ export const api = {
   get: <T>(endpoint: string, requiresAuth = true) =>
     apiRequest<T>(endpoint, { method: 'GET' }, requiresAuth),
 
-  post: <T>(endpoint: string, data?: any, requiresAuth = true) =>
+  post: <T>(endpoint: string, data?: unknown, requiresAuth = true) =>
     apiRequest<T>(
       endpoint,
       {
@@ -111,7 +136,7 @@ export const api = {
       requiresAuth
     ),
 
-  put: <T>(endpoint: string, data?: any, requiresAuth = true) =>
+  put: <T>(endpoint: string, data?: unknown, requiresAuth = true) =>
     apiRequest<T>(
       endpoint,
       {
@@ -121,7 +146,7 @@ export const api = {
       requiresAuth
     ),
 
-  patch: <T>(endpoint: string, data?: any, requiresAuth = true) =>
+  patch: <T>(endpoint: string, data?: unknown, requiresAuth = true) =>
     apiRequest<T>(
       endpoint,
       {

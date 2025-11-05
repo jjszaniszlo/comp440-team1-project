@@ -1,20 +1,22 @@
 from datetime import date
 from typing import List
-from app.auth.models import User
-from app.blog.models import Blog, Tag, blog_tag_table
-from app.blog.schemas import (
-    BlogEditRequest,
-    BlogResponse,
-    BlogDetailResponse,
-)
-from app.blog.exceptions import handle_database_error, BlogNotFoundException
 
-from sqlalchemy import Select, select, delete, func, text
+from sqlalchemy import Select, delete, func, select, text
+from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
-from sqlalchemy.exc import NoResultFound
 
+from app.auth.models import User
+from app.blog.exceptions import BlogNotFoundException, handle_database_error
+from app.blog.models import Blog, Tag, blog_tag_table
+from app.blog.schemas import (
+    BlogDetailResponse,
+    BlogEditRequest,
+    BlogResponse,
+    BlogSearchResponse,
+)
 from app.blog.types import BlogSortBy, BlogSortOrder, BlogStatus
+from app.schemas import PaginatedResponse, PaginationMeta
 from app.user.models import UserDailyActivity
 
 
@@ -103,8 +105,11 @@ async def search_blogs_service(
     authors: List[str],
     sort_by: BlogSortBy,
     sort_order: BlogSortOrder,
-) -> List[BlogResponse]:
+    page: int = 1,
+    size: int = 20,
+) -> PaginatedResponse[BlogSearchResponse]:
     try:
+        # Build base query
         if search:
             relevance_expr = text(
                 "MATCH(subject, description, content) AGAINST(:search_term IN NATURAL LANGUAGE MODE) AS relevance"
@@ -118,9 +123,14 @@ async def search_blogs_service(
                         "MATCH(subject, description, content) AGAINST(:search_term IN NATURAL LANGUAGE MODE) > 0"
                     ).bindparams(search_term=search)
                 )
+                .options(selectinload(Blog.tags))
             )
         else:
-            query = select(Blog).where(Blog.status == BlogStatus.PUBLISHED)
+            query = (
+                select(Blog)
+                .where(Blog.status == BlogStatus.PUBLISHED)
+                .options(selectinload(Blog.tags))
+            )
 
         if tag_names:
             query = query.join(Blog.tags).where(Tag.name.in_(tag_names))
@@ -134,6 +144,11 @@ async def search_blogs_service(
         if authors:
             query = query.where(Blog.author_username.in_(authors))
 
+        # Get total count before pagination
+        count_query = select(func.count()).select_from(query.subquery())
+        total = await db.scalar(count_query) or 0
+
+        # Apply sorting
         if search:
             sort = "relevance desc"
             sort2 = f"{sort_by.value} {sort_order.value}"
@@ -142,6 +157,10 @@ async def search_blogs_service(
             sort = f"{sort_by.value} {sort_order.value}"
             query = query.order_by(text(sort))
 
+        # Apply pagination
+        offset = (page - 1) * size
+        query = query.offset(offset).limit(size)
+
         result = await db.execute(query)
 
         if search:
@@ -149,7 +168,21 @@ async def search_blogs_service(
         else:
             blogs = result.scalars().all()
 
-        return [BlogResponse.model_validate(blog) for blog in blogs]
+        items = [BlogSearchResponse.model_validate(blog) for blog in blogs]
+
+        # Calculate pagination metadata
+        pages = (total + size - 1) // size if total > 0 else 1
+
+        meta = PaginationMeta(
+            page=page,
+            size=size,
+            total=total,
+            pages=pages,
+            has_next=page < pages,
+            has_prev=page > 1,
+        )
+
+        return PaginatedResponse(items=items, meta=meta)
     except Exception as e:
         handle_database_error(e, "search blogs")
 

@@ -1,0 +1,444 @@
+{
+  "users": [
+    {
+      "username": "code_ninja_42",
+      "password": "SecurePass2024",
+      "email": "codeninja42@techmail.com",
+      "phoneNumber": "+1-555-123-4567",
+      "firstName": "Kenji",
+      "lastName": "Nakamura"
+    },
+    {
+      "username": "pixel_wizard",
+      "password": "password123",
+      "email": "pixelwiz@creative.org",
+      "phoneNumber": "+44-201-1234-5678",
+      "firstName": "Amara",
+      "lastName": "Okonkwo"
+    },
+    {
+      "username": "data_sage99",
+      "password": "DataMaster99",
+      "email": "datasage99@analytics.io",
+      "phoneNumber": "+81-90-1234-5678",
+      "firstName": "Sven",
+      "lastName": "Bergstrom"
+    },
+    {
+      "username": "tech_phantom_5",
+      "password": "Phantom2024",
+      "email": "techphantom5@cyber.net",
+      "phoneNumber": "+33-1-4567-8910",
+      "firstName": "Nalini",
+      "lastName": "Sharma"
+    },
+    {
+      "username": "cyber_raven_88",
+      "password": "RavenNight88",
+      "email": "cyberraven88@dark.com",
+      "phoneNumber": "+34-91-1234567",
+      "firstName": "Ravi",
+      "lastName": "Patel"
+    },
+    {
+      "username": "neon_echo_1",
+      "password": "EchoSound123",
+      "email": "neonecho1@digital.co",
+      "phoneNumber": "+39-06-1234-5678",
+      "firstName": "Chiara",
+      "lastName": "Rossi"
+    },
+    {
+      "username": "storm_rider_7",
+      "password": "StormRide77",
+      "email": "stormrider7@weather.io",
+      "phoneNumber": "+49-30-1234567",
+      "firstName": "Mateo",
+      "lastName": "Garcia"
+    },
+    {
+      "username": "lunar_nova_12",
+      "password": "LunarNova12",
+      "email": "lunarnova12@space.net",
+      "phoneNumber": "+86-10-1234-5678",
+      "firstName": "Leila",
+      "lastName": "Hussain"
+    },
+    {
+      "username": "quantum_flux_3",
+      "password": "QuantumFlux3",
+      "email": "quantumflux3@physics.org",
+      "phoneNumber": "+91-11-1234-5678",
+      "firstName": "Yuki",
+      "lastName": "Tanaka"
+    },
+    {
+      "username": "shadow_monk_21",
+      "password": "ShadowMonk21",
+      "email": "shadowmonk21@zen.io",
+      "phoneNumber": "+62-21-1234-5678",
+      "firstName": "Amina",
+      "lastName": "Ahmed"
+    },
+    {
+      "username": "blaze_phoenix_9",
+      "password": "BlazePhoe9",
+      "email": "blazephoenix9@fire.com",
+      "phoneNumber": "+55-11-1234-5678",
+      "firstName": "Diego",
+      "lastName": "Silva"
+    },
+    {
+      "username": "frost_titan_44",
+      "password": "FrostTitan44",
+      "email": "frosttitan44@ice.net",
+      "phoneNumber": "+52-55-1234-5678",
+      "firstName": "Elena",
+      "lastName": "Kowalski"
+    },
+    {
+      "username": "echo_sage_17",
+      "password": "EchoSage17",
+      "email": "echosage17@wisdom.org",
+      "phoneNumber": "+31-20-1234567",
+      "firstName": "Hassan",
+      "lastName": "Rahman"
+    },
+    {
+      "username": "vortex_mind_6",
+      "password": "VortexMind6",
+      "email": "vortexmind6@consciousness.io",
+      "phoneNumber": "+32-2-1234567",
+      "firstName": "Lucia",
+      "lastName": "Ferrari"
+    },
+    {
+      "username": "nexus_drone_55",
+      "password": "NexusDrone55",
+      "email": "nexusdrone55@tech.co",
+      "phoneNumber": "+47-21-234567",
+      "firstName": "Haruka",
+      "lastName": "Yamamoto"
+    },
+    {
+      "username": "prism_artist_2",
+      "password": "PrismArt2",
+      "email": "prismartist2@creative.com",
+      "phoneNumber": "+46-8-1234567",
+      "firstName": "Kwame",
+      "lastName": "Asante"
+    },
+    {
+      "username": "titan_forge_33",
+      "password": "TitanForge33",
+      "email": "titanforge33@forge.net",
+      "phoneNumber": "+45-33-1234567",
+      "firstName": "Anita",
+      "lastName": "Gupta"
+    },
+    {
+      "username": "void_walker_8",
+      "password": "VoidWalker8",
+      "email": "voidwalker8@void.io",
+      "phoneNumber": "+60-3-1234567",
+      "firstName": "Santiago",
+      "lastName": "Moreno"
+    },
+    {
+      "username": "crystal_echo_14",
+      "password": "CrystalEcho14",
+      "email": "crystalecho14@gems.org",
+      "phoneNumber": "+66-2-1234567",
+      "firstName": "Mira",
+      "lastName": "Banerjee"
+    },
+    {
+      "username": "velocity_spark_4",
+      "password": "VelocitySpark4",
+      "email": "velocityspark4@speed.com",
+      "phoneNumber": "+27-11-1234567",
+      "firstName": "Javier",
+      "lastName": "Fernandez"
+    },
+    {
+      "username": "nebula_drift_26",
+      "password": "NebulaDrift26",
+      "email": "nebuladora26@space.io",
+      "phoneNumber": "+971-1-234567",
+      "firstName": "Priya",
+      "lastName": "Singh"
+    },
+    {
+      "username": "inferno_beast_11",
+      "password": "InfernoBeast11",
+      "email": "infernobeast11@heat.net",
+      "phoneNumber": "+20-2-1234567",
+      "firstName": "Viktor",
+      "lastName": "Sokolov"
+    },
+    {
+      "username": "apex_hunter_50",
+      "password": "ApexHunter50",
+      "email": "apexhunter50@hunt.org",
+      "phoneNumber": "+359-2-1234567",
+      "firstName": "Sophia",
+      "lastName": "Novak"
+    },
+    {
+      "username": "sonic_blade_16",
+      "password": "SonicBlade16",
+      "email": "sonicblade16@speed.io",
+      "phoneNumber": "+36-1-1234567",
+      "firstName": "Liam",
+      "lastName": "Murphy"
+    },
+    {
+      "username": "mystic_rune_23",
+      "password": "MysticRune23",
+      "email": "mysticrune23@magic.com",
+      "phoneNumber": "+48-22-1234567",
+      "firstName": "Zainab",
+      "lastName": "Hassan"
+    },
+    {
+      "username": "steel_venom_37",
+      "password": "SteelVenom37",
+      "email": "steelvenom37@poison.net",
+      "phoneNumber": "+40-21-1234567",
+      "firstName": "Andrei",
+      "lastName": "Popescu"
+    },
+    {
+      "username": "blitz_storm_13",
+      "password": "BlitzStorm13",
+      "email": "blitzstorm13@lightning.io",
+      "phoneNumber": "+385-1-1234567",
+      "firstName": "Isabelle",
+      "lastName": "Laurent"
+    },
+    {
+      "username": "solar_flare_29",
+      "password": "SolarFlare29",
+      "email": "solarflare29@sun.org",
+      "phoneNumber": "+421-2-1234567",
+      "firstName": "Arjun",
+      "lastName": "Mishra"
+    },
+    {
+      "username": "eclipse_hunter_18",
+      "password": "EclipseHunter18",
+      "email": "eclipsehunter18@dark.io",
+      "phoneNumber": "+353-1-1234567",
+      "firstName": "Aisling",
+      "lastName": "OBrien"
+    },
+    {
+      "username": "titan_core_47",
+      "password": "TitanCore47",
+      "email": "titancore47@center.com",
+      "phoneNumber": "+386-1-1234567",
+      "firstName": "Nika",
+      "lastName": "Novakova"
+    },
+    {
+      "username": "rogue_shadow_10",
+      "password": "RogueShadow10",
+      "email": "rogueshadow10@dark.net",
+      "phoneNumber": "+420-2-1234567",
+      "firstName": "Mikhail",
+      "lastName": "Petrov"
+    },
+    {
+      "username": "vector_force_41",
+      "password": "VectorForce41",
+      "email": "vectorforce41@power.io",
+      "phoneNumber": "+90-212-1234567",
+      "firstName": "Fatima",
+      "lastName": "AlRashid"
+    },
+    {
+      "username": "nexus_echo_19",
+      "password": "NexusEcho19",
+      "email": "nexusecho19@hub.org",
+      "phoneNumber": "+358-9-1234567",
+      "firstName": "Kai",
+      "lastName": "Virtanen"
+    },
+    {
+      "username": "chaos_knight_32",
+      "password": "ChaosKnight32",
+      "email": "chaosknight32@battle.com",
+      "phoneNumber": "+370-5-1234567",
+      "firstName": "Greta",
+      "lastName": "Bergman"
+    },
+    {
+      "username": "surge_titan_22",
+      "password": "SurgeTitan22",
+      "email": "surgetitan22@power.net",
+      "phoneNumber": "+371-7-1234567",
+      "firstName": "Dmitri",
+      "lastName": "Orlov"
+    },
+    {
+      "username": "phantom_wolf_40",
+      "password": "PhantomWolf40",
+      "email": "phantomwolf40@wild.io",
+      "phoneNumber": "+372-6-1234567",
+      "firstName": "Aisha",
+      "lastName": "Mohamed"
+    },
+    {
+      "username": "cosmic_rider_24",
+      "password": "CosmicRider24",
+      "email": "cosmicrider24@universe.org",
+      "phoneNumber": "+56-2-1234567",
+      "firstName": "Felipe",
+      "lastName": "Gutierrez"
+    },
+    {
+      "username": "void_reaper_51",
+      "password": "VoidReaper51",
+      "email": "voidreaper51@death.com",
+      "phoneNumber": "+33-9-1234567",
+      "firstName": "Valerie",
+      "lastName": "Leclerc"
+    },
+    {
+      "username": "radiant_flame_15",
+      "password": "RadiantFlame15",
+      "email": "radiantflame15@light.net",
+      "phoneNumber": "+30-21-1234567",
+      "firstName": "Stavros",
+      "lastName": "Papadopoulos"
+    },
+    {
+      "username": "glyph_master_43",
+      "password": "GlyphMaster43",
+      "email": "glyphmaster43@symbols.io",
+      "phoneNumber": "+358-20-1234567",
+      "firstName": "Nina",
+      "lastName": "Karvonen"
+    },
+    {
+      "username": "apex_shadow_27",
+      "password": "ApexShadow27",
+      "email": "apexshadow27@peak.org",
+      "phoneNumber": "+358-50-1234567",
+      "firstName": "Paulo",
+      "lastName": "Oliveira"
+    },
+    {
+      "username": "zenith_force_38",
+      "password": "ZenithForce38",
+      "email": "zenithforce38@top.com",
+      "phoneNumber": "+673-2-1234567",
+      "firstName": "Nur",
+      "lastName": "Yilmaz"
+    },
+    {
+      "username": "storm_breaker_20",
+      "password": "StormBreaker20",
+      "email": "stormbreaker20@break.net",
+      "phoneNumber": "+98-21-1234567",
+      "firstName": "Javad",
+      "lastName": "Karimi"
+    },
+    {
+      "username": "apex_reaver_45",
+      "password": "ApexReaver45",
+      "email": "apexreaver45@destroy.io",
+      "phoneNumber": "+212-5-1234567",
+      "firstName": "Yasmin",
+      "lastName": "BenDavid"
+    },
+    {
+      "username": "venom_striker_30",
+      "password": "VenomStriker30",
+      "email": "venomstriker30@poison.org",
+      "phoneNumber": "+216-71-1234567",
+      "firstName": "Carlos",
+      "lastName": "Mendez"
+    },
+    {
+      "username": "primal_force_49",
+      "password": "PrimalForce49",
+      "email": "primalforce49@nature.com",
+      "phoneNumber": "+880-2-1234567",
+      "firstName": "Rajesh",
+      "lastName": "Kumar"
+    },
+    {
+      "username": "inferno_chaos_25",
+      "password": "InfernoChaos25",
+      "email": "infernochoas25@mayhem.net",
+      "phoneNumber": "+84-24-1234567",
+      "firstName": "Linh",
+      "lastName": "Tran"
+    },
+    {
+      "username": "soul_reaper_35",
+      "password": "SoulReaper35",
+      "email": "soulreaper35@spirit.io",
+      "phoneNumber": "+233-21-1234567",
+      "firstName": "Kofi",
+      "lastName": "Mensah"
+    },
+    {
+      "username": "nexus_phantom_28",
+      "password": "NexusPhantom28",
+      "email": "nexusphantom28@ghost.org",
+      "phoneNumber": "+234-1-1234567",
+      "firstName": "Chukwu",
+      "lastName": "Okafor"
+    },
+    {
+      "username": "eclipse_volt_39",
+      "password": "EclipseVolt39",
+      "email": "eclipsevolt39@electric.com",
+      "phoneNumber": "+256-41-1234567",
+      "firstName": "Amara",
+      "lastName": "Kampala"
+    },
+    {
+      "username": "titan_shadow_34",
+      "password": "TitanShadow34",
+      "email": "titanshadow34@giant.net",
+      "phoneNumber": "+263-4-1234567",
+      "firstName": "Thembi",
+      "lastName": "Nkosi"
+    },
+    {
+      "username": "void_nexus_48",
+      "password": "VoidNexus48",
+      "email": "voidnexus48@empty.io",
+      "phoneNumber": "+226-25-1234567",
+      "firstName": "Moussa",
+      "lastName": "Traore"
+    },
+    {
+      "username": "quantum_sage_31",
+      "password": "QuantumSage31",
+      "email": "quantumsage31@knowledge.org",
+      "phoneNumber": "+242-5-1234567",
+      "firstName": "Celestin",
+      "lastName": "Lemoine"
+    },
+    {
+      "username": "eclipse_master_46",
+      "password": "EclipseMaster46",
+      "email": "eclipsemaster46@shadow.com",
+      "phoneNumber": "+257-22-1234567",
+      "firstName": "Ines",
+      "lastName": "Nkurunziza"
+    },
+    {
+      "username": "stellar_force_36",
+      "password": "StellarForce36",
+      "email": "stellarforce36@star.net",
+      "phoneNumber": "+235-21-1234567",
+      "firstName": "Rashid",
+      "lastName": "Habib"
+    }
+  ]
+}

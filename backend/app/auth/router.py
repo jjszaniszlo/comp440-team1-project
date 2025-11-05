@@ -9,7 +9,9 @@ from app.limiter import limiter
 router = APIRouter()
 
 
-@router.post("/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/signup", response_model=UserResponse, status_code=status.HTTP_201_CREATED
+)
 @limiter.limit("5/hour")
 async def signup(request: Request, db: DatabaseDependency, user: UserSignup):
     return await service_signup(db, user)

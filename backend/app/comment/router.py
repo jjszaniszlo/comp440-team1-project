@@ -1,24 +1,21 @@
-from typing import List, Union
+from typing import List, Optional
 from fastapi import APIRouter, Query, Request
 
 from app.auth.dependencies import UserDependency
-from app.comment.dependencies import BlogCommentDependency, UserBlogCommentDependency
+from app.comment.dependencies import UserBlogCommentDependency, CanCommentDependency
 from app.comment.schemas import (
     CommentCreateRequest,
     CommentUpdateRequest,
     CommentResponse,
-    CommentWithRepliesResponse,
 )
 from app.comment.service import (
     create_comment_service,
     list_blog_comments_service,
-    get_comment_service,
     update_comment_service,
     delete_comment_service,
 )
 from app.db.dependencies import DatabaseDependency
 from app.limiter import limiter
-from app.user.dependencies import CanCommentDependency
 
 
 router = APIRouter()
@@ -43,30 +40,19 @@ async def create_comment(
 
 @router.get(
     "/{blog_id}/comments",
-    response_model=List[Union[CommentWithRepliesResponse, CommentResponse]],
+    response_model=List[CommentResponse],
 )
 @limiter.limit("100/minute")
 async def list_blog_comments(
     request: Request,
     blog_id: int,
     db: DatabaseDependency,
-    include_replies: bool = Query(True, description="Include nested replies"),
+    parent_comment_id: Optional[int] = Query(
+        None,
+        description="Parent comment ID to load replies for. If None, loads root comments.",
+    ),
 ):
-    return await list_blog_comments_service(blog_id, db, include_replies)
-
-
-@router.get(
-    "/{blog_id}/comments/{comment_id}",
-    response_model=Union[CommentWithRepliesResponse, CommentResponse],
-)
-@limiter.limit("100/minute")
-async def get_comment(
-    request: Request,
-    comment: BlogCommentDependency,
-    db: DatabaseDependency,
-    include_replies: bool = Query(False, description="Include nested replies"),
-):
-    return await get_comment_service(comment.id, db, include_replies)
+    return await list_blog_comments_service(blog_id, db, parent_comment_id)
 
 
 @router.patch(

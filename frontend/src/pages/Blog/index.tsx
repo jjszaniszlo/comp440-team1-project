@@ -1,3 +1,3 @@
-export * from "./BlogHomePage";
-export * from "./EditBlogPage";
-export * from "./ViewBlogPage";
+export { BlogHomePage } from "./BlogHomePage";
+export { EditBlogPage } from "./EditBlogPage";
+export { ViewBlogPage } from "./ViewBlogPage";

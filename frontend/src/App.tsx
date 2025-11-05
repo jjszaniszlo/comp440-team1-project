@@ -2,13 +2,12 @@ import { Route, Routes } from "react-router";
 import { ThemeProvider } from "./components/theme-provider";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { PublicRoute } from "./components/PublicRoute";
-import { Login } from "./pages/Login";
-import { Signup } from "./pages/Signup";
+import { Login, Signup } from "./pages/Auth";
 import { Home } from "./pages/Home";
 import { Toaster } from "@/components/ui/sonner";
 import { BlogHomePage, ViewBlogPage } from "./pages/Blog";
 import { MainLayout } from "./layout/MainLayout";
-import EditBlogPage from "./pages/Blog/EditBlogPage";
+import { EditBlogPage } from "./pages/Blog/EditBlogPage";
 
 export function App() {
   return (

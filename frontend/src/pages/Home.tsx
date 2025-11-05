@@ -5,7 +5,6 @@ import { useUserMe } from "@/hooks/queries"
 import { useApi } from "../lib/api"
 import { useNavigate } from "react-router"
 
-// feel free to change this page however you want.
 export function Home() {
   const { data: user } = useUserMe();
   const api = useApi();

@@ -4,7 +4,6 @@ from typing import List
 from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
 
 from app.auth.models import User
 from app.blog.exceptions import BlogNotFoundException, handle_database_error
@@ -14,7 +13,6 @@ from app.comment.schemas import (
     CommentCreateRequest,
     CommentResponse,
     CommentUpdateRequest,
-    CommentWithRepliesResponse,
 )
 from app.user.models import UserDailyActivity
 
@@ -27,7 +25,6 @@ class CommentNotFoundException(HTTPException):
         )
 
 
-# TODO: DO NOT ALLOW AUTHOR TO COMMENT
 async def create_comment_service(
     blog_id: int,
     comment_data: CommentCreateRequest,
@@ -39,6 +36,15 @@ async def create_comment_service(
         if not blog:
             raise BlogNotFoundException(blog_id)
 
+        if (
+            blog.author_username == user.username
+            and comment_data.parent_comment_id is None
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_403_FORBIDDEN,
+                detail="You cannot create root-level comments on your own blog. However, you can reply to existing comments.",
+            )
+
         if comment_data.parent_comment_id:
             parent_comment = await db.get(Comment, comment_data.parent_comment_id)
             if not parent_comment:
@@ -47,6 +53,11 @@ async def create_comment_service(
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Parent comment does not belong to this blog",
+                )
+            if parent_comment.author_username == user.username:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="You cannot reply to your own comment",
                 )
 
         new_comment = Comment(
@@ -84,64 +95,41 @@ async def create_comment_service(
 async def list_blog_comments_service(
     blog_id: int,
     db: AsyncSession,
-    include_replies: bool = True,
-) -> List[CommentWithRepliesResponse] | List[CommentResponse]:
+    parent_comment_id: int | None = None,
+) -> List[CommentResponse]:
     try:
         blog = await db.get(Blog, blog_id)
         if not blog:
             raise BlogNotFoundException(blog_id)
 
-        if include_replies:
+        if parent_comment_id is None:
             result = await db.scalars(
                 select(Comment)
                 .where(Comment.blog_id == blog_id)
                 .where(Comment.parent_comment_id.is_(None))
-                .options(selectinload(Comment.replies).selectinload(Comment.replies))
             )
-            comments = result.all()
-            return [
-                CommentWithRepliesResponse.model_validate(comment)
-                for comment in comments
-            ]
         else:
+            parent_comment = await db.get(Comment, parent_comment_id)
+            if not parent_comment:
+                raise CommentNotFoundException(parent_comment_id)
+            if parent_comment.blog_id != blog_id:
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Parent comment does not belong to this blog",
+                )
+
             result = await db.scalars(
                 select(Comment)
                 .where(Comment.blog_id == blog_id)
-                .where(Comment.parent_comment_id.is_(None))
+                .where(Comment.parent_comment_id == parent_comment_id)
             )
-            comments = result.all()
-            return [CommentResponse.model_validate(comment) for comment in comments]
+
+        comments = result.all()
+        return [CommentResponse.model_validate(comment) for comment in comments]
     except HTTPException:
         raise
     except Exception as e:
         handle_database_error(e, "list blog comments")
-
-
-async def get_comment_service(
-    comment_id: int,
-    db: AsyncSession,
-    include_replies: bool = False,
-) -> CommentWithRepliesResponse | CommentResponse:
-    try:
-        if include_replies:
-            result = await db.scalars(
-                select(Comment)
-                .where(Comment.id == comment_id)
-                .options(selectinload(Comment.replies))
-            )
-            comment = result.first()
-            if not comment:
-                raise CommentNotFoundException(comment_id)
-            return CommentWithRepliesResponse.model_validate(comment)
-        else:
-            comment = await db.get(Comment, comment_id)
-            if not comment:
-                raise CommentNotFoundException(comment_id)
-            return CommentResponse.model_validate(comment)
-    except HTTPException:
-        raise
-    except Exception as e:
-        handle_database_error(e, "get comment")
 
 
 async def update_comment_service(

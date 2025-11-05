@@ -8,6 +8,7 @@ import { Pencil } from "lucide-react";
 import { FilterBadge } from "@/components/FilterBadge";
 import { PublishBadge } from "@/components/PublishBadge";
 import { MarkdownViewer } from "./components/MarkdownViewer";
+import { CommentSection } from "./components/CommentSection";
 import { ApiErrorCard } from "@/components/ApiErrorCard";
 
 function ViewBlogPageSkeleton() {
@@ -67,12 +68,12 @@ export function ViewBlogPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-6 max-w-4xl">
+    <div className="container mx-auto px-4 py-6 max-w-4xl space-y-6">
       <Card>
         <CardHeader>
           <div className="flex items-start justify-between gap-4">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2 justify-between">
+              <div className="flex items-center gap-4 mb-2 justify-between">
                 <h1 className={`${getTitleFontSize(blog.subject)} font-bold`}>
                   {blog.subject}
                 </h1>
@@ -95,6 +96,7 @@ export function ViewBlogPage() {
                   {blog.description}
                 </p>
               )}
+              <FilterBadge value={blog.author_username} type="author" />
             </div>
           </div>
 
@@ -112,6 +114,8 @@ export function ViewBlogPage() {
           <MarkdownViewer content={blog.content || ""} />
         </CardContent>
       </Card>
+
+      <CommentSection blogId={Number(blogId)} isAuthor={isAuthor} />
     </div>
   );
 }

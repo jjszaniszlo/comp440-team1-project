@@ -13,6 +13,11 @@ export interface BlogResponse {
   updated_at: string;
 }
 
+export interface BlogSearchResponse extends BlogResponse {
+  subject: string;
+  tags: string[];
+}
+
 export interface BlogDetailResponse extends BlogResponse {
   subject: string | null;
   description: string | null;

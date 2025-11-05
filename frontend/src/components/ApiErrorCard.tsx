@@ -22,8 +22,17 @@ export function ApiErrorCard({
 
   const errorConfig = status ? errorMessages[status] : undefined;
   const title = errorConfig?.title ?? defaultTitle;
-  const description =
-    errorConfig?.description ?? apiError?.data?.detail ?? defaultDescription;
+
+  // Safely extract detail from error data
+  let errorDetail = defaultDescription;
+  if (apiError?.data && typeof apiError.data === 'object' && 'detail' in apiError.data) {
+    const detail = (apiError.data as { detail: unknown }).detail;
+    if (typeof detail === 'string') {
+      errorDetail = detail;
+    }
+  }
+
+  const description = errorConfig?.description ?? errorDetail;
 
   return (
     <div className="container mx-auto px-4 w-full flex items-center justify-center min-h-[50vh]">

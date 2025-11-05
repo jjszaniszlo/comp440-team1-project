@@ -18,33 +18,22 @@ class UserFollow(BaseModel):
     __tablename__ = "user_follow"
 
     follower_username: Mapped[str] = mapped_column(
-        String(50),
-        ForeignKey("user.username", ondelete="CASCADE"),
-        primary_key=True
+        String(50), ForeignKey("user.username", ondelete="CASCADE"), primary_key=True
     )
     following_username: Mapped[str] = mapped_column(
-        String(50),
-        ForeignKey("user.username", ondelete="CASCADE"),
-        primary_key=True
+        String(50), ForeignKey("user.username", ondelete="CASCADE"), primary_key=True
     )
-    created_at: Mapped[datetime] = mapped_column(
-        default=get_current_time
-    )
+    created_at: Mapped[datetime] = mapped_column(default=get_current_time)
 
     follower: Mapped["User"] = relationship(
-        "User",
-        foreign_keys=[follower_username],
-        back_populates="following"
+        "User", foreign_keys=[follower_username], back_populates="following"
     )
     following: Mapped["User"] = relationship(
-        "User",
-        foreign_keys=[following_username],
-        back_populates="followers"
+        "User", foreign_keys=[following_username], back_populates="followers"
     )
 
     __table_args__ = (
         CheckConstraint(
-            'follower_username != following_username',
-            name='check_no_self_follow'
+            "follower_username != following_username", name="check_no_self_follow"
         ),
     )

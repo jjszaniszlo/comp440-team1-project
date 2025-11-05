@@ -31,7 +31,7 @@ import { githubDark as cmGithubDark } from "@fsegurai/codemirror-theme-github-da
 
 const MARKDOWN_PATTERNS = {
   heading: /^#{1,6}\s/m,
-  list: /^[\*\-\+]\s|^\d+\.\s/m,
+  list: /^[*+-]\s|^\d+\.\s/m,
   inline: /(\*\*.*\*\*|__.*__|`.*`|\[.*\]\(.*\))/m,
 } as const;
 

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -28,10 +28,3 @@ class CommentResponse(BaseModel):
     parent_comment_id: Optional[int] = None
     created_at: datetime
     updated_at: datetime
-
-
-class CommentWithRepliesResponse(CommentResponse):
-    replies: List["CommentWithRepliesResponse"] = []
-
-
-CommentWithRepliesResponse.model_rebuild()

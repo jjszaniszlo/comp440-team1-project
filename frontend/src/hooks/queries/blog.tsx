@@ -1,14 +1,17 @@
 import { useApi } from "@/lib/api";
-import type { BlogResponse, BlogSearchParams, BlogDetailResponse } from "@/types";
-import { useQuery } from "@tanstack/react-query";
+import type { BlogSearchResponse, BlogSearchParams, BlogDetailResponse, PaginatedResponse } from "@/types";
+import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 
-export function useBlogSearch(params?: BlogSearchParams) {
+export function useBlogSearchInfinite(params?: BlogSearchParams, pageSize: number = 20) {
   const api = useApi();
 
-  return useQuery({
-    queryKey: ["blog-search", params],
-    queryFn: async () => {
+  return useInfiniteQuery({
+    queryKey: ["blog-search-infinite", params, pageSize],
+    queryFn: async ({ pageParam = 1 }) => {
       const searchParams = new URLSearchParams();
+
+      searchParams.append("page", String(pageParam));
+      searchParams.append("size", String(pageSize));
 
       if (params?.search) {
         searchParams.append("search", params.search);
@@ -38,11 +41,15 @@ export function useBlogSearch(params?: BlogSearchParams) {
 
       const queryString = searchParams.toString();
 
-      return api.get<BlogResponse[]>(
+      return api.get<PaginatedResponse<BlogSearchResponse>>(
         `/blog/search${queryString ? `?${queryString}` : ""}`,
         false
       );
     },
+    getNextPageParam: (lastPage) => {
+      return lastPage.meta.has_next ? lastPage.meta.page + 1 : undefined;
+    },
+    initialPageParam: 1,
   });
 }
 

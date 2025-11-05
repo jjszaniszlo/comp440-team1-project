@@ -5,7 +5,6 @@ from app.blog.router import router as blog_router
 from app.comment.router import router as comment_router
 from app.follow.router import router as follow_router
 
-
 api_router = APIRouter()
 
 

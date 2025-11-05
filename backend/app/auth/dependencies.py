@@ -9,6 +9,7 @@ from app.db.dependencies import DatabaseDependency
 
 security = HTTPBearer()
 
+
 async def get_current_user(
     db: DatabaseDependency,
     credentials: Annotated[HTTPAuthorizationCredentials, Depends(security)],

@@ -3,8 +3,9 @@ import { useMemo, useEffect, useRef } from "react";
 import { githubLight as cmGithubLight } from "@fsegurai/codemirror-theme-github-light";
 import { githubDark as cmGithubDark } from "@fsegurai/codemirror-theme-github-dark";
 import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { EditorView } from "@codemirror/view";
-import { EditorState } from "@codemirror/state";
+import { EditorState, type Extension } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
 import { css } from "@codemirror/lang-css";
@@ -50,7 +51,7 @@ function getLanguageSupport(lang: string) {
 interface CodeBlockProps {
   language: string;
   children: string;
-  theme: any;
+  theme: Extension;
 }
 
 function CodeBlock({ language, children, theme }: CodeBlockProps) {
@@ -114,7 +115,7 @@ export function MarkdownViewer({ content }: MarkdownViewerProps) {
 
   return (
     <div className="prose prose-lg max-w-none dark:prose-invert">
-      <ReactMarkdown components={markdownComponents}>
+      <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
         {content || ""}
       </ReactMarkdown>
     </div>

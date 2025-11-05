@@ -1,21 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
-import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router";
+import { useParams } from "react-router";
 import { MarkdownEditor } from "./components/MarkdownEditor";
 import { TagEditor } from "@/components/TagEditor";
-import { useBlog } from "@/hooks/queries";
-import { useUpdateBlog } from "@/hooks/mutations";
 import { ApiErrorCard } from "@/components/ApiErrorCard";
 import { PublishBadge } from "@/components/PublishBadge";
 import { Heading, Tags, UserPen, Save, FileText } from "lucide-react";
+import { useEditBlog } from "./hooks";
 
 function EditBlogPageSkeleton() {
   return (
@@ -37,25 +37,27 @@ function EditBlogPageSkeleton() {
   );
 }
 
-export default function EditBlogPage() {
+export function EditBlogPage() {
   const { blogId } = useParams<{ blogId: string }>();
-  const navigate = useNavigate();
-  const { data: blog, isLoading, error } = useBlog(Number(blogId));
-  const { mutate: updateBlog, isPending } = useUpdateBlog(Number(blogId));
-
-  const [subject, setSubject] = useState("");
-  const [description, setDescription] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
-  const [content, setContent] = useState("");
-
-  useEffect(() => {
-    if (blog) {
-      setSubject(blog.subject ?? "");
-      setDescription(blog.description ?? "");
-      setTags(blog.tags);
-      setContent(blog.content ?? "");
-    }
-  }, [blog]);
+  const {
+    blog,
+    isLoading,
+    error,
+    subject,
+    setSubject,
+    description,
+    setDescription,
+    tags,
+    setTags,
+    content,
+    setContent,
+    handleSave,
+    isPending,
+    canSave,
+    handlePublishToggle,
+    isTogglingPublish,
+    isPublished,
+  } = useEditBlog({ blogId: Number(blogId) });
 
   if (isLoading) {
     return <EditBlogPageSkeleton />;
@@ -83,24 +85,6 @@ export default function EditBlogPage() {
     );
   }
 
-  const handleSave = () => {
-    updateBlog(
-      {
-        subject: subject || undefined,
-        description: description || undefined,
-        tags: tags.length > 0 ? tags : undefined,
-        content: content || undefined,
-      },
-      {
-        onSuccess: () => {
-          navigate(`/blog/${blogId}`);
-        },
-      }
-    );
-  };
-
-  const canSave = subject.trim().length > 0;
-
   return (
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       <Card>
@@ -113,10 +97,23 @@ export default function EditBlogPage() {
               </h1>
               <PublishBadge status={blog.status} />
             </div>
-            <Button onClick={handleSave} disabled={isPending || !canSave}>
-              <Save className="h-4 w-4 mr-2" />
-              {isPending ? "Saving..." : "Save Changes"}
-            </Button>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <Switch
+                  id="publish-toggle"
+                  checked={isPublished}
+                  onCheckedChange={handlePublishToggle}
+                  disabled={isTogglingPublish}
+                />
+                <Label htmlFor="publish-toggle" className="cursor-pointer">
+                  {isPublished ? "Published" : "Draft"}
+                </Label>
+              </div>
+              <Button onClick={handleSave} disabled={isPending || !canSave}>
+                <Save className="h-4 w-4 mr-2" />
+                {isPending ? "Saving..." : "Save Changes"}
+              </Button>
+            </div>
           </div>
         </CardHeader>
 

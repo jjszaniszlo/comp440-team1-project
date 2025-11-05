@@ -7,3 +7,17 @@ export interface SearchQuery {
   authors: string[];
   text: string;
 }
+
+export interface PaginationMeta {
+  page: number;
+  size: number;
+  total: number;
+  pages: number;
+  has_next: boolean;
+  has_prev: boolean;
+}
+
+export interface PaginatedResponse<T> {
+  items: T[];
+  meta: PaginationMeta;
+}

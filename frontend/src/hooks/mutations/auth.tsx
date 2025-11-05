@@ -1,12 +1,12 @@
-import { useApi } from "@/lib/api";
-import { ApiError } from "@/lib/api";
+import { useApi, getErrorMessage } from "@/lib/api";
 import type { UserLogin, UserSignup } from "@/types";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 
 export const useUserSignup = () => {
   const api = useApi();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (userSignup: UserSignup) => {
@@ -20,34 +20,29 @@ export const useUserSignup = () => {
       return userSignup;
     },
     onSuccess: () => {
+      queryClient.clear();
       toast.success("Account created and logged in successfully!");
     },
     onError: (error) => {
-      if (error instanceof ApiError) {
-        const message = error.data?.detail || error.statusText || "Failed to create account";
-        toast.error(message);
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+      const message = getErrorMessage(error, "Failed to create account");
+      toast.error(message);
     },
   })
 }
 
 export const useUserLogin = () => {
   const api = useApi();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: (userLogin: UserLogin) => api.auth.login(userLogin),
     onSuccess: () => {
+      queryClient.clear();
       toast.success("Logged in successfully!");
     },
     onError: (error) => {
-      if (error instanceof ApiError) {
-        const message = error.data?.detail || error.statusText || "Failed to log in";
-        toast.error(message);
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
-      }
+      const message = getErrorMessage(error, "Failed to log in");
+      toast.error(message);
     },
   })
 }

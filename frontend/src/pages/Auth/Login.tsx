@@ -1,53 +1,14 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { useUserLogin } from "@/hooks/mutations";
-import { useMemo, useState } from "react";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useNavigate, useSearchParams } from "react-router";
+import { useNavigate } from "react-router";
 import { ThemeModeToggle } from "@/components/theme-mode-toggle";
+import { useLogin } from "./hooks";
 
 export function Login() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const { mutate: login, isPending } = useUserLogin();
-
-  const returnTo = searchParams.get("returnTo") || "/";
-
-  const [loginInfo, setLoginInfo] = useState({
-    username: "",
-    password: "",
-  });
-
-  const usernameError = useMemo(() => {
-    if (!loginInfo.username) return null;
-    const usernameRegex = /^[A-Za-z][A-Za-z0-9_]{5,29}$/;
-    if (!usernameRegex.test(loginInfo.username)) {
-      return "Username must start with a letter, be 6-30 characters, and contain only letters, numbers, or underscores";
-    }
-    return null;
-  }, [loginInfo.username]);
-
-  const canSubmit = useMemo(() => {
-    return (
-      loginInfo.username.trim() !== "" &&
-      loginInfo.password.trim() !== "" &&
-      !usernameError
-    );
-  }, [loginInfo, usernameError]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!usernameError && loginInfo.username && loginInfo.password) {
-      login(loginInfo, {
-        onSuccess: () => {
-          setTimeout(() => {
-            navigate(returnTo, { replace: true });
-          }, 0);
-        },
-      });
-    }
-  };
+  const { form, updateField, handleSubmit, errors, isValid, isPending } = useLogin();
 
   return (
     <div className="justify-center items-center min-h-screen p-20">
@@ -65,14 +26,12 @@ export function Login() {
                   <Input
                     type="text"
                     placeholder="Enter your username"
-                    value={loginInfo.username}
-                    onChange={(e) =>
-                      setLoginInfo({ ...loginInfo, username: e.target.value })
-                    }
+                    value={form.username}
+                    onChange={(e) => updateField("username", e.target.value)}
                     disabled={isPending}
                   />
-                  {usernameError && (
-                    <p className="text-sm text-red-500 mt-1">{usernameError}</p>
+                  {errors.username && (
+                    <p className="text-sm text-red-500 mt-1">{errors.username}</p>
                   )}
                 </Field>
 
@@ -81,10 +40,8 @@ export function Login() {
                   <Input
                     type="password"
                     placeholder="Enter your password"
-                    value={loginInfo.password}
-                    onChange={(e) =>
-                      setLoginInfo({ ...loginInfo, password: e.target.value })
-                    }
+                    value={form.password}
+                    onChange={(e) => updateField("password", e.target.value)}
                     disabled={isPending}
                   />
                 </Field>
@@ -93,7 +50,7 @@ export function Login() {
 
             <Button
               type="submit"
-              disabled={!canSubmit || isPending}
+              disabled={!isValid || isPending}
               className="w-full"
             >
               {isPending ? "Logging in..." : "Login"}

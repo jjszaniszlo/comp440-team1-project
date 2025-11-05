@@ -1,47 +1,37 @@
 from datetime import date
 from typing import TYPE_CHECKING, List
 
-from sqlalchemy import CheckConstraint, String, Integer, Date, ForeignKey
+from sqlalchemy import CheckConstraint, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models import BaseModel
 
 if TYPE_CHECKING:
     from app.auth.models import User
-    from app.comment.models import Comment
     from app.blog.models import Blog
+    from app.comment.models import Comment
 
 
 class UserLimits(BaseModel):
     __tablename__ = "user_limits"
 
     username: Mapped[str] = mapped_column(
-        String(50),
-        ForeignKey(
-            "user.username",
-            ondelete="CASCADE"
-        ),
-        primary_key=True
+        String(50), ForeignKey("user.username", ondelete="CASCADE"), primary_key=True
     )
     comment_creation_limit: Mapped[int] = mapped_column(
-        Integer, 
-        nullable=False,
-        default=0
+        Integer, nullable=False, default=0
     )
-    blog_creation_limit: Mapped[int] = mapped_column(
-        Integer,
-        nullable=False,
-        default=0
-    )
+    blog_creation_limit: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
 
-    user: Mapped["User"] = relationship(
-        "User",
-        back_populates="limits"
-    )
+    user: Mapped["User"] = relationship("User", back_populates="limits")
 
     __table_args__ = (
-        CheckConstraint('comment_creation_limit >= 0', name='check_comment_limit_non_negative'),
-        CheckConstraint('blog_creation_limit >= 0', name='check_blog_limit_non_negative'),
+        CheckConstraint(
+            "comment_creation_limit >= 0", name="check_comment_limit_non_negative"
+        ),
+        CheckConstraint(
+            "blog_creation_limit >= 0", name="check_blog_limit_non_negative"
+        ),
     )
 
 
@@ -49,12 +39,7 @@ class UserDailyActivity(BaseModel):
     __tablename__ = "user_daily_activity"
 
     username: Mapped[str] = mapped_column(
-        String(50),
-        ForeignKey(
-            "user.username",
-            ondelete="CASCADE"
-        ),
-        primary_key=True
+        String(50), ForeignKey("user.username", ondelete="CASCADE"), primary_key=True
     )
     activity_date: Mapped[date] = mapped_column(Date, primary_key=True)
     comments_made: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
@@ -66,6 +51,6 @@ class UserDailyActivity(BaseModel):
     )
 
     __table_args__ = (
-        CheckConstraint('comments_made >= 0', name='check_comments_made_non_negative'),
-        CheckConstraint('blogs_made >= 0', name='check_blogs_made_non_negative'),
+        CheckConstraint("comments_made >= 0", name="check_comments_made_non_negative"),
+        CheckConstraint("blogs_made >= 0", name="check_blogs_made_non_negative"),
     )

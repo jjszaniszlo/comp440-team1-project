@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import { useQueryClient } from "@tanstack/react-query";
 import { tokenStorage, useApi } from "@/lib/api";
 
 export function useAuth() {
   const api = useApi();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [isAuthenticated, setIsAuthenticated] = useState(tokenStorage.exists());
 
   useEffect(() => {
@@ -18,6 +20,8 @@ export function useAuth() {
 
   const logout = (returnTo?: string) => {
     api.auth.logout();
+
+    queryClient.clear();
 
     const destination = returnTo || "/";
 

@@ -6,7 +6,7 @@ git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 
 ** Team Setup
 - Uma: Frontend, Database
-- Kenzie: Frontend, Database
+- Kenzie: Backend, Frontend, Database
 - John: Backend, Frontend, Database
 
 ** Backend Setup

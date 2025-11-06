@@ -4,6 +4,11 @@
 git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 #+end_src
 
+** Team Setup
+- Uma: Frontend, Database
+- Kenzie: Frontend, Database
+- John: Backend, Frontend, Database
+
 ** Backend Setup
 
 - ~python >= 3.17~

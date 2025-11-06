@@ -44,6 +44,22 @@ async def create_comment_service(
                 status_code=status.HTTP_403_FORBIDDEN,
                 detail="You cannot create root-level comments on your own blog. However, you can reply to existing comments.",
             )
+        # Editing service to make sure that users can comment "at most one time" on each blog- this only applies
+        # to root-level comments, no restrictions on replies
+        if comment_data.parent_comment_id is None:
+            existing_comment = await db.scalar(
+                select(Comment)
+                .where(Comment.blog_id == blog_id)
+                .where(Comment.author_username == user.username)
+                .where(Comment.parent_comment_id.is_(None))
+            )
+
+            if existing_comment:
+                raise HTTPException(
+                    status_code=status.HTTP_403_FORBIDDEN,
+                    detail="You have already commented on this blog. You can only make one root-level comment, but you can still post replies."
+                )
+        # end of new stuff for limiting comments to 1 per blog
 
         if comment_data.parent_comment_id:
             parent_comment = await db.get(Comment, comment_data.parent_comment_id)

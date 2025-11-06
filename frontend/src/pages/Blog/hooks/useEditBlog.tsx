@@ -31,21 +31,26 @@ export function useEditBlog({ blogId }: UseEditBlogProps) {
     }
   }, [blog]);
 
+  // Check if there are unsaved changes
+  const hasUnsavedChanges = blog ? (
+    subject !== (blog.subject ?? "") ||
+    description !== (blog.description ?? "") ||
+    JSON.stringify(tags) !== JSON.stringify(blog.tags) ||
+    content !== (blog.content ?? "")
+  ) : false;
+
   // Handlers
   const handleSave = () => {
-    updateBlog(
-      {
-        subject: subject || undefined,
-        description: description || undefined,
-        tags: tags.length > 0 ? tags : undefined,
-        content: content || undefined,
-      },
-      {
-        onSuccess: () => {
-          navigate(`/blog/${blogId}`);
-        },
-      }
-    );
+    updateBlog({
+      subject: subject || undefined,
+      description: description || undefined,
+      tags: tags.length > 0 ? tags : undefined,
+      content: content || undefined,
+    });
+  };
+
+  const handleViewPage = () => {
+    navigate(`/blog/${blogId}`);
   };
 
   const handlePublishToggle = (checked: boolean) => {
@@ -61,7 +66,7 @@ export function useEditBlog({ blogId }: UseEditBlogProps) {
   const isTogglingPublish = isPublishing || isUnpublishing;
 
   // Validation
-  const canSave = subject.trim().length > 0;
+  const canSave = subject.trim().length > 0 && hasUnsavedChanges;
 
   return {
     // Data
@@ -82,11 +87,13 @@ export function useEditBlog({ blogId }: UseEditBlogProps) {
     // Actions
     handleSave,
     isPending,
+    handleViewPage,
     handlePublishToggle,
     isTogglingPublish,
 
     // Derived state
     isPublished,
+    hasUnsavedChanges,
 
     // Validation
     canSave,

@@ -5,6 +5,7 @@ from sqlalchemy import (
     CheckConstraint,
     Column,
     ForeignKey,
+    Index,
     Integer,
     String,
     Table,
@@ -48,17 +49,17 @@ class Blog(BaseModel):
     description: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     content: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
     status: Mapped[BlogStatus] = mapped_column(
-        SQLEnum(BlogStatus), default=BlogStatus.DRAFT
+        SQLEnum(BlogStatus), default=BlogStatus.DRAFT, index=True
     )
 
     author_username: Mapped[str] = mapped_column(
-        String(50), ForeignKey("user.username")
+        String(50), ForeignKey("user.username"), index=True
     )
     upvotes: Mapped[int] = mapped_column(Integer, default=0)
     downvotes: Mapped[int] = mapped_column(Integer, default=0)
-    created_at: Mapped[datetime] = mapped_column(default=get_current_time)
+    created_at: Mapped[datetime] = mapped_column(default=get_current_time, index=True)
     updated_at: Mapped[datetime] = mapped_column(
-        default=get_current_time, onupdate=get_current_time
+        default=get_current_time, onupdate=get_current_time, index=True
     )
     author: Mapped["User"] = relationship("User", back_populates="blogs")
     tags: Mapped[List["Tag"]] = relationship(
@@ -71,6 +72,7 @@ class Blog(BaseModel):
     __table_args__ = (
         CheckConstraint("upvotes >= 0", name="check_upvotes_non_negative"),
         CheckConstraint("downvotes >= 0", name="check_downvotes_non_negative"),
+        Index("idx_blog_status_created", "status", "created_at"),
     )
 
 

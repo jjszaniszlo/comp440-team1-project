@@ -4,7 +4,7 @@ from typing import List
 from sqlalchemy import Select, delete, func, select, text
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import joinedload, selectinload
 
 from app.auth.models import User
 from app.blog.exceptions import BlogNotFoundException, handle_database_error
@@ -109,68 +109,79 @@ async def search_blogs_service(
     size: int = 20,
 ) -> PaginatedResponse[BlogSearchResponse]:
     try:
-        # Build base query
+        boolean_search = None
         if search:
-            relevance_expr = text(
-                "MATCH(subject, description, content) AGAINST(:search_term IN NATURAL LANGUAGE MODE) AS relevance"
-            ).bindparams(search_term=search)
+            search_words = search.strip().split()
+            boolean_search = " ".join(f"{word}*" for word in search_words)
 
-            query = (
-                select(Blog, relevance_expr)
-                .where(Blog.status == BlogStatus.PUBLISHED.value)
-                .where(
-                    text(
-                        "MATCH(subject, description, content) AGAINST(:search_term IN NATURAL LANGUAGE MODE) > 0"
-                    ).bindparams(search_term=search)
-                )
-                .options(selectinload(Blog.tags))
-            )
-        else:
-            query = (
-                select(Blog)
-                .where(Blog.status == BlogStatus.PUBLISHED)
-                .options(selectinload(Blog.tags))
+        base_query = select(Blog).where(Blog.status == BlogStatus.PUBLISHED)
+
+        if search:
+            base_query = base_query.where(
+                text(
+                    "MATCH(subject, description, content) AGAINST(:search_term IN BOOLEAN MODE)"
+                ).bindparams(search_term=boolean_search)
             )
 
         if tag_names:
-            query = query.join(Blog.tags).where(Tag.name.in_(tag_names))
+            base_query = base_query.join(Blog.tags).where(Tag.name.in_(tag_names))
             if tag_match_all:
-                query = query.group_by(Blog.id).having(
-                    func.count(Tag.id) == len(tag_names)
+                base_query = base_query.group_by(Blog.id).having(
+                    func.count(Tag.id.distinct()) == len(tag_names)
                 )
             else:
-                query = query.distinct()
+                base_query = base_query.distinct()
 
         if authors:
-            query = query.where(Blog.author_username.in_(authors))
+            base_query = base_query.where(Blog.author_username.in_(authors))
 
-        # Get total count before pagination
-        count_query = select(func.count()).select_from(query.subquery())
-        total = await db.scalar(count_query) or 0
-
-        # Apply sorting
-        if search:
-            sort = "relevance desc"
-            sort2 = f"{sort_by.value} {sort_order.value}"
-            query = query.order_by(text(sort), text(sort2))
+        if tag_names and tag_match_all:
+            count_query = select(func.count(func.distinct(Blog.id))).select_from(
+                base_query.alias()
+            )
         else:
-            sort = f"{sort_by.value} {sort_order.value}"
-            query = query.order_by(text(sort))
+            count_query = select(func.count()).select_from(base_query.alias())
 
-        # Apply pagination
+        main_query = base_query
+
+        if search and sort_by == BlogSortBy.RELEVANCE:
+            main_query = main_query.add_columns(
+                text(
+                    "MATCH(subject, description, content) AGAINST(:search_term IN BOOLEAN MODE) AS relevance"
+                ).bindparams(search_term=boolean_search)
+            )
+            main_query = main_query.order_by(text("relevance DESC"))
+            main_query = main_query.options(selectinload(Blog.tags))
+        elif search:
+            main_query = main_query.add_columns(
+                text(
+                    "MATCH(subject, description, content) AGAINST(:search_term IN BOOLEAN MODE) AS relevance"
+                ).bindparams(search_term=boolean_search)
+            )
+            main_query = blog_apply_sorting(main_query, sort_by, sort_order)
+            main_query = main_query.options(selectinload(Blog.tags))
+        else:
+            if sort_by == BlogSortBy.RELEVANCE:
+                main_query = blog_apply_sorting(main_query, BlogSortBy.CREATED_AT, BlogSortOrder.DESC)
+            else:
+                main_query = blog_apply_sorting(main_query, sort_by, sort_order)
+            main_query = main_query.options(joinedload(Blog.tags))
+
         offset = (page - 1) * size
-        query = query.offset(offset).limit(size)
+        main_query = main_query.offset(offset).limit(size)
 
-        result = await db.execute(query)
+        total = await db.scalar(count_query) or 0
+        result = await db.execute(main_query)
 
-        if search:
+        if search and sort_by == BlogSortBy.RELEVANCE:
+            blogs = [row[0] for row in result.all()]
+        elif search:
             blogs = [row[0] for row in result.all()]
         else:
-            blogs = result.scalars().all()
+            blogs = result.scalars().unique().all()
 
         items = [BlogSearchResponse.model_validate(blog) for blog in blogs]
 
-        # Calculate pagination metadata
         pages = (total + size - 1) // size if total > 0 else 1
 
         meta = PaginationMeta(

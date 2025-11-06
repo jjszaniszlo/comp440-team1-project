@@ -2,12 +2,6 @@ export interface ApiErrorResponse {
   detail: string;
 }
 
-export interface SearchQuery {
-  tags: string[];
-  authors: string[];
-  text: string;
-}
-
 export interface PaginationMeta {
   page: number;
   size: number;

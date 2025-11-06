@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/input-group";
 import { useParams } from "react-router";
 import { MarkdownEditor } from "./components/MarkdownEditor";
-import { TagEditor } from "@/components/TagEditor";
+import { BadgeEditor, PublishBadge, TagBadge } from "@/components/badges";
 import { ApiErrorCard } from "@/components/ApiErrorCard";
-import { PublishBadge } from "@/components/PublishBadge";
-import { Heading, Tags, UserPen, Save, FileText } from "lucide-react";
+import { Heading, Tags, UserPen, Save, FileText, Eye, X } from "lucide-react";
 import { useEditBlog } from "./hooks";
+import { useMemo } from "react";
 
 function EditBlogPageSkeleton() {
   return (
@@ -54,10 +54,20 @@ export function EditBlogPage() {
     handleSave,
     isPending,
     canSave,
+    handleViewPage,
     handlePublishToggle,
     isTogglingPublish,
     isPublished,
+    hasUnsavedChanges,
   } = useEditBlog({ blogId: Number(blogId) });
+
+  const tagConfig = useMemo(() => ({
+    type: 'tag' as const,
+    placeholder: 'Enter tag...',
+    invalidMessage: 'Invalid tag format. Tags can only contain letters, numbers, underscores, and hyphens, and must start with a letter or number.',
+    duplicateMessage: 'Tag already exists',
+    BadgeComponent: TagBadge,
+  }), []);
 
   if (isLoading) {
     return <EditBlogPageSkeleton />;
@@ -89,26 +99,42 @@ export function EditBlogPage() {
     <div className="container mx-auto px-4 py-6 max-w-4xl">
       <Card>
         <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold flex items-center gap-2">
-                <UserPen className="h-6 w-6" />
-                Edit Blog Post
-              </h1>
-              <PublishBadge status={blog.status} />
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <Switch
-                  id="publish-toggle"
-                  checked={isPublished}
-                  onCheckedChange={handlePublishToggle}
-                  disabled={isTogglingPublish}
-                />
-                <Label htmlFor="publish-toggle" className="cursor-pointer">
-                  {isPublished ? "Published" : "Draft"}
-                </Label>
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={handleViewPage}
+                  disabled={hasUnsavedChanges}
+                  variant="outline"
+                >
+                  <Eye className="h-4 w-4 mr-2" />
+                  View Page
+                </Button>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    id="publish-toggle"
+                    checked={isPublished}
+                    onCheckedChange={handlePublishToggle}
+                    disabled={isTogglingPublish || hasUnsavedChanges}
+                  />
+                  <Label htmlFor="publish-toggle" className="cursor-pointer">
+                    {isPublished ? "Published" : "Draft"}
+                  </Label>
+                </div>
               </div>
+              <div className="flex items-center gap-3">
+                <h1 className="text-2xl font-bold flex items-center gap-2">
+                  <UserPen className="h-6 w-6" />
+                  Edit Blog Post
+                </h1>
+                <PublishBadge status={blog.status} />
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button onClick={handleViewPage} variant="outline">
+                <X className="h-4 w-4 mr-2" />
+                Cancel
+              </Button>
               <Button onClick={handleSave} disabled={isPending || !canSave}>
                 <Save className="h-4 w-4 mr-2" />
                 {isPending ? "Saving..." : "Save Changes"}
@@ -133,7 +159,7 @@ export function EditBlogPage() {
               />
               <InputGroupAddon align="inline-end">{subject.length}/100</InputGroupAddon>
             </InputGroup>
-            {!canSave && (
+            {subject.trim().length === 0 && (
               <p className="text-xs text-destructive mt-1">Subject is required to save</p>
             )}
           </div>
@@ -143,7 +169,7 @@ export function EditBlogPage() {
               <Tags className="h-4 w-4" />
             </InputGroupAddon>
             <InputGroupAddon>
-              <TagEditor tags={tags} onChange={setTags} />
+              <BadgeEditor config={tagConfig} values={tags} onChange={setTags} />
             </InputGroupAddon>
           </InputGroup>
 

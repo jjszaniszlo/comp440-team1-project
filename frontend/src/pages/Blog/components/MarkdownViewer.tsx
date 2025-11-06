@@ -4,11 +4,14 @@ import { githubLight as cmGithubLight } from "@fsegurai/codemirror-theme-github-
 import { githubDark as cmGithubDark } from "@fsegurai/codemirror-theme-github-dark";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
 import { EditorView } from "@codemirror/view";
 import { EditorState, type Extension } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
 import { python } from "@codemirror/lang-python";
 import { css } from "@codemirror/lang-css";
+import { remarkBadges } from "@/lib/remark-badges";
+import { TagBadge, AuthorBadge } from "@/components/badges";
 
 const CODE_MIRROR_THEME = EditorView.theme({
   "&": { outline: "none", border: "none" },
@@ -109,13 +112,25 @@ export function MarkdownViewer({ content }: MarkdownViewerProps) {
           </CodeBlock>
         );
       },
+      badge: (props: Record<string, string>) => {
+        const badgeType = props['data-badge-type'];
+        const badgeValue = props['data-badge-value'];
+        if (badgeType === 'tag') {
+          return <TagBadge value={badgeValue} />;
+        }
+        return <AuthorBadge value={badgeValue} />;
+      },
     }),
     [cmTheme]
   );
 
   return (
     <div className="prose prose-lg max-w-none dark:prose-invert">
-      <ReactMarkdown components={markdownComponents} remarkPlugins={[remarkGfm]}>
+      <ReactMarkdown
+        components={markdownComponents}
+        remarkPlugins={[remarkGfm, remarkBadges]}
+        rehypePlugins={[rehypeRaw]}
+      >
         {content || ""}
       </ReactMarkdown>
     </div>

@@ -22,7 +22,12 @@ CREATE TABLE IF NOT EXISTS `blog` (
     CHECK (upvotes >= 0),
     CHECK (downvotes >= 0),
     CHECK (status IN ('DRAFT', 'PUBLISHED')),
-    FULLTEXT KEY `blog_search_idx` (subject, description, content)
+    FULLTEXT KEY `blog_search_idx` (subject, description, content),
+    INDEX `ix_blog_status` (status),
+    INDEX `ix_blog_author_username` (author_username),
+    INDEX `ix_blog_created_at` (created_at),
+    INDEX `ix_blog_updated_at` (updated_at),
+    INDEX `idx_blog_status_created` (status, created_at)
 );
 
 CREATE TABLE IF NOT EXISTS `tag` (

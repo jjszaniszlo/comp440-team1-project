@@ -5,8 +5,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
 import { Pencil } from "lucide-react";
-import { FilterBadge } from "@/components/FilterBadge";
-import { PublishBadge } from "@/components/PublishBadge";
+import { TagBadge, AuthorBadge, PublishBadge } from "@/components/badges";
 import { MarkdownViewer } from "./components/MarkdownViewer";
 import { CommentSection } from "./components/CommentSection";
 import { ApiErrorCard } from "@/components/ApiErrorCard";
@@ -96,14 +95,14 @@ export function ViewBlogPage() {
                   {blog.description}
                 </p>
               )}
-              <FilterBadge value={blog.author_username} type="author" />
+              <AuthorBadge value={blog.author_username} />
             </div>
           </div>
 
           {blog.tags.length > 0 && (
             <div className="flex gap-2 flex-wrap">
               {blog.tags.map((tag) => (
-                <FilterBadge key={tag} value={tag} type="tag" />
+                <TagBadge key={tag} value={tag} />
               ))}
             </div>
           )}

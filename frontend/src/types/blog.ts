@@ -30,7 +30,7 @@ export interface BlogSearchParams {
   tags?: string[];
   tags_match_all?: boolean;
   authors?: string[];
-  sort_by?: 'created_at' | 'updated_at' | 'subject';
+  sort_by?: 'created_at' | 'updated_at' | 'subject' | 'relevance';
   sort_order?: 'asc' | 'desc';
 }
 

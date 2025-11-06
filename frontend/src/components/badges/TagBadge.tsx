@@ -1,24 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
-export type BadgeType = "tag" | "author";
-
-interface FilterBadgeProps {
+interface TagBadgeProps {
   value: string;
-  type?: BadgeType;
   onRemove?: () => void;
 }
 
-export function FilterBadge({ value, type = "tag", onRemove }: FilterBadgeProps) {
-  const prefix = type === "tag" ? "#" : "@";
-  const variant = type === "tag" ? "secondary" : "outline";
-
+export function TagBadge({ value, onRemove }: TagBadgeProps) {
   return (
     <Badge
-      variant={variant}
-      className="flex items-center gap-1 text-xs"
+      variant="secondary"
+      className="inline-flex items-center gap-1 text-xs align-middle"
     >
-      {prefix}{value}
+      #{value}
       {onRemove && (
         <button
           onClick={onRemove}

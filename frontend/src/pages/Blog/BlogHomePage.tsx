@@ -1,22 +1,16 @@
-import { BadgeSearchInput } from "./components/BadgeSearchInput";
+import { BlogSearchInput } from "./components/BlogSearchInput";
 import { BlogCard, BlogCardSkeleton } from "./components/BlogCard";
 import { Loader2 } from "lucide-react";
-import { useBlogHome } from "./hooks";
+import { useBlogHome, useBlogSearch } from "./hooks";
 
 export function BlogHomePage() {
-  const {
-    setSearchQuery,
-    allBlogs,
-    isLoading,
-    hasNextPage,
-    isFetchingNextPage,
-    observerTarget,
-  } = useBlogHome();
+  const { inputProps, searchParams } = useBlogSearch();
+  const { allBlogs, isLoading, hasNextPage, isFetchingNextPage, observerTarget } = useBlogHome(searchParams);
 
   return (
     <div className="flex flex-col items-center gap-6 p-6">
       <div className="container mx-auto px-4 w-full max-w-7xl">
-        <BadgeSearchInput onSearchChange={setSearchQuery} />
+        <BlogSearchInput {...inputProps} />
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl">

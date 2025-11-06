@@ -1,27 +1,8 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useBlogSearchInfinite } from "@/hooks/queries";
-import type { SearchQuery, BlogSearchParams } from "@/types";
+import type { BlogSearchParams } from "@/types";
 
-export function useBlogHome() {
-  const [searchQuery, setSearchQuery] = useState<SearchQuery>({
-    tags: [],
-    authors: [],
-    text: "",
-  });
-
-  const hasContent =
-    searchQuery.tags.length > 0 ||
-    searchQuery.authors.length > 0 ||
-    searchQuery.text.length >= 3;
-
-  const searchParams: BlogSearchParams | undefined = hasContent
-    ? {
-        search: searchQuery.text.length >= 3 ? searchQuery.text : undefined,
-        tags: searchQuery.tags.length > 0 ? searchQuery.tags : undefined,
-        authors: searchQuery.authors.length > 0 ? searchQuery.authors : undefined,
-      }
-    : undefined;
-
+export function useBlogHome(searchParams?: BlogSearchParams) {
   const {
     data,
     fetchNextPage,
@@ -52,17 +33,10 @@ export function useBlogHome() {
   const allBlogs = data?.pages.flatMap((page) => page.items) ?? [];
 
   return {
-    // State
-    searchQuery,
-    setSearchQuery,
-
-    // Query state
     allBlogs,
     isLoading,
     hasNextPage,
     isFetchingNextPage,
-
-    // Refs
     observerTarget,
   };
 }

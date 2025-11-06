@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { useNavigate } from "react-router";
 import type { BlogSearchResponse } from "@/types";
 import { cn } from "@/lib/utils";
-import { FilterBadge } from "@/components/FilterBadge";
+import { TagBadge, AuthorBadge } from "@/components/badges";
 import { Clock } from "lucide-react";
 
 interface BlogCardProps {
@@ -64,9 +64,9 @@ export function BlogCard({ blog }: BlogCardProps) {
 
           {/* Author and Tags */}
           <div className="flex items-center gap-2 flex-wrap">
-            <FilterBadge value={blog.author_username} type="author" />
+            <AuthorBadge value={blog.author_username} />
             {blog.tags.map((tag) => (
-              <FilterBadge key={tag} value={tag} type="tag" />
+              <TagBadge key={tag} value={tag} />
             ))}
           </div>
 

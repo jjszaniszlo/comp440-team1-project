@@ -52,11 +52,11 @@ async def list_blogs(request: Request, db: DatabaseDependency, user: UserDepende
 async def search_blogs(
     request: Request,
     db: DatabaseDependency,
-    search: Optional[str] = Query(None, min_length=3, max_length=50),
+    search: Optional[str] = Query(None, min_length=2, max_length=100),
     tags: Optional[List[str]] = Query(None),
     tags_match_all: bool = Query(False),
     authors: Optional[List[str]] = Query(None),
-    sort_by: BlogSortBy = Query(BlogSortBy.CREATED_AT),
+    sort_by: BlogSortBy = Query(BlogSortBy.RELEVANCE),
     sort_order: BlogSortOrder = Query(BlogSortOrder.DESC),
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(20, ge=1, le=100, description="Items per page"),

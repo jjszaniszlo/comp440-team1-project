@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { ThumbsUp, ThumbsDown, Reply, Send, ChevronDown, ChevronUp, Edit, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useCommentItem } from "../../hooks";
+import { TextWithBadges } from "@/components/TextWithBadges";
 
 interface CommentItemProps {
   comment: CommentResponse;
@@ -85,7 +86,9 @@ export function CommentItem({ comment, level = 0, blogId }: CommentItemProps) {
           </div>
         </div>
         {!isEditing ? (
-          <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+          <p className="text-sm whitespace-pre-wrap">
+            <TextWithBadges text={comment.content} />
+          </p>
         ) : (
           <div className="space-y-2">
             <Textarea

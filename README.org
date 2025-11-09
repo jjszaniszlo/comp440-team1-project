@@ -10,8 +10,8 @@ git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 - John: Backend, Frontend, Database
 
 ** Demos - Uploaded to Youtube
-https://youtu.be/8DIY1ESf3a4 <- Phase 1
-https://youtu.be/8NpAkVNc_Is <- Phase 2
+- https://youtu.be/8DIY1ESf3a4 <- Phase 1
+- https://youtu.be/8NpAkVNc_Is <- Phase 2
 
 ** Backend Setup
 

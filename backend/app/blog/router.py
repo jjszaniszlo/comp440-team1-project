@@ -21,11 +21,15 @@ from app.blog.service import (
     remove_tags_from_blog_service,
     search_blogs_service,
     update_blog_service,
+    search_users_service,
 )
 from app.blog.types import BlogSortBy, BlogSortOrder
 from app.db.dependencies import DatabaseDependency
 from app.limiter import limiter
 from app.schemas import PaginatedResponse
+
+# For dates
+from datetime import date as DateType
 
 router = APIRouter()
 
@@ -137,3 +141,20 @@ async def remove_tags_from_blog(
     db: DatabaseDependency,
 ):
     return await remove_tags_from_blog_service(blog.id, tag_request.tags, db)
+
+#making endpoint for finding users
+@router.get("/users/search", response_model=List[str])
+@limiter.limit("60/minute")
+async def get_users_by_date(
+    request: Request,
+    db: DatabaseDependency,
+    #1. Users who posted 2+ blogs on the same day with specific tags
+    tag_x: Optional[str] = Query(None, description="First tag to match"),
+    tag_y: Optional[str] = Query(None, description="Second tag to match"),
+    same_day_tags: bool = Query(False, description="Require both tags on same day"),
+    #2. Users with most blogs on specific date
+    date: Optional[DateType] = Query(None, description="Date in YYYY-MM-DD format"),
+    most_blogs_on_date: bool = Query(False, description="Find users with most blogs on this date"),
+):
+    return await search_users_service(db, tag_x, tag_y, same_day_tags, date, most_blogs_on_date)
+

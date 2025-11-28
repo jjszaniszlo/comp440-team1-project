@@ -20,6 +20,7 @@ from app.blog.schemas import (
 from app.blog.types import BlogSortBy, BlogSortOrder, BlogStatus
 from app.schemas import PaginatedResponse, PaginationMeta
 from app.user.models import UserDailyActivity
+from app.follow.models import UserFollow
 
 
 async def create_blog_service(
@@ -367,12 +368,7 @@ async def search_users_service(
     db: AsyncSession,
     params: UserQueryParams,
 ) -> List[UserLiteResponse]:
-    """
-    Search for users based on various criteria using composable SQL queries.
-    
-    This follows Jani's advice: "Let the SQL and relational algebra do all the work."
-    The logic is simple - just check if parameters are provided and compose the query.
-    """
+
     try:
         # Parse date if provided as string
         search_date = None
@@ -381,6 +377,29 @@ async def search_users_service(
                 search_date = datetime.strptime(params.date, "%Y-%m-%d").date()
             except ValueError:
                 return []
+        
+        # Case to return users followed by both users x and users y
+        if params.followed_by_x and params.followed_by_y:
+            # Subquery to find users followed by user y
+            followed_by_y_subquery = (
+                select(UserFollow.following_username)
+                .where(UserFollow.follower_username == params.followed_by_y)
+            )
+
+            # Main query: Find users followed by user x who are also in the subquery
+            query = (
+                select(UserFollow.following_username)
+                .where(
+                    and_(
+                        UserFollow.follower_username == params.followed_by_x,
+                        UserFollow.following_username.in_(followed_by_y_subquery),
+                    )
+                )
+                .distinct()
+            )
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in sorted(usernames)]
 
         # Case 1: Most blogs on a specific date
         if search_date and params.most_blogs_on_date:

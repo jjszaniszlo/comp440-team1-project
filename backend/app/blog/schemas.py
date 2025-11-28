@@ -102,3 +102,9 @@ class UserQueryParams(BaseModel):
     most_blogs_on_date: bool = Field(
         False, description="Whether to return users with most blogs on the given date"
     )
+    followed_by_x: Optional[str] = Field(
+        None, description="First username - find users followed by this user"
+    )
+    followed_by_y: Optional[str] = Field(
+        None, description="Second username - find users followed by this user"
+    )

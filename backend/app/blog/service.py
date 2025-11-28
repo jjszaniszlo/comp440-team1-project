@@ -21,6 +21,7 @@ from app.blog.types import BlogSortBy, BlogSortOrder, BlogStatus
 from app.schemas import PaginatedResponse, PaginationMeta
 from app.user.models import UserDailyActivity
 from app.follow.models import UserFollow
+from app.comment.models import Comment, Sentiment
 
 
 async def create_blog_service(
@@ -105,6 +106,7 @@ async def search_blogs_service(
     tag_names: List[str],
     tag_match_all: bool,
     authors: List[str],
+    all_positive_comments: bool,
     sort_by: BlogSortBy,
     sort_order: BlogSortOrder,
     page: int = 1,
@@ -136,6 +138,24 @@ async def search_blogs_service(
 
         if authors:
             base_query = base_query.where(Blog.author_username.in_(authors))
+
+        if all_positive_comments:
+            blogs_with_negative_comments = (
+                select(Comment.blog_id)
+                .where(Comment.sentiment != Sentiment.POSITIVE)
+                .distinct()
+            )
+
+            blogs_with_comments = (
+                select(Comment.blog_id).distinct()
+            )
+            
+            base_query = base_query.where(
+                and_(
+                    Blog.id.in_(blogs_with_comments),
+                    Blog.id.notin_(blogs_with_negative_comments)
+                )
+            )
 
         if tag_names and tag_match_all:
             count_query = select(func.count(func.distinct(Blog.id))).select_from(

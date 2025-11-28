@@ -62,13 +62,14 @@ async def search_blogs(
     tags: Optional[List[str]] = Query(None),
     tags_match_all: bool = Query(False),
     authors: Optional[List[str]] = Query(None),
+    all_positive_comments: bool = Query(False, description="Filter blogs where ALL comments are positive"),
     sort_by: BlogSortBy = Query(BlogSortBy.RELEVANCE),
     sort_order: BlogSortOrder = Query(BlogSortOrder.DESC),
     page: int = Query(1, ge=1, description="Page number"),
     size: int = Query(20, ge=1, le=100, description="Items per page"),
 ):
     return await search_blogs_service(
-        db, search, tags, tags_match_all, authors, sort_by, sort_order, page, size
+        db, search, tags, tags_match_all, authors, all_positive_comments, sort_by, sort_order, page, size
     )
 
 
@@ -147,7 +148,7 @@ async def remove_tags_from_blog(
 # User search endpoint
 @router.get("/users/search", response_model=List[UserLiteResponse])
 @limiter.limit("60/minute")
-async def search_users(
+async def search_users(  
     request: Request,
     db: DatabaseDependency,
     tags: List[str] = Query(default=[], description="List of tags to filter by"),

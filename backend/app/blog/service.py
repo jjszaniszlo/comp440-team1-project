@@ -369,19 +369,16 @@ async def search_users_service(
     date: Optional[datetime] = None,
     most_blogs_on_date: bool = False,
 ) -> List[str]:
-    # 1. Search for users who posted 2+ blogs on the same day with tags X and Y
-    # 2. List the users who posted the most number of blogs on a specific date like 10/10/2025 (you can
-    # hard code any arbitrary date); if there is a tie, list all the users who have a tie.
+
     try:
         def _clean(result):
             cleaned = []
             for item in result:
-                if isinstance(item, str):  # already fine
+                if isinstance(item, str):
                     cleaned.append(item)
                 elif isinstance(item, (list, tuple)):
                     cleaned.append(item[0])
                 elif hasattr(item, "_mapping"):
-                    # SQLAlchemy Row: pull username column
                     m = item._mapping
                     cleaned.append(
                         m.get("username")
@@ -390,14 +387,14 @@ async def search_users_service(
                     )
             return cleaned
 
-        # Ensure date is a real date object
+        # Convert date string to real date
         if isinstance(date, str):
             try:
                 date = datetime.strptime(date, "%Y-%m-%d").date()
             except ValueError:
-                return []  # invalid date → no results
+                return []
 
-        # 1. Users who posted 2+ blogs on the same day, one with tag_x and one with tag_y
+        # 1. Same Day Tag Matching
         if same_day_tags and tag_x and tag_y:
             q = (
                 select(Blog.author_username)
@@ -408,20 +405,43 @@ async def search_users_service(
                 .group_by(Blog.author_username, func.date(Blog.created_at))
                 .having(
                     and_(
-                        # At least one blog has tag_x
                         func.sum(case((Tag.name == tag_x.strip(), 1), else_=0)) >= 1,
-                        # At least one blog has tag_y
                         func.sum(case((Tag.name == tag_y.strip(), 1), else_=0)) >= 1,
-                        # Must be at least two different blogs (not one blog with both tags)
                         func.count(func.distinct(Blog.id)) >= 2,
                     )
                 )
             )
-
             result = await db.execute(q)
             return _clean(result.all())
 
-        # Both tags exist across ANY blogs by user
+        # 2. Most Blogs on Date (uses the logic that the most amount of blogs per day is 2)
+        if date and most_blogs_on_date:
+
+            # Query the precomputed daily activity table
+            result = await db.execute(
+                select(
+                    UserDailyActivity.username,
+                    UserDailyActivity.blogs_made
+                ).where(UserDailyActivity.activity_date == date)
+            )
+
+            rows = result.fetchall()
+            if not rows:
+                return []
+
+            # Convert SQLAlchemy rows → Python tuples
+            parsed = [(r[0], r[1]) for r in rows]
+
+            # Find highest blog count (max possible is 2)
+            max_count = max(count for _, count in parsed)
+
+            # Return all users who match max
+            winners = [username for username, count in parsed if count == max_count]
+
+            return sorted(winners)
+
+        # Other tag-based search paths
+
         if tag_x and tag_y and not same_day_tags:
             q = (
                 select(Blog.author_username)
@@ -434,7 +454,6 @@ async def search_users_service(
             scalar = await db.scalars(q)
             return _clean(scalar.all())
 
-        # Single-tag search
         if tag_x and not tag_y:
             q = (
                 select(func.distinct(Blog.author_username))
@@ -455,35 +474,7 @@ async def search_users_service(
             scalar = await db.scalars(q)
             return _clean(scalar.all())
 
-        # Users with MOST blogs on a specific date
-        if date and most_blogs_on_date:
-            # Step 1: Count blogs per user
-            count_q = (
-                select(
-                    Blog.author_username,
-                    func.count(Blog.id).label("blog_count")
-                )
-                .where(func.date(Blog.created_at) == date)
-                .group_by(Blog.author_username)
-            )
-
-            result = await db.execute(count_q)
-            
-            # Step 2: Fetch ALL rows into plain Python tuples (100% safe)
-            rows = result.fetchall()        # ← THIS IS THE REAL FIX
-
-            if not rows:
-                return []
-
-            # Step 3: Now safely find max and all winners
-            max_count = max(row.blog_count for row in rows)
-            winners = [row.author_username for row in rows if row.blog_count == max_count]
-
-            return _clean(winners)
-
-        # Default: nothing matched
-        return []
-
     except Exception as e:
         handle_database_error(e, "search users")
         return []
+

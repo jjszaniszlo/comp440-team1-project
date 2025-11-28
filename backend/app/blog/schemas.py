@@ -91,22 +91,17 @@ class UserLiteResponse(BaseModel):
 
 # Query parameters for user search - using Query fields for proper FastAPI handling
 class UserQueryParams(BaseModel):
-    tag_x: Optional[str] = Field(None, description="First tag to filter by")
-    tag_y: Optional[str] = Field(None, description="Second tag to filter by")
+    tags: Optional[List[str]] = Field(
+        None, description="List of tags to filter by"
+    )
     same_day_tags: bool = Field(
-        False, description="Whether to require both tags on same day"
+        False, description="Whether to require all tags on same day"
     )
     date: Optional[str] = Field(
         None, description="Date to filter by (YYYY-MM-DD format)"
     )
-    most_blogs_on_date: bool = Field(
-        False, description="Whether to return users with most blogs on the given date"
-    )
-    followed_by_x: Optional[str] = Field(
-        None, description="First username - find users followed by this user"
-    )
-    followed_by_y: Optional[str] = Field(
-        None, description="Second username - find users followed by this user"
+    followed_by: Optional[List[str]] = Field(
+        None, description="List of usernames - find users followed by ALL of these users"
     )
     never_posted_blog: bool = Field(
         False, description="Return users who have never posted a blog"

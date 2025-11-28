@@ -144,12 +144,24 @@ async def remove_tags_from_blog(
 ):
     return await remove_tags_from_blog_service(blog.id, tag_request.tags, db)
 
-#making endpoint for finding users
+# User search endpoint
 @router.get("/users/search", response_model=List[UserLiteResponse])
 @limiter.limit("60/minute")
 async def search_users(
     request: Request,
     db: DatabaseDependency,
-    params: UserQueryParams = Depends(),
+    tags: List[str] = Query(default=[], description="List of tags to filter by"),
+    same_day_tags: bool = Query(default=False, description="Whether to require all tags on same day"),
+    date: Optional[str] = Query(default=None, description="Date to filter by (YYYY-MM-DD format)"),
+    followed_by: List[str] = Query(default=[], description="List of usernames - find users followed by ALL of these users"),
+    never_posted_blog: bool = Query(default=False, description="Return users who have never posted a blog"),
 ):
+    # Create params object from individual query parameters
+    params = UserQueryParams(
+        tags=tags,
+        same_day_tags=same_day_tags,
+        date=date,
+        followed_by=followed_by,
+        never_posted_blog=never_posted_blog
+    )
     return await search_users_service(db, params)

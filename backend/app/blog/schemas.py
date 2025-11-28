@@ -108,3 +108,6 @@ class UserQueryParams(BaseModel):
     followed_by_y: Optional[str] = Field(
         None, description="Second username - find users followed by this user"
     )
+    never_posted_blog: bool = Field(
+        False, description="Return users who have never posted a blog"
+    )

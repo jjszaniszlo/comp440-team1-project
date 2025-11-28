@@ -363,7 +363,7 @@ async def remove_tags_from_blog_service(
         await db.rollback()
         handle_database_error(e, "remove tags from blog")
 
-
+# Searches for users based on various criteria (Phase 3 support)
 async def search_users_service(
     db: AsyncSession,
     params: UserQueryParams,
@@ -377,7 +377,22 @@ async def search_users_service(
                 search_date = datetime.strptime(params.date, "%Y-%m-%d").date()
             except ValueError:
                 return []
-        
+        # Case to reutrn users who have never posted a blog
+        if params.never_posted_blog:
+            # Subquery to find all users who have posted blogs
+            users_with_blogs_subquery = (
+                select(Blog.author_username).distinct()
+            )
+            # Main query to find users not in the above subquery
+            query = (
+                select(User.username)
+                .where(User.username.not_in(users_with_blogs_subquery))
+            )
+            
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in sorted(usernames)]
+
         # Case to return users followed by both users x and users y
         if params.followed_by_x and params.followed_by_y:
             # Subquery to find users followed by user y

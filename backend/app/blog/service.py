@@ -14,6 +14,8 @@ from app.blog.schemas import (
     BlogEditRequest,
     BlogResponse,
     BlogSearchResponse,
+    UserLiteResponse,
+    UserQueryParams,
 )
 from app.blog.types import BlogSortBy, BlogSortOrder, BlogStatus
 from app.schemas import PaginatedResponse, PaginationMeta
@@ -363,118 +365,109 @@ async def remove_tags_from_blog_service(
 
 async def search_users_service(
     db: AsyncSession,
-    tag_x: Optional[str] = None,
-    tag_y: Optional[str] = None,
-    same_day_tags: bool = False,
-    date: Optional[datetime] = None,
-    most_blogs_on_date: bool = False,
-) -> List[str]:
-
+    params: UserQueryParams,
+) -> List[UserLiteResponse]:
+    """
+    Search for users based on various criteria using composable SQL queries.
+    
+    This follows Jani's advice: "Let the SQL and relational algebra do all the work."
+    The logic is simple - just check if parameters are provided and compose the query.
+    """
     try:
-        def _clean(result):
-            cleaned = []
-            for item in result:
-                if isinstance(item, str):
-                    cleaned.append(item)
-                elif isinstance(item, (list, tuple)):
-                    cleaned.append(item[0])
-                elif hasattr(item, "_mapping"):
-                    m = item._mapping
-                    cleaned.append(
-                        m.get("username")
-                        or m.get("author_username")
-                        or next(iter(m.values()))
-                    )
-            return cleaned
-
-        # Convert date string to real date
-        if isinstance(date, str):
+        # Parse date if provided as string
+        search_date = None
+        if params.date:
             try:
-                date = datetime.strptime(date, "%Y-%m-%d").date()
+                search_date = datetime.strptime(params.date, "%Y-%m-%d").date()
             except ValueError:
                 return []
 
-        # 1. Same Day Tag Matching
-        if same_day_tags and tag_x and tag_y:
-            q = (
+        # Case 1: Most blogs on a specific date
+        if search_date and params.most_blogs_on_date:
+            result = await db.execute(
+                select(UserDailyActivity.username, UserDailyActivity.blogs_made)
+                .where(UserDailyActivity.activity_date == search_date)
+            )
+            rows = result.fetchall()
+            
+            if not rows:
+                return []
+            
+            # Find the maximum blog count for that date
+            max_count = max(row[1] for row in rows)
+            
+            # Return all users who achieved that maximum
+            usernames = sorted([row[0] for row in rows if row[1] == max_count])
+            return [UserLiteResponse(username=u) for u in usernames]
+
+        # Case 2: Users who posted blogs with both tags on the same day
+        if params.same_day_tags and params.tag_x and params.tag_y:
+            # Build a query that groups by username and date, 
+            # then checks if both tags appear in blogs created on that date
+            query = (
                 select(Blog.author_username)
                 .distinct()
                 .join(blog_tag_table, Blog.id == blog_tag_table.c.blog_id)
                 .join(Tag, Tag.id == blog_tag_table.c.tag_id)
-                .where(Tag.name.in_([tag_x.strip(), tag_y.strip()]))
+                .where(Tag.name.in_([params.tag_x.strip(), params.tag_y.strip()]))
                 .group_by(Blog.author_username, func.date(Blog.created_at))
                 .having(
                     and_(
-                        func.sum(case((Tag.name == tag_x.strip(), 1), else_=0)) >= 1,
-                        func.sum(case((Tag.name == tag_y.strip(), 1), else_=0)) >= 1,
+                        # At least one blog with tag_x
+                        func.sum(case((Tag.name == params.tag_x.strip(), 1), else_=0)) >= 1,
+                        # At least one blog with tag_y
+                        func.sum(case((Tag.name == params.tag_y.strip(), 1), else_=0)) >= 1,
+                        # At least 2 distinct blogs (one for each tag minimum)
                         func.count(func.distinct(Blog.id)) >= 2,
                     )
                 )
             )
-            result = await db.execute(q)
-            return _clean(result.all())
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in usernames]
 
-        # 2. Most Blogs on Date (uses the logic that the most amount of blogs per day is 2)
-        if date and most_blogs_on_date:
-
-            # Query the precomputed daily activity table
-            result = await db.execute(
-                select(
-                    UserDailyActivity.username,
-                    UserDailyActivity.blogs_made
-                ).where(UserDailyActivity.activity_date == date)
-            )
-
-            rows = result.fetchall()
-            if not rows:
-                return []
-
-            # Convert SQLAlchemy rows → Python tuples
-            parsed = [(r[0], r[1]) for r in rows]
-
-            # Find highest blog count (max possible is 2)
-            max_count = max(count for _, count in parsed)
-
-            # Return all users who match max
-            winners = [username for username, count in parsed if count == max_count]
-
-            return sorted(winners)
-
-        # Other tag-based search paths
-
-        if tag_x and tag_y and not same_day_tags:
-            q = (
+        # Case 3: Users who have blogs with both tag_x AND tag_y (not necessarily same day)
+        if params.tag_x and params.tag_y and not params.same_day_tags:
+            # Compose a query that finds users who have used both tags
+            query = (
                 select(Blog.author_username)
                 .join(blog_tag_table, Blog.id == blog_tag_table.c.blog_id)
                 .join(Tag, Tag.id == blog_tag_table.c.tag_id)
-                .where(Tag.name.in_([tag_x, tag_y]))
+                .where(Tag.name.in_([params.tag_x, params.tag_y]))
                 .group_by(Blog.author_username)
                 .having(func.count(func.distinct(Tag.name)) == 2)
             )
-            scalar = await db.scalars(q)
-            return _clean(scalar.all())
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in usernames]
 
-        if tag_x and not tag_y:
-            q = (
+        # Case 4: Users who have blogs with tag_x only
+        if params.tag_x and not params.tag_y:
+            query = (
                 select(func.distinct(Blog.author_username))
                 .join(blog_tag_table, Blog.id == blog_tag_table.c.blog_id)
                 .join(Tag, Tag.id == blog_tag_table.c.tag_id)
-                .where(Tag.name == tag_x)
+                .where(Tag.name == params.tag_x)
             )
-            scalar = await db.scalars(q)
-            return _clean(scalar.all())
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in usernames]
 
-        if tag_y and not tag_x:
-            q = (
+        # Case 5: Users who have blogs with tag_y only
+        if params.tag_y and not params.tag_x:
+            query = (
                 select(func.distinct(Blog.author_username))
                 .join(blog_tag_table, Blog.id == blog_tag_table.c.blog_id)
                 .join(Tag, Tag.id == blog_tag_table.c.tag_id)
-                .where(Tag.name == tag_y)
+                .where(Tag.name == params.tag_y)
             )
-            scalar = await db.scalars(q)
-            return _clean(scalar.all())
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in usernames]
+
+        # No valid query parameters provided
+        return []
 
     except Exception as e:
         handle_database_error(e, "search users")
         return []
-

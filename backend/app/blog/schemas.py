@@ -81,3 +81,24 @@ class BlogDetailResponse(BlogResponse):
             }
             return data_dict
         return data
+
+# Lightweight user response schema - only returns username
+class UserLiteResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    username: str
+
+
+# Query parameters for user search - using Query fields for proper FastAPI handling
+class UserQueryParams(BaseModel):
+    tag_x: Optional[str] = Field(None, description="First tag to filter by")
+    tag_y: Optional[str] = Field(None, description="Second tag to filter by")
+    same_day_tags: bool = Field(
+        False, description="Whether to require both tags on same day"
+    )
+    date: Optional[str] = Field(
+        None, description="Date to filter by (YYYY-MM-DD format)"
+    )
+    most_blogs_on_date: bool = Field(
+        False, description="Whether to return users with most blogs on the given date"
+    )

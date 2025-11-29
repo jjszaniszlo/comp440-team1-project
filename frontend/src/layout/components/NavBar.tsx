@@ -71,6 +71,13 @@ export function NavBar() {
                 </Link>
               </NavigationMenuLink>
             </NavigationMenuItem>
+            <NavigationMenuItem>
+              <NavigationMenuLink asChild>
+                <Link to="/user-queries" className="text-sm font-medium transition-colors hover:text-primary px-3">
+                  Users
+                </Link>
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
 

@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { BlogHomePage, ViewBlogPage } from "./pages/Blog";
 import { MainLayout } from "./layout/MainLayout";
 import { EditBlogPage } from "./pages/Blog/EditBlogPage";
+import { UserPage } from "./pages/User";
 
 export function App() {
   return (
@@ -21,6 +22,7 @@ export function App() {
         <Route element={<MainLayout />}>
           <Route path="/" element={<BlogHomePage />} />
           <Route path="/blog/:blogId" element={<ViewBlogPage />} />
+          <Route path="/user-queries" element={<UserPage />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>

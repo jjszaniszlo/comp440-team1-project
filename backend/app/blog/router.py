@@ -156,6 +156,7 @@ async def search_users(
     date: Optional[str] = Query(default=None, description="Date to filter by (YYYY-MM-DD format)"),
     followed_by: List[str] = Query(default=[], description="List of usernames - find users followed by ALL of these users"),
     never_posted_blog: bool = Query(default=False, description="Return users who have never posted a blog"),
+    all_negative_comments: bool = Query(default=False, description="Return users who posted comments but ALL are negative"),
 ):
     # Create params object from individual query parameters
     params = UserQueryParams(
@@ -163,6 +164,7 @@ async def search_users(
         same_day_tags=same_day_tags,
         date=date,
         followed_by=followed_by,
-        never_posted_blog=never_posted_blog
+        never_posted_blog=never_posted_blog,
+        all_negative_comments=all_negative_comments,
     )
     return await search_users_service(db, params)

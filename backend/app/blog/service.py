@@ -397,6 +397,30 @@ async def search_users_service(
                 search_date = datetime.strptime(params.date, "%Y-%m-%d").date()
             except ValueError:
                 return []
+        # Case to return users who posted comments but ALL are negative
+        if params.all_negative_comments:
+            users_with_comments = select(Comment.author_username).distinct()
+            
+            users_with_positive_comments = (
+                select(Comment.author_username)
+                .where(Comment.sentiment == Sentiment.POSITIVE)
+                .distinct()
+            )
+            
+            query = (
+                select(User.username)
+                .where(
+                    and_(
+                        User.username.in_(users_with_comments),
+                        User.username.notin_(users_with_positive_comments)
+                    )
+                )
+            )
+            
+            result = await db.scalars(query)
+            usernames = result.all()
+            return [UserLiteResponse(username=u) for u in sorted(usernames)]
+        
         # Case to return users who have never posted a blog
         if params.never_posted_blog:
             users_with_blogs_subquery = select(Blog.author_username).distinct()

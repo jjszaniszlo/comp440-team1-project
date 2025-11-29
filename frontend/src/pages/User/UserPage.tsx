@@ -2,6 +2,8 @@ import { SameDayTags } from "./components/SameDayTags";
 import { MostBlogsDate } from "./components/MostBlogsDate";
 import { FollowedBy } from "./components/FollowedBy";
 import { NeverPosted } from "./components/NeverPosted";
+import { AllNegativeComments } from "./components/AllNegativeComments";
+import { NoNegativeCommentsOnBlogs } from "./components/NoNegativeCommentsOnBlogs";
 import { Separator } from "@/components/ui/separator";
 
 export function UserPage() {
@@ -32,6 +34,16 @@ export function UserPage() {
 
         {/* Users who never posted a blog */}
         <NeverPosted />
+
+        <Separator />
+        
+        {/* Users with all negative comments */}
+        <AllNegativeComments />
+        
+        <Separator />
+
+        {/* Users whose blogs never received negative comments */}
+        <NoNegativeCommentsOnBlogs />
       </div>
     </div>
   );

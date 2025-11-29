@@ -7,6 +7,8 @@ export interface UserSearchParams {
   date?: string;
   followed_by?: string[];
   never_posted_blog?: boolean;
+  all_negative_comments?: boolean;
+  no_negative_comments_on_blogs?: boolean;
 }
 
 export interface UserLite {
@@ -39,6 +41,16 @@ async function searchUsers(params: UserSearchParams): Promise<UserLite[]> {
   //never_posted_blog flag
   if (params.never_posted_blog) {
     queryParams.append('never_posted_blog', 'true');
+  }
+
+  //all_negative_comments flag
+  if (params.all_negative_comments) {
+    queryParams.append('all_negative_comments', 'true');
+  }
+
+  //no_negative_comments_on_blogs flag
+  if (params.no_negative_comments_on_blogs) {
+    queryParams.append('no_negative_comments_on_blogs', 'true');
   }
 
   const endpoint = `/blog/users/search${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;

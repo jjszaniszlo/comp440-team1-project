@@ -101,11 +101,14 @@ class UserQueryParams(BaseModel):
         None, description="Date to filter by (YYYY-MM-DD format)"
     )
     followed_by: Optional[List[str]] = Field(
-        None, description="List of usernames. Find users followed by ALL of these users"
+        None, description="List of usernames. Find users followed by all of these users"
     )
     never_posted_blog: bool = Field(
         False, description="Return users who have never posted a blog"
     )
     all_negative_comments: bool = Field(
         default=False, description="Return users who posted comments that are all negative"
+    )
+    no_negative_comments_on_blogs: bool = Field(
+        default=False, description="Return users whose blogs have no negative comments"
     )

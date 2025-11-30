@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Separator } from "@/components/ui/separator";
-import { Pencil } from "lucide-react";
+import { Pencil, Clock } from "lucide-react";
 import { TagBadge, AuthorBadge, PublishBadge } from "@/components/badges";
 import { MarkdownViewer } from "./components/MarkdownViewer";
 import { CommentSection } from "./components/CommentSection";
@@ -35,6 +35,16 @@ export function ViewBlogPage() {
   const { data: user } = useUserMe();
 
   const isAuthor = user?.username === blog?.author_username;
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+  };
 
   const getTitleFontSize = (subject: string | null) => {
     if (!subject) return "text-4xl";
@@ -96,6 +106,21 @@ export function ViewBlogPage() {
                 </p>
               )}
               <AuthorBadge value={blog.author_username} />
+              <div className="flex items-center gap-3 text-sm text-muted-foreground mt-2">
+                <div className="flex items-center gap-1">
+                  <Clock className="h-4 w-4" />
+                  <span>Created: {formatDate(blog.created_at)}</span>
+                </div>
+                {blog.created_at !== blog.updated_at && (
+                  <>
+                    <span className="text-muted-foreground/50">•</span>
+                    <div className="flex items-center gap-1">
+                      <Clock className="h-4 w-4" />
+                      <span>Updated: {formatDate(blog.updated_at)}</span>
+                    </div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
 

@@ -102,9 +102,11 @@ export function NavBar() {
                 <CirclePlus className="h-5 w-5 mr-1" />
                 {isPending ? "Creating..." : "Create Blog"}
               </Button>
-              <span className="text-sm font-medium">
-                {user?.username || "User"}
-              </span>
+              <Button variant="ghost" asChild>
+                <Link to={`/profile/${user?.username}`} className="text-sm font-medium">
+                  @{user?.username || "User"}
+                </Link>
+              </Button>
               <Button variant="ghost" onClick={handleLogout}>
                 Log Out
               </Button>

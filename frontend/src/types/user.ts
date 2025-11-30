@@ -37,3 +37,35 @@ export interface UserLiteResponse {
   username: string;
 }
 
+export interface UserPublicProfile {
+  username: string;
+  first_name: string;
+  last_name: string;
+  follower_count: number;
+  following_count: number;
+}
+
+export interface UserPrivateProfile extends UserPublicProfile {
+  email: string;
+  phone: string;
+}
+
+export interface UserCommentResponse {
+  id: number;
+  content: string;
+  sentiment: "positive" | "negative";
+  blog_id: number;
+  blog_subject: string | null;
+  parent_comment_id: number | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface FollowUserResponse {
+  username: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  followed_at: string;
+}
+

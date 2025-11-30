@@ -39,16 +39,6 @@ export function BlogCard({ blog }: BlogCardProps) {
     minute: "2-digit",
   });
 
-  const formattedUpdated = new Date(blog.updated_at).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-
-  const isUpdated = blog.created_at !== blog.updated_at;
-
   return (
     <Card
       className={cn(
@@ -70,21 +60,10 @@ export function BlogCard({ blog }: BlogCardProps) {
             ))}
           </div>
 
-          {/* Timestamps */}
-          <div className="flex items-center gap-3 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <Clock className="h-3 w-3" />
-              <span>{formattedCreated}</span>
-            </div>
-            {isUpdated && (
-              <>
-                <span className="text-muted-foreground/50">•</span>
-                <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  <span>{formattedUpdated}</span>
-                </div>
-              </>
-            )}
+          {/* Timestamp */}
+          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+            <Clock className="h-3 w-3" />
+            <span>{formattedCreated}</span>
           </div>
         </div>
       </CardContent>

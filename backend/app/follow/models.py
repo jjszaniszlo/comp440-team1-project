@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from typing import TYPE_CHECKING
 
-from sqlalchemy import CheckConstraint, ForeignKey, String
+from sqlalchemy import CheckConstraint, DateTime, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.models import BaseModel
@@ -23,7 +23,9 @@ class UserFollow(BaseModel):
     following_username: Mapped[str] = mapped_column(
         String(50), ForeignKey("user.username", ondelete="CASCADE"), primary_key=True
     )
-    created_at: Mapped[datetime] = mapped_column(default=get_current_time)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time
+    )
 
     follower: Mapped["User"] = relationship(
         "User", foreign_keys=[follower_username], back_populates="following"

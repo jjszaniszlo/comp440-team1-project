@@ -9,6 +9,7 @@ import { BlogHomePage, ViewBlogPage } from "./pages/Blog";
 import { MainLayout } from "./layout/MainLayout";
 import { EditBlogPage } from "./pages/Blog/EditBlogPage";
 import { UserPage } from "./pages/User";
+import { ProfilePage, FollowersPage, FollowingPage } from "./pages/Profile";
 
 export function App() {
   return (
@@ -23,6 +24,9 @@ export function App() {
           <Route path="/" element={<BlogHomePage />} />
           <Route path="/blog/:blogId" element={<ViewBlogPage />} />
           <Route path="/user-queries" element={<UserPage />} />
+          <Route path="/profile/:username" element={<ProfilePage />} />
+          <Route path="/profile/:username/followers" element={<FollowersPage />} />
+          <Route path="/profile/:username/following" element={<FollowingPage />} />
 
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>

@@ -272,6 +272,58 @@ async def seed_database():
 
         print(f"✅ Successfully seeded {len(data['blogs'])} blogs")
 
+        # Create follow relationships
+        print("\n👥 Creating follow relationships...")
+        usernames = list(user_creation_dates.keys())
+        follows_created = 0
+
+        async with db.begin():
+            # Create various follow scenarios
+            for i, follower in enumerate(usernames):
+                # Each user follows some other users
+                # Use deterministic selection based on index for reproducibility
+                num_to_follow = (i % 5) + 1  # Follow 1-5 users
+
+                # Select users to follow (skip self)
+                potential_followees = [u for u in usernames if u != follower]
+
+                # Deterministically select who to follow based on user index
+                random.seed(hash(follower))  # Reproducible randomness per user
+                followees = random.sample(
+                    potential_followees,
+                    min(num_to_follow, len(potential_followees))
+                )
+
+                for following in followees:
+                    # Check if follow relationship already exists
+                    result = await db.execute(
+                        select(UserFollow).where(
+                            UserFollow.follower_username == follower,
+                            UserFollow.following_username == following,
+                        )
+                    )
+                    existing_follow = result.scalar_one_or_none()
+
+                    if not existing_follow:
+                        # Follow created after both users exist
+                        follower_created = user_creation_dates[follower]
+                        following_created = user_creation_dates[following]
+                        min_follow_date = max(follower_created, following_created)
+                        follow_created_at = random_date_in_range(min_follow_date, now)
+
+                        follow = UserFollow(
+                            follower_username=follower,
+                            following_username=following,
+                            created_at=follow_created_at,
+                        )
+                        db.add(follow)
+                        follows_created += 1
+
+            # Reset random seed
+            random.seed()
+
+        print(f"✅ Successfully created {follows_created} follow relationships")
+
         print("\n" + "=" * 60)
         print("🎉 Database seeding completed successfully!")
         print("=" * 60)
@@ -296,6 +348,7 @@ async def seed_database():
         for blog_data in data["blogs"]:
             unique_tags.update(blog_data["tags"])
         print(f"Unique tags created: {len(unique_tags)}")
+        print(f"Follow relationships created: {follows_created}")
         print("=" * 60)
 
     await engine.dispose()

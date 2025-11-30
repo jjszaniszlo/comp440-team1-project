@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import TYPE_CHECKING, List, Optional
 
-from sqlalchemy import ForeignKey, Integer, String, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SqlEnum
 
@@ -40,9 +40,11 @@ class Comment(BaseModel):
     parent_comment_id: Mapped[Optional[int]] = mapped_column(
         Integer, ForeignKey("comment.id", ondelete="CASCADE"), nullable=True
     )
-    created_at: Mapped[datetime] = mapped_column(default=get_current_time)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time
+    )
     updated_at: Mapped[datetime] = mapped_column(
-        default=get_current_time, onupdate=get_current_time
+        DateTime(timezone=True), default=get_current_time, onupdate=get_current_time
     )
     blog: Mapped["Blog"] = relationship("Blog", back_populates="comments")
     author: Mapped["User"] = relationship("User", back_populates="comments")

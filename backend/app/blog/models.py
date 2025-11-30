@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import (
     CheckConstraint,
     Column,
+    DateTime,
     ForeignKey,
     Index,
     Integer,
@@ -57,9 +58,11 @@ class Blog(BaseModel):
     )
     upvotes: Mapped[int] = mapped_column(Integer, default=0)
     downvotes: Mapped[int] = mapped_column(Integer, default=0)
-    created_at: Mapped[datetime] = mapped_column(default=get_current_time, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time, index=True
+    )
     updated_at: Mapped[datetime] = mapped_column(
-        default=get_current_time, onupdate=get_current_time, index=True
+        DateTime(timezone=True), default=get_current_time, onupdate=get_current_time, index=True
     )
     author: Mapped["User"] = relationship("User", back_populates="blogs")
     tags: Mapped[List["Tag"]] = relationship(
@@ -82,7 +85,9 @@ class Tag(BaseModel):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
 
     name: Mapped[str] = mapped_column(String(50), unique=True)
-    created_at: Mapped[datetime] = mapped_column(default=get_current_time)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=get_current_time
+    )
     blogs: Mapped[List["Blog"]] = relationship(
         "Blog", secondary=blog_tag_table, back_populates="tags"
     )

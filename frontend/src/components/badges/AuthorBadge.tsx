@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { Badge } from "@/components/ui/badge";
 import { X } from "lucide-react";
 
@@ -7,15 +8,19 @@ interface AuthorBadgeProps {
 }
 
 export function AuthorBadge({ value, onRemove }: AuthorBadgeProps) {
-  return (
+  const badge = (
     <Badge
       variant="outline"
-      className="inline-flex items-center gap-1 text-xs align-middle"
+      className="inline-flex items-center gap-1 text-xs align-middle hover:bg-secondary/50 transition-colors"
     >
       @{value}
       {onRemove && (
         <button
-          onClick={onRemove}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            onRemove();
+          }}
           className="hover:bg-secondary/80 rounded-sm"
           aria-label="Remove author"
         >
@@ -23,5 +28,19 @@ export function AuthorBadge({ value, onRemove }: AuthorBadgeProps) {
         </button>
       )}
     </Badge>
+  );
+
+  if (onRemove) {
+    return badge;
+  }
+
+  return (
+    <Link
+      to={`/profile/${value}`}
+      className="no-underline"
+      onClick={(e) => e.stopPropagation()}
+    >
+      {badge}
+    </Link>
   );
 }

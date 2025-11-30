@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 from typing import Any, List, Optional
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
@@ -81,3 +81,7 @@ class BlogDetailResponse(BlogResponse):
             }
             return data_dict
         return data
+
+
+class BlogActivityDatesResponse(BaseModel):
+    dates: List[date]

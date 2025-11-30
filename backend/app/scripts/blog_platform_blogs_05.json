@@ -66,6 +66,12 @@
               "sentiment": "positive"
             }
           ]
+        },
+        {
+          "author_username": "primal_force_49",
+          "content": "The hybrid approach with both Kafka and Redis Streams is an operational nightmare waiting to happen. You're maintaining two completely different message queue systems just because you couldn't decide which one to use. Pick one and optimize it properly.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     },
@@ -335,6 +341,12 @@
               ]
             }
           ]
+        },
+        {
+          "author_username": "primal_force_49",
+          "content": "The AI recommending competitors directly was business suicide. You should have just made it silent instead of helpful. Your entire premise is fundamentally incompatible with running a subscription business.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     }

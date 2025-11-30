@@ -66,6 +66,12 @@
               ]
             }
           ]
+        },
+        {
+          "author_username": "quantum_sage_31",
+          "content": "The autoscaler having no upper bound is a fundamental design failure. Kubernetes giving you infinite rope to hang yourself with isn't a feature, it's a liability. This whole disaster was preventable with basic production safeguards.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     },

@@ -94,6 +94,12 @@
               ]
             }
           ]
+        },
+        {
+          "author_username": "inferno_chaos_25",
+          "content": "The three-tier caching strategy feels massively over-engineered for most use cases. You're optimizing for problems that 99% of companies will never face, and the complexity cost is brutal.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     },

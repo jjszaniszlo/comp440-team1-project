@@ -365,6 +365,12 @@
           "content": "This is incredibly vulnerable and brave to share. Most people hide their rejection streaks. This post will help so many people who are where you were in month three.",
           "sentiment": "positive",
           "replies": []
+        },
+        {
+          "author_username": "eclipse_master_46",
+          "content": "The WebSocket vs SSE comparison misses critical reliability concerns. These protocol decisions require understanding failure modes that this article completely glosses over. Dangerous for production systems to follow this advice.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     }

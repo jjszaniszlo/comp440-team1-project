@@ -11,6 +11,7 @@ from app.blog.exceptions import BlogNotFoundException, handle_database_error
 from app.blog.models import Blog, Tag, blog_tag_table
 from app.comment.models import Comment, Sentiment
 from app.blog.schemas import (
+    BlogActivityDatesResponse,
     BlogDetailResponse,
     BlogEditRequest,
     BlogResponse,
@@ -378,4 +379,26 @@ async def remove_tags_from_blog_service(
     except Exception as e:
         await db.rollback()
         handle_database_error(e, "remove tags from blog")
+
+
+async def get_blog_activity_dates_service(
+    start_date: date,
+    end_date: date,
+    db: AsyncSession,
+) -> BlogActivityDatesResponse:
+    """Get all dates within the range that have at least one blog created."""
+    try:
+        result = await db.execute(
+            select(func.date(Blog.created_at).label("activity_date"))
+            .where(
+                func.date(Blog.created_at) >= start_date,
+                func.date(Blog.created_at) <= end_date,
+            )
+            .distinct()
+            .order_by(func.date(Blog.created_at))
+        )
+        dates = [row.activity_date for row in result.all()]
+        return BlogActivityDatesResponse(dates=dates)
+    except Exception as e:
+        handle_database_error(e, "get blog activity dates")
 

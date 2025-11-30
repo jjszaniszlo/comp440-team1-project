@@ -590,6 +590,12 @@
 .rdp-button_previous,
 .rdp-button_next {
   background: transparent !important;
+  color: var(--foreground) !important;
+}
+
+.rdp-button_previous svg,
+.rdp-button_next svg {
+  color: var(--foreground) !important;
 }
 
 /* Outside days (from other months) should be muted */

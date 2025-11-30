@@ -325,6 +325,12 @@
           "content": "The architecture diagram at the end is clean. Makes it clear how the pieces fit together.",
           "sentiment": "positive",
           "replies": []
+        },
+        {
+          "author_username": "titan_shadow_34",
+          "content": "You're celebrating saving money by taking on massive operational complexity. Running Prometheus, Loki, and Grafana yourself means you're now responsible for uptime, backups, upgrades, and scaling. When your observability stack goes down during an incident, you'll wish you had just paid for Splunk. This is penny-wise and pound-foolish.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     }

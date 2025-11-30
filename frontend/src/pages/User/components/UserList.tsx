@@ -47,7 +47,7 @@ export function UserList({ users, emptyMessage = "No users found", isLoading = f
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
       {users.map((user) => (
-        <Link key={user.username} to={`/user/${user.username}`}>
+        <Link key={user.username} to={`/profile/${user.username}`}>
           <Card className="hover:shadow-md hover:border-primary/50 transition-all cursor-pointer">
             <CardContent className="p-4">
               <div className="flex items-center gap-3">

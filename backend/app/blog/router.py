@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Query, Request
 from app.auth.dependencies import UserDependency
 from app.blog.dependencies import UserAuthorizedOwnedBlog, UserCanCreateBlogDependency
 from app.blog.schemas import (
+    BlogActivityDatesResponse,
     BlogDetailResponse,
     BlogEditRequest,
     BlogResponse,
@@ -15,6 +16,7 @@ from app.blog.service import (
     add_tags_to_blog_service,
     create_blog_service,
     delete_blog_service,
+    get_blog_activity_dates_service,
     get_blog_service,
     list_blogs_service,
     publish_or_delist_blog_service,
@@ -68,6 +70,18 @@ async def search_blogs(
     return await search_blogs_service(
         db, search, tags, tags_match_all, authors, all_positive_comments, sort_by, sort_order, page, size
     )
+
+
+@router.get("/activity-dates", response_model=BlogActivityDatesResponse)
+@limiter.limit("60/minute")
+async def get_blog_activity_dates(
+    request: Request,
+    db: DatabaseDependency,
+    start_date: DateType = Query(..., description="Start date (YYYY-MM-DD)"),
+    end_date: DateType = Query(..., description="End date (YYYY-MM-DD)"),
+):
+    """Get all dates within the range that have at least one blog created."""
+    return await get_blog_activity_dates_service(start_date, end_date, db)
 
 
 @router.get("/{blog_id}", response_model=BlogDetailResponse)

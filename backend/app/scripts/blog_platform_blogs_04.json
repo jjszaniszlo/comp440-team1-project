@@ -80,6 +80,12 @@
               ]
             }
           ]
+        },
+        {
+          "author_username": "nexus_phantom_28",
+          "content": "This whole article reads like a cautionary tale about premature optimization and bad architecture. The real lesson isn't about event sourcing - it's about why you shouldn't adopt complex patterns without understanding the actual requirements first.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     },

@@ -252,6 +252,12 @@
           "content": "This is well written and practical. Actually going to try RSC on our next page component.",
           "sentiment": "positive",
           "replies": []
+        },
+        {
+          "author_username": "stellar_force_36",
+          "content": "Bundle size reduction is meaningless if you're shipping broken user experiences. RSC's complexity introduces subtle hydration bugs and streaming errors that are nightmare to debug. You traded bundle size for architectural complexity that will bite you when you need to actually iterate quickly.",
+          "sentiment": "negative",
+          "replies": []
         }
       ]
     },

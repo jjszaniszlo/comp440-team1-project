@@ -4,7 +4,7 @@
 git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 #+end_src
 
-** Team Setup
+** Team Setup & Contributions
 - Uma: Frontend, Database
 - Kenzie: Backend, Frontend, Database
 - John: Backend, Frontend, Database
@@ -12,6 +12,7 @@ git clone https://github.com/jjszaniszlo/comp440-team1-project.git
 ** Demos - Uploaded to Youtube
 - https://youtu.be/8DIY1ESf3a4 <- Phase 1
 - https://youtu.be/8NpAkVNc_Is <- Phase 2
+- https://youtu.be/veJJqONKhzM <- Phase 3
 
 ** Backend Setup
 

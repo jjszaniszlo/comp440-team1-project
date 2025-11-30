@@ -53,7 +53,7 @@ async function searchUsers(params: UserSearchParams): Promise<UserLite[]> {
     queryParams.append('no_negative_comments_on_blogs', 'true');
   }
 
-  const endpoint = `/blog/users/search${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+  const endpoint = `/users${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
   return api.get<UserLite[]>(endpoint, false);
 }
 

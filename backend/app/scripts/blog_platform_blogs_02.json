@@ -44,7 +44,7 @@
                     {
                       "author_username": "pixel_wizard",
                       "content": "True, but the 'rewrite premium' is real. You probably could have achieved similar code reduction refactoring the TypeScript.",
-                      "sentiment": "neutral",
+                      "sentiment": "negative",
                       "replies": [
                         {
                           "author_username": "neon_echo_1",
@@ -62,12 +62,12 @@
         {
           "author_username": "storm_rider_7",
           "content": "How did you handle the loss of Prisma's migrations? That's what's stopping us from switching.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "neon_echo_1",
               "content": "We use golang-migrate/migrate now. It's not as smooth as Prisma but it works. We write SQL migrations manually which is actually nice for complex operations. The lack of automatic migration generation does slow us down though.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -136,7 +136,7 @@
                 {
                   "author_username": "quantum_flux_3",
                   "content": "2 years might not be enough. README trends change fast. Even 2023 vs 2024 repos might show different patterns.",
-                  "sentiment": "neutral"
+                  "sentiment": "negative"
                 }
               ]
             }
@@ -183,7 +183,7 @@
         {
           "author_username": "quantum_flux_3",
           "content": "The hourly rate calculation is sobering. Did you track if the channel helped your main career at all? Like better job offers or consulting gigs?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "lunar_nova_12",
@@ -207,7 +207,7 @@
         {
           "author_username": "storm_rider_7",
           "content": "The 4-6 minute sweet spot surprises me. Everything I read says 10+ minutes for ad revenue. But I guess subscriber growth compounds more than individual video revenue.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "lunar_nova_12",
@@ -229,7 +229,7 @@
                 {
                   "author_username": "data_sage99",
                   "content": "This is why most channels die in the first year. The ROI curve is brutal until you hit critical mass.",
-                  "sentiment": "neutral",
+                  "sentiment": "negative",
                   "replies": [
                     {
                       "author_username": "code_ninja_42",
@@ -271,12 +271,12 @@
         {
           "author_username": "lunar_nova_12",
           "content": "Your REST v2 design looks like JSON:API specification. Why not just adopt that standard instead of rolling your own?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "quantum_flux_3",
               "content": "We considered JSON:API but found it too verbose for our mobile clients. Our design is inspired by it but optimized for our specific use cases. Standards are great until they're not.",
-              "sentiment": "neutral",
+              "sentiment": "negative",
               "replies": [
                 {
                   "author_username": "neon_echo_1",
@@ -295,14 +295,14 @@
             {
               "author_username": "quantum_flux_3",
               "content": "True, but then you lose caching, optimistic updates, and other features that make GraphQL worthwhile. It's a catch-22: simple client = might as well use REST, full client = bundle bloat.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
         {
           "author_username": "data_sage99",
           "content": "That production incident with the junior developer is exactly why we require query whitelisting in production. No dynamic queries allowed.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "tech_phantom_5",
@@ -335,7 +335,7 @@
         {
           "author_username": "lunar_nova_12",
           "content": "The Meeting Cost Calculator going viral while monetizable projects struggled is peak irony. Did you ever consider adding a paid tier retroactively?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "shadow_monk_21",
@@ -390,7 +390,7 @@
         {
           "author_username": "data_sage99",
           "content": "Week 2 problem is brutal. What if you'd done 26 two-week projects instead? Enough time to iterate but still forced shipping.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "shadow_monk_21",
@@ -405,7 +405,7 @@
                     {
                       "author_username": "storm_rider_7",
                       "content": "YC actually does weekly launches now for their current batch. But they have teams, not solo founders grinding every weekend.",
-                      "sentiment": "neutral"
+                      "sentiment": "negative"
                     }
                   ]
                 }

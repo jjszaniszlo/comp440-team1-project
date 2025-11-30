@@ -62,20 +62,17 @@ export function NeverPosted() {
           <div className="mt-6">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-semibold">Results</h3>
-              <span className="text-sm text-muted-foreground">
-                {users.length} user{users.length !== 1 ? 's' : ''} found
-              </span>
+              {!isLoading && (
+                <span className="text-sm text-muted-foreground">
+                  {users.length} user{users.length !== 1 ? 's' : ''} found
+                </span>
+              )}
             </div>
-            {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-              </div>
-            ) : (
-              <UserList 
-                users={users} 
-                emptyMessage="No users found who have never posted a blog"
-              />
-            )}
+            <UserList
+              users={users}
+              isLoading={isLoading}
+              emptyMessage="No users found who have never posted a blog"
+            />
           </div>
         )}
       </CardContent>

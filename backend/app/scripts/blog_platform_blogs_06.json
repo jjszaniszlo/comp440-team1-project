@@ -32,7 +32,7 @@
             {
               "author_username": "titan_core_47",
               "content": "First incident always gets the best credit. Second incident they tell you to implement proper controls. Third incident you're on your own.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -44,7 +44,7 @@
             {
               "author_username": "steel_venom_37",
               "content": "They said we 'validated their infrastructure at scale' but no additional credits. Though our AWS rep now responds to emails in under 5 minutes.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -160,12 +160,12 @@
         {
           "author_username": "titan_core_47",
           "content": "30 million requests per second from one IP. How did your network even handle sending that much traffic?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "solar_flare_29",
               "content": "AWS network is incredibly robust. We had a 10Gbps connection and maxed it out. Our AWS bill that month was... significant.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -182,7 +182,7 @@
             {
               "author_username": "solar_flare_29",
               "content": "Cyber insurance covered about 40% after months of fighting. They argued it was 'gross negligence.' We argued it was 'a testing accident.' We settled on 'expensive learning experience.'",
-              "sentiment": "neutral",
+              "sentiment": "negative",
               "replies": [
                 {
                   "author_username": "eclipse_hunter_18",
@@ -222,7 +222,7 @@
         {
           "author_username": "blitz_storm_13",
           "content": "I'm at Amazon making $400K and this post is making me question everything. The '80 hours/week' and anxiety medication parts are too real.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "solar_flare_29",
@@ -277,7 +277,7 @@
             {
               "author_username": "solar_flare_29",
               "content": "Imagine finding your 'soulmate' because of an off-by-one error. That's either deeply romantic or deeply concerning.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -301,7 +301,7 @@
             {
               "author_username": "steel_venom_37",
               "content": "Wait until they find out about blockchain churches and NFT saints. Digital theology is wild.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         }

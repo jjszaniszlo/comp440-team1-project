@@ -39,12 +39,12 @@
         {
           "author_username": "mystic_rune_23",
           "content": "How do you handle DMCA complaints? Music bots seem like a legal nightmare.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "nebula_drift_26",
               "content": "We don't store any music - just stream from legal sources. We have agreements with some labels for promotional content, and immediately comply with any takedown requests. Spent $3K on legal consultation to make sure we're compliant. Still scary though.",
-              "sentiment": "neutral",
+              "sentiment": "negative",
               "replies": [
                 {
                   "author_username": "inferno_beast_11",
@@ -108,7 +108,7 @@
             {
               "author_username": "inferno_beast_11",
               "content": "They were desperate. Their entire tech stack was our API. Without us, they had nothing but a frontend and angry customers. The $15M was probably all their funding.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -120,7 +120,7 @@
         {
           "author_username": "apex_hunter_50",
           "content": "How did you handle the legal aspects? Couldn't they sue for disrupting their business?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "inferno_beast_11",
@@ -130,7 +130,7 @@
                 {
                   "author_username": "sonic_blade_16",
                   "content": "ToS violations are hard to enforce though. Did you consult lawyers before the throttling campaign?",
-                  "sentiment": "neutral",
+                  "sentiment": "negative",
                   "replies": [
                     {
                       "author_username": "inferno_beast_11",
@@ -201,7 +201,7 @@
             {
               "author_username": "mystic_rune_23",
               "content": "I test restore our production database every Sunday morning with coffee. It's become a meditative practice. Probably not healthy.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         }
@@ -313,7 +313,7 @@
             {
               "author_username": "apex_hunter_50",
               "content": "Digital martyrdom for customer success. There's definitely a Black Mirror episode in here somewhere.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },

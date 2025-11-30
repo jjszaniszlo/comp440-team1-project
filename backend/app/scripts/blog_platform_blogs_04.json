@@ -27,14 +27,14 @@
             {
               "author_username": "crystal_echo_14",
               "content": "This is why market makers make money consistently - they profit from the spread. Retail traders are always crossing the spread, bleeding money slowly.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
         {
           "author_username": "velocity_spark_4",
           "content": "$45K tuition to University of Market Reality. Did you consider starting with paper trading or smaller amounts first?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "prism_artist_2",
@@ -98,7 +98,7 @@
             {
               "author_username": "titan_forge_33",
               "content": "BRIN only works well for naturally ordered data like timestamps. If your data is randomly distributed, B-tree is still better. But for time-series data, BRIN is absolutely magical. Just remember they're lossy - more false positives than B-tree.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -110,7 +110,7 @@
         {
           "author_username": "velocity_spark_4",
           "content": "How did you handle the migration to partitioned tables? Did you have downtime or do it live?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "titan_forge_33",
@@ -129,7 +129,7 @@
         {
           "author_username": "void_walker_8",
           "content": "Your auto-vacuum function is clever but isn't autovacuum supposed to handle this automatically?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "titan_forge_33",
@@ -184,7 +184,7 @@
             {
               "author_username": "void_walker_8",
               "content": "Cyber insurance covered about $200K after fighting with them for 2 months. They tried to claim it was 'human error' not covered. Eventually settled as a 'system failure.' The real cost was customer trust though.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -224,7 +224,7 @@
             {
               "author_username": "crystal_echo_14",
               "content": "They probably tested hundreds of APIs looking for GPU compute. Our custom filter feature let users upload convolution matrices - basically giving them raw GPU access. We thought we were enabling Instagram filters, we enabled distributed computing.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -241,14 +241,14 @@
             {
               "author_username": "void_walker_8",
               "content": "Video encoding abuse is common. We now fingerprint all videos and check against a piracy database. Caught 3 operations in the first month.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
         {
           "author_username": "void_walker_8",
           "content": "$89K loss is painful but the lessons are invaluable. Did you consider legal action against the miners?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "crystal_echo_14",
@@ -286,7 +286,7 @@
             {
               "author_username": "velocity_spark_4",
               "content": "We had a good relationship with AWS and submitted a detailed remediation plan within 4 hours. Plus we moved to SendGrid immediately so weren't fighting to get unsuspended. Still took 3 weeks of back-and-forth to get SES reinstated.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },

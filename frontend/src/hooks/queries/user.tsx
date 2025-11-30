@@ -43,7 +43,7 @@ function buildUserSearchQuery(params: UserSearchParams): string {
 export function useSearchUsers(params: UserSearchParams) {
   const api = useApi();
   const queryString = buildUserSearchQuery(params);
-  const endpoint = `/blog/users/search${queryString ? `?${queryString}` : ""}`;
+  const endpoint = `/users${queryString ? `?${queryString}` : ""}`;
 
   const hasActiveFilter =
     (params.tags && params.tags.length > 0) ||

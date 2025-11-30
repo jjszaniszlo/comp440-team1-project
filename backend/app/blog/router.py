@@ -10,8 +10,6 @@ from app.blog.schemas import (
     BlogResponse,
     BlogSearchResponse,
     TagOperationRequest,
-    UserLiteResponse,
-    UserQueryParams,
 )
 from app.blog.service import (
     add_tags_to_blog_service,
@@ -23,7 +21,6 @@ from app.blog.service import (
     remove_tags_from_blog_service,
     search_blogs_service,
     update_blog_service,
-    search_users_service,
 )
 from app.blog.types import BlogSortBy, BlogSortOrder
 from app.db.dependencies import DatabaseDependency
@@ -144,30 +141,3 @@ async def remove_tags_from_blog(
     db: DatabaseDependency,
 ):
     return await remove_tags_from_blog_service(blog.id, tag_request.tags, db)
-
-# User search endpoint
-@router.get("/users/search", response_model=List[UserLiteResponse])
-@limiter.limit("60/minute")
-async def search_users(  
-    request: Request,
-    db: DatabaseDependency,
-    tags: List[str] = Query(default=[], description="List of tags to filter by"),
-    same_day_tags: bool = Query(default=False, description="Whether to require all tags on same day"),
-    date: Optional[str] = Query(default=None, description="Date to filter by (YYYY-MM-DD format)"),
-    followed_by: List[str] = Query(default=[], description="List of usernames - find users followed by ALL of these users"),
-    never_posted_blog: bool = Query(default=False, description="Return users who have never posted a blog"),
-    all_negative_comments: bool = Query(default=False, description="Return users who posted comments that are all negative"),
-    no_negative_comments_on_blogs: bool = Query(default=False, description="Return users whose blogs have no negative comments"),
-):
-    # Create params object from individual query parameters
-    params = UserQueryParams(
-        tags=tags,
-        same_day_tags=same_day_tags,
-        date=date,
-        followed_by=followed_by,
-        never_posted_blog=never_posted_blog,
-        all_negative_comments=all_negative_comments,
-        no_negative_comments_on_blogs=no_negative_comments_on_blogs
-
-    )
-    return await search_users_service(db, params)

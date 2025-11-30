@@ -81,34 +81,3 @@ class BlogDetailResponse(BlogResponse):
             }
             return data_dict
         return data
-
-# Lightweight user response schema - only returns username
-class UserLiteResponse(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    username: str
-
-
-# Query parameters for user search - using Query fields for proper FastAPI handling
-class UserQueryParams(BaseModel):
-    tags: Optional[List[str]] = Field(
-        None, description="List of tags to filter by"
-    )
-    same_day_tags: bool = Field(
-        False, description="Whether to require all tags on same day"
-    )
-    date: Optional[str] = Field(
-        None, description="Date to filter by (YYYY-MM-DD format)"
-    )
-    followed_by: Optional[List[str]] = Field(
-        None, description="List of usernames. Find users followed by all of these users"
-    )
-    never_posted_blog: bool = Field(
-        False, description="Return users who have never posted a blog"
-    )
-    all_negative_comments: bool = Field(
-        default=False, description="Return users who posted comments that are all negative"
-    )
-    no_negative_comments_on_blogs: bool = Field(
-        default=False, description="Return users whose blogs have no negative comments"
-    )

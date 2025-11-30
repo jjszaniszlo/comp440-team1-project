@@ -68,13 +68,12 @@ def merge_mock_data():
         )
 
     if users_with_multiple_blogs:
-        print(f"❌ Error: {len(users_with_multiple_blogs)} users have multiple blogs:")
+        print(f"ℹ️  Info: {len(users_with_multiple_blogs)} users have multiple blogs:")
         for user in users_with_multiple_blogs[:5]:
             print(f"  - {user}: {author_counts[user]} blogs")
-        return False
 
-    print(f"  ✓ All {len(usernames)} users have blogs assigned")
-    print("  ✓ All blog authors exist in users array")
+    print(f"  ✓ All blog authors exist in users array")
+    print(f"  ✓ Blog distribution: {len(set(blog_authors))} users wrote {len(all_blogs)} blogs")
 
     merged_data = {"users": users, "blogs": all_blogs}
 

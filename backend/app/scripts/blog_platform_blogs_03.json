@@ -60,12 +60,12 @@
         {
           "author_username": "vortex_mind_6",
           "content": "MessagePack over JSON for serialization is interesting. Any compatibility issues with different client libraries or debugging difficulties?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "blaze_phoenix_9",
               "content": "Some debugging pain initially - can't just Redis CLI GET and read the value. We built a small tool to decode MessagePack for debugging. All our services are Python/Node which have good MessagePack support. YMMV with other languages.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -112,14 +112,14 @@
             {
               "author_username": "frost_titan_44",
               "content": "Stripe only backs off after several failures. Since we were returning 500 immediately, and our handler was creating new instances each time, Stripe saw it as transient failures from different requests, not the same webhook failing repeatedly. We basically tricked their backoff algorithm.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
         {
           "author_username": "vortex_mind_6",
           "content": "This is why I always return 200 OK for webhooks, even on failure, and handle retries internally. External retry + internal retry = exponential disaster.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "nexus_drone_55",
@@ -176,12 +176,12 @@
         {
           "author_username": "nexus_drone_55",
           "content": "How did you handle phone number verification for 10,000 accounts? That must have been the hardest part.",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "echo_sage_17",
               "content": "Used a mix of virtual numbers from 5 different providers, rotating IPs via residential proxies, and spread account creation over 90 days. Cost about $2,000 just for verification. Not sharing exact details for obvious reasons.",
-              "sentiment": "neutral",
+              "sentiment": "negative",
               "replies": [
                 {
                   "author_username": "blaze_phoenix_9",
@@ -191,7 +191,7 @@
                     {
                       "author_username": "echo_sage_17",
                       "content": "Fair criticism. The difference is intent - this was pure research, no client videos were promoted, no real creators were affected. All interactions were between my own controlled accounts. But you're right that the techniques are identical to black hat operations.",
-                      "sentiment": "neutral",
+                      "sentiment": "negative",
                       "replies": [
                         {
                           "author_username": "frost_titan_44",
@@ -214,7 +214,7 @@
             {
               "author_username": "echo_sage_17",
               "content": "YouTube Shorts definitely uses batching but with different thresholds. From limited testing, their batches are: 100 → 1K → 10K → 100K → 1M. They also seem to weight session duration over individual video completion.",
-              "sentiment": "neutral"
+              "sentiment": "negative"
             }
           ]
         },
@@ -266,7 +266,7 @@
         {
           "author_username": "echo_sage_17",
           "content": "Your modular monolith approach is what we're moving to. Question: how do you handle different parts needing different deployment schedules?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "vortex_mind_6",
@@ -278,7 +278,7 @@
         {
           "author_username": "frost_titan_44",
           "content": "$102K/year savings is huge. But what about the migration cost? How much engineering time did this take?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "vortex_mind_6",
@@ -320,12 +320,12 @@
         {
           "author_username": "frost_titan_44",
           "content": "The exploitation part is wild. How did word spread so fast? Inside job or just internet detectives?",
-          "sentiment": "neutral",
+          "sentiment": "negative",
           "replies": [
             {
               "author_username": "nexus_drone_55",
               "content": "Probably someone noticed getting $12.85 instead of $12.84 cashback and posted about it. These deal-hunting forums are incredibly good at finding and exploiting bugs. We call it 'crowd-sourced penetration testing' when being polite.",
-              "sentiment": "neutral",
+              "sentiment": "negative",
               "replies": [
                 {
                   "author_username": "echo_sage_17",
@@ -361,7 +361,7 @@
             {
               "author_username": "frost_titan_44",
               "content": "There's a whole field called 'numerical analysis' dedicated to understanding these errors. Most developers never learn it but probably should.",
-              "sentiment": "neutral",
+              "sentiment": "negative",
               "replies": [
                 {
                   "author_username": "vortex_mind_6",

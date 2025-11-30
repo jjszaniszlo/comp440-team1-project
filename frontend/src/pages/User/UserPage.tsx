@@ -40,7 +40,9 @@ export function UserPage() {
 
         {/* Blogs with all positive comments */}
         <AllPositiveComments />
-        
+
+        <Separator />
+
         {/* Users with all negative comments */}
         <AllNegativeComments />
         

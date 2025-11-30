@@ -52,16 +52,18 @@ export function BlogCard({ blog }: BlogCardProps) {
           {/* Subject */}
           <h3 className="text-base font-semibold line-clamp-1">{blog.subject}</h3>
 
-          {/* Author and Tags */}
-          <div className="flex items-center gap-2 flex-wrap">
-            <AuthorBadge value={blog.author_username} />
-            {blog.tags.map((tag) => (
-              <TagBadge key={tag} value={tag} />
-            ))}
-          </div>
+          {/* Tags */}
+          {blog.tags.length > 0 && (
+            <div className="flex items-center gap-2 flex-wrap">
+              {blog.tags.map((tag) => (
+                <TagBadge key={tag} value={tag} />
+              ))}
+            </div>
+          )}
 
-          {/* Timestamp */}
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+          {/* Author and Timestamp */}
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <AuthorBadge value={blog.author_username} />
             <Clock className="h-3 w-3" />
             <span>{formattedCreated}</span>
           </div>

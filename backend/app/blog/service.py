@@ -1,4 +1,4 @@
-from datetime import date, datetime
+from datetime import date
 from typing import List, Optional
 
 from sqlalchemy import Select, delete, func, select, text, and_, case
@@ -9,19 +9,15 @@ from sqlalchemy.orm import joinedload, selectinload
 from app.auth.models import User
 from app.blog.exceptions import BlogNotFoundException, handle_database_error
 from app.blog.models import Blog, Tag, blog_tag_table
+from app.comment.models import Comment, Sentiment
 from app.blog.schemas import (
     BlogDetailResponse,
     BlogEditRequest,
     BlogResponse,
     BlogSearchResponse,
-    UserLiteResponse,
-    UserQueryParams,
 )
 from app.blog.types import BlogSortBy, BlogSortOrder, BlogStatus
 from app.schemas import PaginatedResponse, PaginationMeta
-from app.user.models import UserDailyActivity
-from app.follow.models import UserFollow
-from app.comment.models import Comment, Sentiment
 
 
 async def create_blog_service(
@@ -382,149 +378,4 @@ async def remove_tags_from_blog_service(
     except Exception as e:
         await db.rollback()
         handle_database_error(e, "remove tags from blog")
-
-# Searches for users based on various criteria (Phase 3 support)
-async def search_users_service(
-    db: AsyncSession,
-    params: UserQueryParams,
-) -> List[UserLiteResponse]:
-
-    try:
-        # Parse date if provided as string
-        search_date = None
-        if params.date:
-            try:
-                search_date = datetime.strptime(params.date, "%Y-%m-%d").date()
-            except ValueError:
-                return []
-        # Case to return users whose blogs have no negative comments
-        if params.no_negative_comments_on_blogs:
-            users_with_blogs = select(Blog.author_username).distinct()
-
-            users_with_negative_comments_on_blogs = (
-                select(Blog.author_username)
-                .join(Comment, Comment.blog_id == Blog.id)
-                .where(Comment.sentiment == Sentiment.NEGATIVE)
-                .distinct()
-            )
-
-            query = (
-                select(User.username)
-                .where(
-                    and_(
-                        User.username.in_(users_with_blogs),
-                        User.username.notin_(users_with_negative_comments_on_blogs)
-                    )
-                )
-            )
-            
-            result = await db.scalars(query)
-            usernames = result.all()
-            return [UserLiteResponse(username=u) for u in sorted(usernames)]
-        
-        # Case to return users who posted comments but all are negative
-        if params.all_negative_comments:
-            users_with_comments = select(Comment.author_username).distinct()
-            
-            users_with_positive_comments = (
-                select(Comment.author_username)
-                .where(Comment.sentiment == Sentiment.POSITIVE)
-                .distinct()
-            )
-            
-            query = (
-                select(User.username)
-                .where(
-                    and_(
-                        User.username.in_(users_with_comments),
-                        User.username.notin_(users_with_positive_comments)
-                    )
-                )
-            )
-            
-            result = await db.scalars(query)
-            usernames = result.all()
-            return [UserLiteResponse(username=u) for u in sorted(usernames)]
-        
-        # Case to return users who have never posted a blog
-        if params.never_posted_blog:
-            users_with_blogs_subquery = select(Blog.author_username).distinct()
-            query = select(User.username).where(User.username.notin_(users_with_blogs_subquery))
-            result = await db.scalars(query)
-            usernames = result.all()
-            return [UserLiteResponse(username=u) for u in sorted(usernames)]
-
-        # Case to return users followed by both users x and users y
-        if len(params.followed_by) > 0:
-            # Start with users followed by the first user
-            query = select(UserFollow.following_username).where(
-                UserFollow.follower_username == params.followed_by[0]
-            )
-            
-            # For each additional user, intersect with their following list
-            for follower in params.followed_by[1:]:
-                followed_by_subquery = select(UserFollow.following_username).where(
-                    UserFollow.follower_username == follower
-                )
-                query = query.where(UserFollow.following_username.in_(followed_by_subquery))
-            
-            query = query.distinct()
-            result = await db.scalars(query)
-            usernames = result.all()
-            return [UserLiteResponse(username=u) for u in sorted(usernames)]
-
-        # Case: Most blogs on a specific date
-        if search_date:
-            result = await db.execute(
-                select(UserDailyActivity.username, UserDailyActivity.blogs_made)
-                .where(UserDailyActivity.activity_date == search_date)
-            )
-            rows = result.fetchall()
-            
-            if not rows:
-                return []
-            
-            max_count = max(row[1] for row in rows)
-            usernames = sorted([row[0] for row in rows if row[1] == max_count])
-            return [UserLiteResponse(username=u) for u in usernames]
-
-        # Case: Users who posted blogs with both tags on the same day
-        if len(params.tags) > 0:
-            if params.same_day_tags:
-                # Users who posted all tags on the same day
-                query = (
-                    select(Blog.author_username)
-                    .distinct()
-                    .join(blog_tag_table, Blog.id == blog_tag_table.c.blog_id)
-                    .join(Tag, Tag.id == blog_tag_table.c.tag_id)
-                    .where(Tag.name.in_([tag.strip() for tag in params.tags]))
-                    .group_by(Blog.author_username, func.date(Blog.created_at))
-                    .having(
-                        and_(
-                            func.count(func.distinct(Tag.name)) == len(params.tags),
-                            func.count(func.distinct(Blog.id)) >= len(params.tags),
-                        )
-                    )
-                )
-            else:
-                # Users who have used all tags (not necessarily same day)
-                query = (
-                    select(Blog.author_username)
-                    .join(blog_tag_table, Blog.id == blog_tag_table.c.blog_id)
-                    .join(Tag, Tag.id == blog_tag_table.c.tag_id)
-                    .where(Tag.name.in_(params.tags))
-                    .group_by(Blog.author_username)
-                    .having(func.count(func.distinct(Tag.name)) == len(params.tags))
-                )
-            
-            result = await db.scalars(query)
-            usernames = result.all()
-            return [UserLiteResponse(username=u) for u in usernames]
-
-        # No valid query parameters provided
-        return []
-
-    except Exception as e:
-        handle_database_error(e, "search users")
-        return []
 

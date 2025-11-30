@@ -1,9 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Loader2, Search } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2, Search, FileText, CheckCircle2 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/lib/api";
 
@@ -107,50 +110,67 @@ export function AllPositiveComments() {
           <div className="mt-6">
             <div className="mb-3 flex items-center justify-between">
               <h3 className="font-semibold">Results</h3>
-              <span className="text-sm text-muted-foreground">
-                {blogs.length} blog{blogs.length !== 1 ? 's' : ''} found
-              </span>
+              {!isLoading && (
+                <span className="text-sm text-muted-foreground">
+                  {blogs.length} blog{blogs.length !== 1 ? 's' : ''} found
+                </span>
+              )}
             </div>
             {isLoading ? (
-              <div className="flex justify-center py-8">
-                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              <div className="space-y-3">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <Card key={i}>
+                    <CardContent className="p-4 space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <Skeleton className="h-6 w-48" />
+                        <Skeleton className="h-5 w-24" />
+                      </div>
+                      <Skeleton className="h-4 w-32" />
+                      <div className="flex gap-1">
+                        <Skeleton className="h-5 w-16" />
+                        <Skeleton className="h-5 w-20" />
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             ) : blogs.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                No blogs found for "{username}" with all positive comments
+              <div className="flex flex-col items-center justify-center py-8 text-muted-foreground">
+                <FileText className="h-12 w-12 mb-3 opacity-50" />
+                <p>No blogs found for "{username}" with all positive comments</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {blogs.map((blog) => (
-                  <Card key={blog.id} className="hover:shadow-md transition-shadow">
-                    <CardContent className="p-4">
-                      <div className="space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-semibold text-lg">{blog.subject}</h4>
-                          <span className="text-xs px-2 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 whitespace-nowrap">
-                            ✓ All Positive
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                          <span>by {blog.author_username}</span>
-                          <span>•</span>
-                          <span>{new Date(blog.created_at).toLocaleDateString()}</span>
-                        </div>
-                        {blog.tags && blog.tags.length > 0 && (
-                          <div className="flex flex-wrap gap-1 mt-2">
-                            {blog.tags.map((tag, index) => (
-                              <span
-                                key={index}
-                                className="text-xs px-2 py-1 rounded-md bg-secondary text-secondary-foreground"
-                              >
-                                {tag}
-                              </span>
-                            ))}
+                  <Link key={blog.id} to={`/blog/${blog.id}`}>
+                    <Card className="hover:shadow-md hover:border-primary/50 transition-all cursor-pointer">
+                      <CardContent className="p-4">
+                        <div className="space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-semibold text-lg">{blog.subject}</h4>
+                            <Badge variant="secondary" className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                              <CheckCircle2 className="h-3 w-3" />
+                              All Positive
+                            </Badge>
                           </div>
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>by {blog.author_username}</span>
+                            <span>•</span>
+                            <span>{new Date(blog.created_at).toLocaleDateString()}</span>
+                          </div>
+                          {blog.tags && blog.tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1 mt-2">
+                              {blog.tags.map((tag, index) => (
+                                <Badge key={index} variant="secondary">
+                                  {tag}
+                                </Badge>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </Link>
                 ))}
               </div>
             )}

@@ -580,3 +580,19 @@
     }
   }
 }
+
+/* React Day Picker overrides for proper theming */
+.rdp-day_button {
+  background: transparent !important;
+  color: var(--foreground) !important;
+}
+
+.rdp-button_previous,
+.rdp-button_next {
+  background: transparent !important;
+}
+
+/* Outside days (from other months) should be muted */
+.rdp-day.rdp-outside .rdp-day_button {
+  color: var(--muted-foreground) !important;
+}

@@ -4,6 +4,7 @@ import { FollowedBy } from "./components/FollowedBy";
 import { NeverPosted } from "./components/NeverPosted";
 import { AllNegativeComments } from "./components/AllNegativeComments";
 import { NoNegativeCommentsOnBlogs } from "./components/NoNegativeCommentsOnBlogs";
+import { AllPositiveComments } from "./components/AllPositiveComments";
 import { Separator } from "@/components/ui/separator";
 
 export function UserPage() {
@@ -36,6 +37,9 @@ export function UserPage() {
         <NeverPosted />
 
         <Separator />
+
+        {/* Blogs with all positive comments */}
+        <AllPositiveComments />
         
         {/* Users with all negative comments */}
         <AllNegativeComments />
